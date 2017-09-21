@@ -1,5 +1,5 @@
 FROM openjdk:8-jre
-ENV MC_VERSION 3.8.4
+ENV MC_VERSION 3.9-EA2
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MANCENTER_DATA /data
 VOLUME ["/data"]
