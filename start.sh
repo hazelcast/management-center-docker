@@ -20,4 +20,4 @@ echo "# JAVA_OPTS=$JAVA_OPTS"
 echo "# starting now...."
 echo "########################################"
 
-java -server $JAVA_OPTS -Dhazelcast.mancenter.home=$MANCENTER_DATA -jar mancenter-$MC_VERSION.war
+java -server $JAVA_OPTS -Dhazelcast.mancenter.home=$MANCENTER_DATA -jar management-center-$MC_VERSION/mancenter-$MC_VERSION.war
