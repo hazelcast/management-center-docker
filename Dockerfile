@@ -1,4 +1,4 @@
-FROM openjdk:8-jre
+FROM openjdk:8u141-jre
 ENV MC_VERSION 3.9-EA2
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MANCENTER_DATA /data
