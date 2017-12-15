@@ -29,3 +29,7 @@ boot2docker ip
 ```
 
 Then, you can run Hazelcast Management Center using the URL `http://host-ip:8080/mancenter`.
+
+### Hazelcast Member Configuration
+
+As a prerequisite, Hazelcast Cluster Member Containers should be launched with Management Center Enabled mode. This can be achieved by using a custom `hazelcast.xml` configuration file while launching the Hazelcast Member Container. For more information please refer to the [Using Hazelcast Configuration File](#using-hazelcast-configuration-file) section.
