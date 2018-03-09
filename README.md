@@ -27,6 +27,12 @@ Management Center uses the file system to store persistent data. However, that i
 docker run -ti -p 8080:8080 -v PATH_TO_PERSISTENT_FOLDER:/data hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
+To provide a license key the system property `hazelcast.mc.license` can be used (requires version >= 3.9.3):
+
+```
+docker run -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -ti -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
+```
+
 ## Hazelcast Member Configuration
 
 As a prerequisite, Hazelcast Cluster Member Containers should be launched with Management Center Enabled mode. This can be achieved by using a custom `hazelcast.xml` configuration file while launching the Hazelcast Member Container. For more information please refer to the [Using Hazelcast Configuration File](https://github.com/hazelcast/hazelcast-docker#using-custom-hazelcast-configuration-file) section.
