@@ -13,11 +13,17 @@ You can launch Hazelcast Management Center by simply running the following comma
 docker run -ti -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
-Now you can reach Hazelcast Management Center from your browser using the URL `http://localhost:8080/mancenter`. 
+Now you can reach Hazelcast Management Center from your browser using the URL `http://localhost:8080/hazelcast-mancenter`. 
 
 If you are running the Docker image in the cloud, you should use a public IP of your machine instead of `localhost`. 
 
-`docker ps` and `docker inspect <container-id>` can be used to find `host-ip`. Once you find out `host-ip`, you can browse Hazelcast Management Center using the URL: `http://host-ip:8080/mancenter`.
+`docker ps` and `docker inspect <container-id>` can be used to find `host-ip`. Once you find out `host-ip`, you can browse Hazelcast Management Center using the URL: `http://host-ip:8080/hazelcast-mancenter`.
+
+### Management Center Default Context Path
+
+Before version 3.10, default context path was `/mancenter`, so you would access Hazelcast Management 
+Center by using `http://localhost:8080/mancenter`. Starting with version 3.10, it is changed to
+`/hazelcast-mancenter`, so you can access it by using `http://localhost:8080/hazelcast-mancenter`.
 
 ## Mounting Management Center Home Directory
 
