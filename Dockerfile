@@ -1,6 +1,6 @@
 FROM openjdk:8u141-jre
 
-ENV MC_VERSION 3.10
+ENV MC_VERSION 3.10.1
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MANCENTER_DATA /data
 ENV USER_NAME=hazelcast
