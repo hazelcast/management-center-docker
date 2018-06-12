@@ -10,7 +10,7 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
 You can launch Hazelcast Management Center by simply running the following command. please check available versions for $MANAGEMENT_CENTER on [Docker Store](https://store.docker.com/community/images/hazelcast/management-center/tags)
 
 ```
-docker run -ti -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
+docker run -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
 Now you can reach Hazelcast Management Center from your browser using the URL `http://localhost:8080/hazelcast-mancenter`. 
@@ -30,15 +30,15 @@ Center by using `http://localhost:8080/mancenter`. Starting with version 3.10, i
 Management Center uses the file system to store persistent data. However, that is by default inside the docker container and destroyed in case of container restarts. If you want to store Management Center data externally, you need to create a mount to a folder named `/data`. See the following for how to create a mount point. `PATH_TO_PERSISTENT_FOLDER` must be replaced by your persistent folder.
 
 ```
-docker run -ti -p 8080:8080 -v PATH_TO_PERSISTENT_FOLDER:/data hazelcast/management-center:$MANAGEMENT_CENTER
+docker run -p 8080:8080 -v PATH_TO_PERSISTENT_FOLDER:/data hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
 To provide a license key the system property `hazelcast.mc.license` can be used (requires version >= 3.9.3):
 
 ```
-docker run -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -ti -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
+docker run -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
 ## Hazelcast Member Configuration
 
-As a prerequisite, Hazelcast Cluster Member Containers should be launched with Management Center Enabled mode. This can be achieved by using a custom `hazelcast.xml` configuration file while launching the Hazelcast Member Container. For more information please refer to the [Using Hazelcast Configuration File](https://github.com/hazelcast/hazelcast-docker#using-custom-hazelcast-configuration-file) section.
+For the Hazelcast member configuration and the sample Hello World example, please refer to [Hazelcast Docker repository](https://github.com/hazelcast/hazelcast-docker).
