@@ -25,6 +25,8 @@ Before version 3.10, default context path was `/mancenter`, so you would access 
 Center by using `http://localhost:8080/mancenter`. Starting with version 3.10, it is changed to
 `/hazelcast-mancenter`, so you can access it by using `http://localhost:8080/hazelcast-mancenter`.
 
+You can overwrite this default by setting the environment variable `MC_CONTEXT`.
+
 ## Mounting Management Center Home Directory
 
 Management Center uses the file system to store persistent data. However, that is by default inside the docker container and destroyed in case of container restarts. If you want to store Management Center data externally, you need to create a mount to a folder named `/data`. See the following for how to create a mount point. `PATH_TO_PERSISTENT_FOLDER` must be replaced by your persistent folder.
