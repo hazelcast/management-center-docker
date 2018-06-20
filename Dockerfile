@@ -17,8 +17,9 @@ ENV MC_RUNTIME "${MC_INSTALL_DIR}/${MC_INSTALL_WAR}"
 
 # Install curl to download management center
 RUN apt-get update \
- && apt-get install -y \
-      curl
+ && apt-get install --no-install-recommends --yes \
+      curl \
+ && rm -rf /var/lib/apt/lists/*
 
 # chmod allows running container as non-root with `docker run --user` option
 RUN mkdir -p ${MC_HOME} ${MC_DATA} \
