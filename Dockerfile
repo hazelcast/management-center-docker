@@ -8,10 +8,12 @@ ENV MC_HTTP_PORT 8080
 ENV MC_HTTPS_PORT 8443
 ENV MC_CONTEXT hazelcast-mancenter
 
-ENV MC_INSTALL_NAME "hazelcast-management-center-${MC_VERSION}"
-ENV MC_INSTALL_ZIP "${MC_INSTALL_NAME}.zip"
-ENV MC_INSTALL_DIR "${MC_HOME}/${MC_INSTALL_NAME}"
-ENV MC_INSTALL_WAR "hazelcast-mancenter-${MC_VERSION}.war"
+ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
+ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
+ARG MC_INSTALL_DIR="${MC_HOME}/${MC_INSTALL_NAME}"
+ARG MC_INSTALL_WAR="hazelcast-mancenter-${MC_VERSION}.war"
+
+ENV MC_RUNTIME "${MC_INSTALL_DIR}/${MC_INSTALL_WAR}"
 
 # Install curl to download management center
 RUN apt-get update \
@@ -52,6 +54,6 @@ CMD ["bash", "-c", "set -euo pipefail \
       && echo \"# starting now....\" \
       && echo \"########################################\" \
       && set -x \
-      && exec java -server ${JAVA_OPTS} -jar ${MC_INSTALL_DIR}/${MC_INSTALL_WAR} \
+      && exec java -server ${JAVA_OPTS} -jar ${MC_RUNTIME} \
                 ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_CONTEXT} \
      "]
