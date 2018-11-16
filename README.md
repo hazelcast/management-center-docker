@@ -44,3 +44,11 @@ docker run -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080 hazelcast/ma
 ## Hazelcast Member Configuration
 
 For the Hazelcast member configuration and the sample Hello World example, please refer to [Hazelcast Docker repository](https://github.com/hazelcast/hazelcast-docker).
+
+## Using Custom Logback Configuration File
+
+Management Center can use your custom Logback configuration file. You need to create a mount to a folder named `/opt/hazelcast/mancenter_ext`. See the following for how to create a mount point. `PATH_TO_PERSISTENT_FOLDER` must be replaced with the path to the folder that your custom Logback configuration file is in. `CUSTOM_LOGBACK_FILE` must be replaced with the name of your custom Logback configuration file, for example `logback-custom.xml`.
+
+```
+docker run -e JAVA_OPTS='-Dlogback.configurationFile=/opt/hazelcast/mancenter_ext/CUSTOM_LOGBACK_FILE' -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mancenter_ext -p 8080:8080 hazelcast/management-center
+```
