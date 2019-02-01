@@ -7,6 +7,14 @@ else
     export JAVA_OPTS="${JAVA_OPTS_DEFAULT}"
 fi
 
+if [ -n "${MIN_HEAP_SIZE}" ]; then
+    export JAVA_OPTS="${JAVA_OPTS} -Xms${MIN_HEAP_SIZE}"
+fi
+
+if [ -n "${MAX_HEAP_SIZE}" ]; then
+    export JAVA_OPTS="${JAVA_OPTS} -Xms${MAX_HEAP_SIZE}"
+fi
+
 echo "########################################"
 echo "# JAVA_OPTS=${JAVA_OPTS}"
 echo "# starting now...."
