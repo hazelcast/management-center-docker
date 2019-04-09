@@ -1,6 +1,6 @@
 FROM openjdk:8-jre-slim
 
-ENV MC_VERSION 3.12-ALPHA-1
+ENV MC_VERSION 3.12
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MC_DATA /data
 
