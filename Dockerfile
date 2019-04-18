@@ -10,10 +10,9 @@ ENV MC_CONTEXT hazelcast-mancenter
 
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
-ARG MC_INSTALL_DIR="${MC_HOME}/${MC_INSTALL_NAME}"
 ARG MC_INSTALL_WAR="hazelcast-mancenter-${MC_VERSION}.war"
 
-ENV MC_RUNTIME "${MC_INSTALL_DIR}/${MC_INSTALL_WAR}"
+ENV MC_RUNTIME "${MC_HOME}/${MC_INSTALL_WAR}"
 
 # Install curl to download management center
 RUN apt-get update \
@@ -36,7 +35,9 @@ RUN curl -svf -o ${MC_HOME}/${MC_INSTALL_ZIP} \
          -L http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
  && unzip ${MC_INSTALL_ZIP} \
       -x ${MC_INSTALL_NAME}/docs/* \
- && rm -rf ${MC_INSTALL_ZIP}
+ && rm -rf ${MC_INSTALL_ZIP} \
+ && mv ${MC_INSTALL_NAME}/* . \
+ && rm -rf ${MC_INSTALL_NAME}
 
 # Runtime environment variables
 ENV JAVA_OPTS_DEFAULT "-Dhazelcast.mancenter.home=${MC_DATA} -Djava.net.preferIPv4Stack=true"
@@ -46,7 +47,8 @@ ENV MAX_HEAP_SIZE ""
 
 ENV JAVA_OPTS ""
 
-ADD files/mc-start.sh /mc-start.sh
+COPY files/mc-start.sh /mc-start.sh
+RUN chmod +x /mc-start.sh
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT}

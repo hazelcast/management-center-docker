@@ -20,8 +20,10 @@ echo "# JAVA_OPTS=${JAVA_OPTS}"
 echo "# starting now...."
 echo "########################################"
 
+# --add-opens flag is required to prevent this issue: https://jira.spring.io/browse/SPR-15859
 set -x
 exec java \
+    --add-opens java.base/java.lang=ALL-UNNAMED \
     -server ${JAVA_OPTS} \
     -jar ${MC_RUNTIME} \
     ${MC_HTTP_PORT} \
