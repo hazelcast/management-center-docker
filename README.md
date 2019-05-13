@@ -52,3 +52,11 @@ Management Center can use your custom Logback configuration file. You need to cr
 ```
 docker run -e JAVA_OPTS='-Dlogback.configurationFile=/opt/hazelcast/mancenter_ext/CUSTOM_LOGBACK_FILE' -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mancenter_ext -p 8080:8080 hazelcast/management-center
 ```
+
+## Starting with an Extra Classpath
+
+You can start the Management Center with an extra classpath entry (for example, when using JAAS authentication) by using the `MC_CLASSPATH` environment variable:
+
+```
+docker run -e MC_CLASSPATH='/path/to/your-extra.jar' -p 8080:8080 hazelcast/management-center
+```
