@@ -15,8 +15,15 @@ if [ -n "${MAX_HEAP_SIZE}" ]; then
     export JAVA_OPTS="${JAVA_OPTS} -Xms${MAX_HEAP_SIZE}"
 fi
 
+if [ -n "${MC_CLASSPATH}" ]; then
+    export MC_CLASSPATH="${MC_RUNTIME}:${MC_CLASSPATH}"
+else
+    export MC_CLASSPATH="${MC_RUNTIME}"
+fi
+
 echo "########################################"
 echo "# JAVA_OPTS=${JAVA_OPTS}"
+echo "# MC_CLASSPATH=${MC_CLASSPATH}"
 echo "# starting now...."
 echo "########################################"
 
@@ -25,8 +32,8 @@ set -x
 exec java \
     --add-opens java.base/java.lang=ALL-UNNAMED \
     -server ${JAVA_OPTS} \
-    -jar ${MC_RUNTIME} \
+    -cp "${MC_CLASSPATH}" \
+    Launcher \
     ${MC_HTTP_PORT} \
     ${MC_HTTPS_PORT} \
     ${MC_CONTEXT}
-

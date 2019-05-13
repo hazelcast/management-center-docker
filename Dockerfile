@@ -47,6 +47,8 @@ ENV MAX_HEAP_SIZE ""
 
 ENV JAVA_OPTS ""
 
+ENV MC_CLASSPATH ""
+
 COPY files/mc-start.sh /mc-start.sh
 RUN chmod +x /mc-start.sh
 
