@@ -12,7 +12,7 @@ if [ -n "${MIN_HEAP_SIZE}" ]; then
 fi
 
 if [ -n "${MAX_HEAP_SIZE}" ]; then
-    export JAVA_OPTS="${JAVA_OPTS} -Xms${MAX_HEAP_SIZE}"
+    export JAVA_OPTS="${JAVA_OPTS} -Xmx${MAX_HEAP_SIZE}"
 fi
 
 if [ -n "${MC_CLASSPATH}" ]; then
