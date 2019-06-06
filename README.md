@@ -41,6 +41,22 @@ To provide a license key the system property `hazelcast.mc.license` can be used 
 docker run -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
+## Enabling TLS/SSL
+
+To enable TLS/SSL, you need to provide the keystore and expose the default port (`8443`):
+
+```
+docker run -e JAVA_OPTS='-Dhazelcast.mc.tls.enabled=true -Dhazelcast.mc.tls.keyStore=/keystore/yourkeystore.jks -Dhazelcast.mc.tls.keyStorePassword=yourpassword' -v PATH_TO_KEYSTORE_DIR:/keystore -p 8443:8443 hazelcast/management-center
+```
+
+The default port can be changed by overriding the `MC_HTTPS_PORT` environment variable. For example, to use port `8444` you can run the following command:
+
+```
+docker run -e MC_HTTPS_PORT=8444 -e JAVA_OPTS='-Dhazelcast.mc.tls.enabled=true -Dhazelcast.mc.tls.keyStore=/keystore/yourkeystore.jks -Dhazelcast.mc.tls.keyStorePassword=yourpassword' -v PATH_TO_KEYSTORE_DIR:/keystore -p 8444:8444 hazelcast/management-center
+```
+
+Please refer to [the Management Center documentation](https://docs.hazelcast.org/docs/management-center/3.12/manual/html/index.html#enabling-tslssl-when-starting-with-war-file) for more information on available options.
+
 ## Hazelcast Member Configuration
 
 For the Hazelcast member configuration and the sample Hello World example, please refer to [Hazelcast Docker repository](https://github.com/hazelcast/hazelcast-docker).
