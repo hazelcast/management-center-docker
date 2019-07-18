@@ -20,11 +20,6 @@ RUN apt-get update \
       curl \
  && rm -rf /var/lib/apt/lists/*
 
-# Comment out assistive_technologies configuration
-# Without commenting this out, a "headless" Java installation causes a traceback on Management Center start
-# Ref: https://askubuntu.com/a/723503
-RUN sed -i -e 's/^assistive_technologies=/#assistive_technologies=/g' /etc/java-11-openjdk/accessibility.properties
-
 # chmod allows running container as non-root with `docker run --user` option
 RUN mkdir -p ${MC_HOME} ${MC_DATA} \
  && chmod a+rwx ${MC_HOME} ${MC_DATA}
