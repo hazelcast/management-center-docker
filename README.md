@@ -76,3 +76,13 @@ You can start the Management Center with an extra classpath entry (for example, 
 ```
 docker run -e MC_CLASSPATH='/path/to/your-extra.jar' -p 8080:8080 hazelcast/management-center
 ```
+
+## Enabling Health Check Endpoint
+
+When running the Management Center, you can enable the Health Check endpoint:
+
+```
+docker run -p 8080:8080 -p 8081:8081 -e JAVA_OPTS='-Dhazelcast.mc.healthCheck.enable=true' hazelcast/management-center:$MANAGEMENT_CENTER
+```
+
+This endpoint may be used in container-orchestraction systems, like Kubernetes. Refer to [the Management Center documentation](https://docs.hazelcast.org/docs/management-center/3.12.5/manual/html/index.html#enabling-health-check-endpoint) for more information.
