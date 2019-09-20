@@ -6,6 +6,7 @@ ENV MC_DATA /data
 
 ENV MC_HTTP_PORT 8080
 ENV MC_HTTPS_PORT 8443
+ENV MC_HEALTH_CHECK_PORT 8081
 ENV MC_CONTEXT hazelcast-mancenter
 
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
@@ -50,6 +51,7 @@ RUN chmod +x /mc-start.sh
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT}
 EXPOSE ${MC_HTTPS_PORT}
+EXPOSE ${MC_HEALTH_CHECK_PORT}
 
 # Start Management Center
 CMD ["bash", "/mc-start.sh"]
