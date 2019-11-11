@@ -21,6 +21,16 @@ else
     export MC_CLASSPATH="${MC_RUNTIME}"
 fi
 
+if [ -n "${MC_INIT_CMD}" ]; then
+   echo "executing command specified by MC_INIT_CMD"
+   eval "${MC_INIT_CMD}"
+fi
+
+if [ -n "${MC_INIT_SCRIPT}" ]; then
+   echo "loading script $MC_INIT_SCRIPT specified by MC_INIT_SCRIPT"
+   source ${MC_INIT_SCRIPT}
+fi
+
 echo "########################################"
 echo "# JAVA_OPTS=${JAVA_OPTS}"
 echo "# MC_CLASSPATH=${MC_CLASSPATH}"
