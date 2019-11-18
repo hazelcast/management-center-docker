@@ -86,3 +86,26 @@ docker run -p 8080:8080 -p 8081:8081 -e JAVA_OPTS='-Dhazelcast.mc.healthCheck.en
 ```
 
 This endpoint may be used in container-orchestraction systems, like Kubernetes. Refer to [the Management Center documentation](https://docs.hazelcast.org/docs/management-center/3.12.5/manual/html/index.html#enabling-health-check-endpoint) for more information.
+
+## Customizing container setup
+
+You can make modifications to the container on container startup by defining environment variables.
+
+* `MC_INIT_CMD`: Execute one or more commands separated by semicolons.
+* `MC_INIT_SCRIPT`: Execute a script in bash syntax in the context of the [entry-script](files/mc-start.sh). Make this file available by layering to a new container or by assigning a docker volume.
+
+The commands defined by the variables are executed before starting the management center in the listed order.
+You can use this command for example to create an administrative user by defining the following command:
+
+```
+./mc-conf.sh create-user -H=/data -n=admin -p=myPassword11 -r=admin -v
+```
+
+Example:
+```
+docker run -ti  --name mancenter \
+         --env MC_INIT_CMD="./mc-conf.sh create-user -H=/data -n=admin -p=myPassword11 -r=admin -v" \
+         --rm hazelcast/management-center
+```
+
+
