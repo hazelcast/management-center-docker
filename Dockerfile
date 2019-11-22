@@ -38,6 +38,7 @@ RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} \
 # Runtime environment variables
 ENV JAVA_OPTS_DEFAULT "-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack=true"
 
+ENV NO_CONTAINER_SUPPORT "false"
 ENV MIN_HEAP_SIZE ""
 ENV MAX_HEAP_SIZE ""
 
