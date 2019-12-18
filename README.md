@@ -13,17 +13,17 @@ You can launch Hazelcast Management Center by simply running the following comma
 docker run -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
-Now you can reach Hazelcast Management Center from your browser using the URL `http://localhost:8080/hazelcast-mancenter`. 
+Now you can reach Hazelcast Management Center from your browser using the URL `http://localhost:8080`. 
 
 If you are running the Docker image in the cloud, you should use a public IP of your machine instead of `localhost`. 
 
-`docker ps` and `docker inspect <container-id>` can be used to find `host-ip`. Once you find out `host-ip`, you can browse Hazelcast Management Center using the URL: `http://host-ip:8080/hazelcast-mancenter`.
+`docker ps` and `docker inspect <container-id>` can be used to find `host-ip`. Once you find out `host-ip`, you can browse Hazelcast Management Center using the URL: `http://host-ip:8080`.
 
 ### Management Center Default Context Path
 
-Before version 3.10, default context path was `/mancenter`, so you would access Hazelcast Management 
-Center by using `http://localhost:8080/mancenter`. Starting with version 3.10, it is changed to
-`/hazelcast-mancenter`, so you can access it by using `http://localhost:8080/hazelcast-mancenter`.
+Before version 4.0, default context path was `/hazelcast-mancenter`, so you would access Hazelcast 
+Management Center by using `http://localhost:8080/hazelcast-mancenter`. Starting with version 4.0, 
+it is changed to root context path (i.e. `/`), so you can access it by using `http://localhost:8080`.
 
 You can overwrite this default by setting the environment variable `MC_CONTEXT`.
 
@@ -63,10 +63,10 @@ For the Hazelcast member configuration and the sample Hello World example, pleas
 
 ## Using Custom Logback Configuration File
 
-Management Center can use your custom Logback configuration file. You need to create a mount to a folder named `/opt/hazelcast/mancenter_ext`, see the following on how to do it. `PATH_TO_PERSISTENT_FOLDER` must be replaced with the path to the folder that your custom Logback configuration file resides in. `CUSTOM_LOGBACK_FILE` must be replaced with the name of your custom Logback configuration file, for example `logback-custom.xml`.
+Management Center can use your custom Logback configuration file. You need to create a mount to a folder named `/opt/hazelcast/mc_ext`, see the following on how to do it. `PATH_TO_PERSISTENT_FOLDER` must be replaced with the path to the folder that your custom Logback configuration file resides in. `CUSTOM_LOGBACK_FILE` must be replaced with the name of your custom Logback configuration file, for example `logback-custom.xml`.
 
 ```
-docker run -e JAVA_OPTS='-Dlogback.configurationFile=/opt/hazelcast/mancenter_ext/CUSTOM_LOGBACK_FILE' -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mancenter_ext -p 8080:8080 hazelcast/management-center
+docker run -e JAVA_OPTS='-Dlogback.configurationFile=/opt/hazelcast/mc_ext/CUSTOM_LOGBACK_FILE' -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mc_ext -p 8080:8080 hazelcast/management-center
 ```
 
 ## Starting with an Extra Classpath
@@ -94,7 +94,7 @@ You can make modifications to the container on container startup by defining env
 * `MC_INIT_CMD`: Execute one or more commands separated by semicolons.
 * `MC_INIT_SCRIPT`: Execute a script in bash syntax in the context of the [entry-script](files/mc-start.sh). Make this file available by layering to a new container or by assigning a docker volume.
 
-The commands defined by the variables are executed before starting the management center in the listed order.
+The commands defined by the variables are executed before starting the Management Center in the listed order.
 You can use this command for example to create an administrative user by defining the following command:
 
 ```
@@ -103,7 +103,7 @@ You can use this command for example to create an administrative user by definin
 
 Example:
 ```
-docker run -ti  --name mancenter \
+docker run -ti  --name hazelcast-mc \
          --env MC_INIT_CMD="./mc-conf.sh create-user -H=/data -n=admin -p=myPassword11 -r=admin -v" \
          --rm hazelcast/management-center
 ```
