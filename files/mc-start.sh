@@ -43,7 +43,7 @@ exec java \
     --add-opens java.base/java.lang=ALL-UNNAMED \
     -server ${JAVA_OPTS} \
     -cp "${MC_CLASSPATH}" \
-    Launcher \
+    com.hazelcast.webmonitor.Launcher \
     ${MC_HTTP_PORT} \
     ${MC_HTTPS_PORT} \
     ${MC_CONTEXT}
