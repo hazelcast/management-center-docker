@@ -25,7 +25,7 @@ Before version 4.0, default context path was `/hazelcast-mancenter`, so you woul
 Management Center by using `http://localhost:8080/hazelcast-mancenter`. Starting with version 4.0, 
 it is changed to root context path (i.e. `/`), so you can access it by using `http://localhost:8080`.
 
-You can overwrite this default by setting the environment variable `MC_CONTEXT`.
+You can overwrite this default by setting the environment variable `MC_CONTEXT_PATH`.
 
 ## Mounting Management Center Home Directory
 
