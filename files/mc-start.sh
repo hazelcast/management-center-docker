@@ -43,7 +43,7 @@ exec java \
     --add-opens java.base/java.lang=ALL-UNNAMED \
     -server ${JAVA_OPTS} \
     -cp "${MC_CLASSPATH}" \
-    Launcher \
-    ${MC_HTTP_PORT} \
-    ${MC_HTTPS_PORT} \
-    ${MC_CONTEXT}
+    -Dhazelcast.mc.contextPath=${MC_CONTEXT_PATH} \
+    -Dhazelcast.mc.http.port=${MC_HTTP_PORT} \
+    -Dhazelcast.mc.https.port=${MC_HTTPS_PORT} \
+    com.hazelcast.webmonitor.Launcher
