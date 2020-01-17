@@ -15,10 +15,10 @@ ARG MC_INSTALL_WAR="hazelcast-mancenter-${MC_VERSION}.war"
 
 ENV MC_RUNTIME "${MC_INSTALL_DIR}/${MC_INSTALL_WAR}"
 
-# Install curl to download management center
+# Install wget to download management center
 RUN apt-get update \
  && apt-get install --no-install-recommends --yes \
-      curl \
+      wget unzip \
  && rm -rf /var/lib/apt/lists/*
 
 # chmod allows running container as non-root with `docker run --user` option
@@ -27,7 +27,7 @@ RUN mkdir -p ${MC_HOME} ${MC_DATA} \
 WORKDIR ${MC_HOME}
 
 # Prepare Management Center
-RUN curl -svf -o ${MC_HOME}/${MC_INSTALL_ZIP} \
+RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} \
          -L http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
  && unzip ${MC_INSTALL_ZIP} \
       -x ${MC_INSTALL_NAME}/docs/* \
