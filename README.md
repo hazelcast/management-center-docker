@@ -98,13 +98,13 @@ The commands defined by the variables are executed before starting the Managemen
 You can use this command for example to create an administrative user by defining the following command:
 
 ```
-./mc-conf.sh create-user -H=/data -n=admin -p=myPassword11 -r=admin -v
+./mc-conf.sh user create -H=/data -n=admin -p=myPassword11 -r=admin -v
 ```
 
 Example:
 ```
-docker run -ti  --name hazelcast-mc \
-         --env MC_INIT_CMD="./mc-conf.sh create-user -H=/data -n=admin -p=myPassword11 -r=admin -v" \
+docker run -ti --name hazelcast-mc \
+         --env MC_INIT_CMD="./mc-conf.sh user create -H=/data -n=admin -p=myPassword11 -r=admin -v" \
          --rm hazelcast/management-center
 ```
 
