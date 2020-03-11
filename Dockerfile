@@ -1,21 +1,21 @@
 FROM openjdk:11-jre-slim
 
-ENV MC_VERSION 3.12.7
-ENV MC_HOME /opt/hazelcast/mancenter
+ENV MC_VERSION 4.0.1
+ENV MC_HOME /opt/hazelcast/management-center
 ENV MC_DATA /data
 
 ENV MC_HTTP_PORT 8080
 ENV MC_HTTPS_PORT 8443
 ENV MC_HEALTH_CHECK_PORT 8081
-ENV MC_CONTEXT hazelcast-mancenter
+ENV MC_CONTEXT_PATH /
 
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
-ARG MC_INSTALL_WAR="hazelcast-mancenter-${MC_VERSION}.war"
+ARG MC_INSTALL_WAR="hazelcast-management-center-${MC_VERSION}.war"
 
 ENV MC_RUNTIME "${MC_HOME}/${MC_INSTALL_WAR}"
 
-# Install wget to download management center
+# Install wget to download Management Center
 RUN apt-get update \
  && apt-get install --no-install-recommends --yes \
       wget unzip \
@@ -36,7 +36,7 @@ RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} \
  && rm -rf ${MC_INSTALL_NAME}
 
 # Runtime environment variables
-ENV JAVA_OPTS_DEFAULT "-Dhazelcast.mancenter.home=${MC_DATA} -Djava.net.preferIPv4Stack=true"
+ENV JAVA_OPTS_DEFAULT "-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack=true"
 
 ENV NO_CONTAINER_SUPPORT "false"
 ENV MIN_HEAP_SIZE ""
