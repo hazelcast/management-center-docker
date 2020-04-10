@@ -81,8 +81,8 @@ Management Center can use your custom Logback configuration file. You need to cr
 
 ```
 docker run -m 512m \
-         -e JAVA_OPTS='-Dlogback.configurationFile=/opt/hazelcast/mancenter_ext/CUSTOM_LOGBACK_FILE' \
-         -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mancenter_ext \
+         -e JAVA_OPTS='-Dlogback.configurationFile=/opt/hazelcast/mc_ext/CUSTOM_LOGBACK_FILE' \
+         -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mc_ext \
          -p 8080:8080 \
          hazelcast/management-center
 ```
@@ -123,8 +123,8 @@ You can use this command for example to create an administrative user by definin
 
 Example:
 ```
-docker run -m 512m -ti  --name mancenter \
-         --env MC_INIT_CMD="./mc-conf.sh create-user -H=/data -n=admin -p=myPassword11 -r=admin -v" \
+docker run -m 512m -ti  --name hazelcast-mc \
+         --env MC_INIT_CMD="./mc-conf.sh user create -H=/data -n=admin -p=myPassword11 -r=admin -v" \
          --rm hazelcast/management-center
 ```
 
@@ -135,16 +135,15 @@ If you don't use the memory resource limit (i.e. `docker run -m 512m ...`, or th
 
 You can define the following variables:
 
-* `NO_CONTAINER_SUPPORT="false"` : use automatic memory resource configuration
-* `NO_CONTAINER_SUPPORT="true"` : suppress automatic resource configuration and configure the limits by using the following environment variables
+* `CONTAINER_SUPPORT="true"` (default) : use automatic memory resource configuration
+* `CONTAINER_SUPPORT="false"` : suppress automatic resource configuration and configure the limits by using the following environment variables:
    * `MIN_HEAP_SIZE` : set the minium heap by `-Xms ...` 
    * `MAX_HEAP_SIZE` : set the maximum heap by `-Xmx ...`
    * `JAVA_OPTS` : use a custom configuration like `-Xms64m -Xmn1024m -Xmx2G -XX:MaxGCPauseMillis=200`
 
-
 Example:
 ```
-docker run -ti  --name mancenter \
-         --env MIN_HEAP_SIZE='512M' --env MAX_HEAP_SIZE='1024M' --env JAVA_OPTS='-XX:MaxGCPauseMillis=200' \
+docker run -ti  --name hazelcast-mc \
+         -e CONTAINER_SUPPORT='false' -e MIN_HEAP_SIZE='512M' -e MAX_HEAP_SIZE='1024M' -e JAVA_OPTS='-XX:MaxGCPauseMillis=200' \
          --rm hazelcast/management-center
 ```

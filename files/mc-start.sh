@@ -7,17 +7,17 @@ else
     export JAVA_OPTS="${JAVA_OPTS_DEFAULT}"
 fi
 
-if ( [ "${NO_CONTAINER_SUPPORT}" = "true" ] || [ -n "${MIN_HEAP_SIZE}" ] || [ -n "${MIN_HEAP_SIZE}" ] ) ;then
-   echo "using manual heap sizing by specifying MIN_HEAP_SIZE or MAX_HEAP_SIZE or custom settings configure by JAVA_OPTS"
-   if [ -n "${MIN_HEAP_SIZE}" ]; then
-       export JAVA_OPTS="${JAVA_OPTS} -Xms${MIN_HEAP_SIZE}"
-   fi
-   if [ -n "${MAX_HEAP_SIZE}" ]; then
-       export JAVA_OPTS="${JAVA_OPTS} -Xmx${MAX_HEAP_SIZE}"
-   fi
+if [ "${CONTAINER_SUPPORT:-true}" = "false" ] ;then
+    echo "using manual heap sizing by specifying MIN_HEAP_SIZE or MAX_HEAP_SIZE or custom settings configure by JAVA_OPTS"
+    if [ -n "${MIN_HEAP_SIZE}" ]; then
+        export JAVA_OPTS="${JAVA_OPTS} -Xms${MIN_HEAP_SIZE}"
+    fi
+    if [ -n "${MAX_HEAP_SIZE}" ]; then
+        export JAVA_OPTS="${JAVA_OPTS} -Xmx${MAX_HEAP_SIZE}"
+    fi
 else
-   echo "using automatic sizing of heap size by up to 80% of available memory and starting with container support"
-   export JAVA_OPTS="${JAVA_OPTS} -XX:+UseContainerSupport -XX:MaxRAMPercentage=80"
+    echo "using automatic sizing of heap size by up to 80% of available memory and starting with container support"
+    export JAVA_OPTS="${JAVA_OPTS} -XX:+UseContainerSupport -XX:MaxRAMPercentage=80"
 fi
 
 if [ -n "${MC_CLASSPATH}" ]; then
@@ -27,13 +27,13 @@ else
 fi
 
 if [ -n "${MC_INIT_CMD}" ]; then
-   echo "executing command specified by MC_INIT_CMD for container initialisation"
+   echo "executing command specified by MC_INIT_CMD for container initialization"
    eval "${MC_INIT_CMD}"
 fi
 
 if [ -n "${MC_INIT_SCRIPT}" ]; then
-   echo "loading script $MC_INIT_SCRIPT specified by MC_INIT_SCRIPT for container initialisation"
-   source ${MC_INIT_SCRIPT}
+    echo "loading script $MC_INIT_SCRIPT specified by MC_INIT_SCRIPT for container initialization"
+    source ${MC_INIT_SCRIPT}
 fi
 
 echo "##################################################"
