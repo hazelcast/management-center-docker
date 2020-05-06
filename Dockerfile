@@ -48,8 +48,8 @@ ENV MC_INIT_CMD ""
 
 ENV MC_CLASSPATH ""
 
-ENV MC_ADMIN_USER "admin"
-ENV MC_ADMIN_PASSWORD "myPassword11"
+ENV MC_ADMIN_USER ""
+ENV MC_ADMIN_PASSWORD ""
 
 COPY files/mc-start.sh /mc-start.sh
 RUN chmod +x /mc-start.sh
