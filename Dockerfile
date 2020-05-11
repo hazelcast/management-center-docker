@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim-sid
+FROM openjdk:11-jre-slim
 
 ENV MC_VERSION 4.0.2
 ENV MC_HOME /opt/hazelcast/management-center
