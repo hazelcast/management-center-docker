@@ -36,6 +36,16 @@ if [ -n "${MC_INIT_SCRIPT}" ]; then
     source ${MC_INIT_SCRIPT}
 fi
 
+if [ -n "${MC_ADMIN_USER}" ] && [ -n "${MC_ADMIN_PASSWORD}" ]; then
+  echo "Creating admin user"
+  source ./mc-conf.sh user create -H=${MC_DATA} -n=${MC_ADMIN_USER} -p=${MC_ADMIN_PASSWORD} -r=admin
+  if [ $? -eq 0 ]; then
+    echo "User created successfully"
+  else
+    exit 1
+  fi
+fi
+
 echo "##################################################"
 echo "# initialisation complete, starting now...."
 echo "##################################################"

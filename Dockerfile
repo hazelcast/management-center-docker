@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim-sid
+FROM openjdk:11-jre-slim
 
 ENV MC_VERSION 4.0.2
 ENV MC_HOME /opt/hazelcast/management-center
@@ -47,6 +47,9 @@ ENV MC_INIT_SCRIPT ""
 ENV MC_INIT_CMD ""
 
 ENV MC_CLASSPATH ""
+
+ENV MC_ADMIN_USER ""
+ENV MC_ADMIN_PASSWORD ""
 
 COPY files/mc-start.sh /mc-start.sh
 RUN chmod +x /mc-start.sh

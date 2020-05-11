@@ -7,7 +7,7 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
 
 ## Quick Start
 
-You can launch Hazelcast Management Center by simply running the following command. please check available versions for $MANAGEMENT_CENTER on [Docker Store](https://store.docker.com/community/images/hazelcast/management-center/tags)
+You can launch Hazelcast Management Center by simply running the following command. Please check available versions for $MANAGEMENT_CENTER on [Docker Store](https://store.docker.com/community/images/hazelcast/management-center/tags)
 
 ```
 docker run --rm -m 512m -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
@@ -115,16 +115,14 @@ You can make modifications to the container on container startup by defining env
 * `MC_INIT_SCRIPT`: Execute a script in bash syntax in the context of the [entry-script](files/mc-start.sh). Make this file available by layering to a new container or by assigning a docker volume.
 
 The commands defined by the variables are executed before starting the Management Center in the listed order.
-You can use this command for example to create an administrative user by defining the following command:
 
-```
-./mc-conf.sh user create -H=/data -n=admin -p=myPassword11 -r=admin -v
-```
+## Start with a preconfigured admin user
 
-Example:
+You can start the Management Center with an administrative user by setting the following optional environmental variables:
 ```
 docker run -m 512m -ti  --name hazelcast-mc \
-         --env MC_INIT_CMD="./mc-conf.sh user create -H=/data -n=admin -p=myPassword11 -r=admin -v" \
+         --env MC_ADMIN_USER=admin \
+         --env MC_ADMIN_PASSWORD=myPassword11 \
          --rm hazelcast/management-center
 ```
 
