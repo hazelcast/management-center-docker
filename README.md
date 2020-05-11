@@ -118,11 +118,11 @@ The commands defined by the variables are executed before starting the Managemen
 
 ## Start with a preconfigured admin user
 
-You can start the Management Center with an administrative user by setting the following environmental variables:
+You can start the Management Center with an administrative user by setting the following optional environmental variables:
 ```
 docker run -m 512m -ti  --name hazelcast-mc \
          --env MC_ADMIN_USER=admin \
-         --env MC_ADMIN_PASSWORD=test \
+         --env MC_ADMIN_PASSWORD=myPassword11 \
          --rm hazelcast/management-center
 ```
 
