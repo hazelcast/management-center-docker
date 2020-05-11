@@ -10,7 +10,7 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
 You can launch Hazelcast Management Center by simply running the following command. Please check available versions for $MANAGEMENT_CENTER on [Docker Store](https://store.docker.com/community/images/hazelcast/management-center/tags)
 
 ```
-docker run --rm -m 512m -p 8080:8080 -e MC_ADMIN_USER=$ADMIN_USER -e MC_ADMIN_PASSWORD=$ADMIN_PASSWORD hazelcast/management-center:$MANAGEMENT_CENTER
+docker run --rm -m 512m -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
 Now you can reach Hazelcast Management Center from your browser using the URL `http://localhost:8080`. 
@@ -34,13 +34,13 @@ You can overwrite this default by setting the environment variable `MC_CONTEXT_P
 Management Center uses the file system to store persistent data. However, that is by default inside the docker container and destroyed in case of container restarts. If you want to store Management Center data externally, you need to create a mount to a folder named `/data`. See the following for how to create a mount point. `PATH_TO_PERSISTENT_FOLDER` must be replaced by your persistent folder.
 
 ```
-docker run --rm -m 512m -p 8080:8080 -v PATH_TO_PERSISTENT_FOLDER:/data -e MC_ADMIN_USER=$ADMIN_USER -e MC_ADMIN_PASSWORD=$ADMIN_PASSWORD hazelcast/management-center:$MANAGEMENT_CENTER
+docker run --rm -m 512m -p 8080:8080 -v PATH_TO_PERSISTENT_FOLDER:/data hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
 To provide a license key the system property `hazelcast.mc.license` can be used (requires version >= 3.9.3):
 
 ```
-docker run --rm -m 512m -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080 -e MC_ADMIN_USER=$ADMIN_USER -e MC_ADMIN_PASSWORD=$ADMIN_PASSWORD hazelcast/management-center:$MANAGEMENT_CENTER
+docker run --rm -m 512m -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
 ## Enabling TLS/SSL
@@ -54,8 +54,6 @@ docker run --rm -m 512m \
          -Dhazelcast.mc.tls.keyStorePassword=yourpassword' \
          -v PATH_TO_KEYSTORE_DIR:/keystore \
          -p 8443:8443 \
-         -e MC_ADMIN_USER=$ADMIN_USER \
-         -e MC_ADMIN_PASSWORD=$ADMIN_PASSWORD \
          hazelcast/management-center
 ```
 
@@ -68,8 +66,6 @@ docker run --rm -m 512m -e MC_HTTPS_PORT=8444 \
         -Dhazelcast.mc.tls.keyStorePassword=yourpassword' \
         -v PATH_TO_KEYSTORE_DIR:/keystore \
         -p 8444:8444 \
-        -e MC_ADMIN_USER=$ADMIN_USER \
-        -e MC_ADMIN_PASSWORD=$ADMIN_PASSWORD \
         hazelcast/management-center
 ```
 
@@ -88,8 +84,6 @@ docker run -m 512m \
          -e JAVA_OPTS='-Dlogback.configurationFile=/opt/hazelcast/mc_ext/CUSTOM_LOGBACK_FILE' \
          -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mc_ext \
          -p 8080:8080 \
-         -e MC_ADMIN_USER=$ADMIN_USER \
-         -e MC_ADMIN_PASSWORD=$ADMIN_PASSWORD \
          hazelcast/management-center
 ```
 
@@ -98,7 +92,7 @@ docker run -m 512m \
 You can start the Management Center with an extra classpath entry (for example, when using JAAS authentication) by using the `MC_CLASSPATH` environment variable:
 
 ```
-docker run -m 512m -e MC_CLASSPATH='/path/to/your-extra.jar' -p 8080:8080 -e MC_ADMIN_USER=$ADMIN_USER -e MC_ADMIN_PASSWORD=$ADMIN_PASSWORD hazelcast/management-center
+docker run -m 512m -e MC_CLASSPATH='/path/to/your-extra.jar' -p 8080:8080 hazelcast/management-center
 ```
 
 ## Enabling Health Check Endpoint
@@ -108,8 +102,6 @@ When running the Management Center, you can enable the Health Check endpoint:
 ```
 docker run -m 512m -p 8080:8080 -p 8081:8081 \
          -e JAVA_OPTS='-Dhazelcast.mc.healthCheck.enable=true' \
-         -e MC_ADMIN_USER=$ADMIN_USER \
-         -e MC_ADMIN_PASSWORD=$ADMIN_PASSWORD \
          hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
@@ -123,6 +115,16 @@ You can make modifications to the container on container startup by defining env
 * `MC_INIT_SCRIPT`: Execute a script in bash syntax in the context of the [entry-script](files/mc-start.sh). Make this file available by layering to a new container or by assigning a docker volume.
 
 The commands defined by the variables are executed before starting the Management Center in the listed order.
+
+## Start with a preconfigured admin user
+
+You can start the Management Center with an administrative user by setting the following environmental variables:
+```
+docker run -m 512m -ti  --name hazelcast-mc \
+         --env MC_ADMIN_USER=admin \
+         --env MC_ADMIN_PASSWORD=test \
+         --rm hazelcast/management-center
+```
 
 ## JVM heap configuration
 
