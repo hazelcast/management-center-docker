@@ -24,7 +24,7 @@ By default the container automatically sizes the java heap memory suitable to th
 ### Management Center Default Context Path
 
 Before version 4.0, default context path was `/hazelcast-mancenter`, so you would access Hazelcast 
-Management Center by using `http://localhost:8080/hazelcast-mancenter`. Starting with version 4.0, 
+Management Center by using `http://localhost:8080/hazelcast-mancenter`. Starting with the version 4.0, 
 it is changed to root context path (i.e. `/`), so you can access it by using `http://localhost:8080`.
 
 You can overwrite this default by setting the environment variable `MC_CONTEXT_PATH`.
