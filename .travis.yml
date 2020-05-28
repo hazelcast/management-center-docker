@@ -26,12 +26,3 @@ script:
   - |
     MC_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${MC_IMAGE}-container)
     nc -z -v $MC_IP 8080
-
-# notifications:
-#   email:
-#     recipients:
-#       - hasan@hazelcast.com
-#       - rafal@hazelast.com
-#       - emre@hazelcast.com
-#     on_success: never
-#     on_failure: always
