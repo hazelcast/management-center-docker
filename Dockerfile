@@ -1,6 +1,6 @@
 FROM openjdk:11-jre-slim-sid
 
-ENV MC_VERSION 4.0.3-SNAPSHOT-CLOUD
+ENV MC_VERSION 4.0.3-SNAPSHOT
 ENV MC_HOME /opt/hazelcast/management-center
 ENV MC_DATA /data
 
@@ -27,9 +27,8 @@ RUN mkdir -p ${MC_HOME} ${MC_DATA} \
 WORKDIR ${MC_HOME}
 
 # Prepare Management Center
-RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} \
-          http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
- && unzip ${MC_INSTALL_ZIP} \
+COPY files/${MC_INSTALL_ZIP} ${MC_HOME}/${MC_INSTALL_ZIP}
+RUN unzip ${MC_INSTALL_ZIP} \
       -x ${MC_INSTALL_NAME}/docs/* \
  && rm -rf ${MC_INSTALL_ZIP} \
  && mv ${MC_INSTALL_NAME}/* . \
