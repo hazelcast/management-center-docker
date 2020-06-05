@@ -1,0 +1,28 @@
+language: minimal
+
+arch:
+  - amd64
+  - arm64
+  - ppc64le
+  - s390x
+
+os: linux
+
+services:
+  - docker
+
+env:
+  - MC_IMAGE=management-center
+
+install:
+  - docker build -t $MC_IMAGE .
+
+script:
+  - docker images
+  - |
+    docker run --name ${MC_IMAGE}-container -d --rm -p 8080:8080 $MC_IMAGE
+    sleep 20
+    docker logs ${MC_IMAGE}-container
+  - |
+    MC_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${MC_IMAGE}-container)
+    nc -z -v $MC_IP 8080
