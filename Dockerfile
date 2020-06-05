@@ -1,6 +1,6 @@
 FROM openjdk:11-jre-slim-sid
 
-ENV MC_VERSION 3.12.9
+ENV MC_VERSION 3.12.10
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MC_DATA /data
 
