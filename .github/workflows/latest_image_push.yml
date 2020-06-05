@@ -2,7 +2,7 @@ name: Build/Push Management Center latest image
 
 on:
   push:
-    branches: master
+    branches: 3.12.z
 
 jobs:
   build:
