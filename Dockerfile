@@ -11,9 +11,9 @@ ENV MC_CONTEXT_PATH /
 
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
-ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
+ARG MC_INSTALL_WAR="hazelcast-management-center-${MC_VERSION}.war"
 
-ENV MC_RUNTIME "${MC_HOME}/${MC_INSTALL_JAR}"
+ENV MC_RUNTIME "${MC_HOME}/${MC_INSTALL_WAR}"
 
 # Install wget to download Management Center
 RUN apt-get update \
