@@ -1,6 +1,6 @@
 FROM openjdk:11-jre-slim-sid
 
-ENV MC_VERSION 4.0.3
+ENV MC_VERSION 4.2020.08
 ENV MC_HOME /opt/hazelcast/management-center
 ENV MC_DATA /data
 
@@ -11,9 +11,9 @@ ENV MC_CONTEXT_PATH /
 
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
-ARG MC_INSTALL_WAR="hazelcast-management-center-${MC_VERSION}.war"
+ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
 
-ENV MC_RUNTIME "${MC_HOME}/${MC_INSTALL_WAR}"
+ENV MC_RUNTIME "${MC_HOME}/${MC_INSTALL_JAR}"
 
 # Install wget to download Management Center
 RUN apt-get update \
