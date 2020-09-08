@@ -4,6 +4,7 @@ on:
   create:
     tags:
       - 'v*'
+    branches: 3.12.z
 
 jobs:
   build:
