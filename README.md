@@ -59,7 +59,7 @@ docker run --rm -m 512m -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080
 ```
 
 ## Enabling TLS/SSL
-[Enabling TLS/SSL]: #enabling-TLS-SSL
+[Enabling TLS/SSL]: #enabling-tls-ssl
 
 To enable TLS/SSL, you need to provide the keystore and expose the default port (`8443`):
 
@@ -149,7 +149,7 @@ docker run -m 512m -ti  --name hazelcast-mc \
 ```
 
 ## JVM heap configuration
-[JVM heap configuration]: #JVM-heap-configuration
+[JVM heap configuration]: #jvm-heap-configuration
 
 By default the container uses the `-XX:+UseContainerSupport -XX:MaxRAMPercentage=80` java options to automatically size the memory available to the jvm.
 If you don't use the memory resource limit (i.e. `docker run -m 512m ...`, or the limit of a docker orchestration solutions like [Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)) the container might use up to 80% percent of the available system memory.
