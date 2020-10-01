@@ -27,6 +27,8 @@ You can launch Hazelcast Management Center by simply running the following comma
 docker run --rm -m 512m -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
+**NOTE:** Please, make sure that you are not using `:latest` tag, because 3.x and 4.x versions are not compatible. You can check [Supported Environments](https://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html#supported-environments) section for more info on compatibility versions between Management Center and IMDG, Jet clusters.
+
 Now you can reach Hazelcast Management Center from your browser using the URL `http://localhost:8080`. 
 
 If you are running the Docker image in the cloud, you should use a public IP of your machine instead of `localhost`. 
@@ -172,7 +174,7 @@ docker run -ti  --name hazelcast-mc \
 ## Configuring management center inside you custome Docker image
 [Configuring management center inside you custome Docker image]: #configuring-management-center-inside-you-custome-docker-image
 
-If you are creating Docker imange with `hazelcast/management-center` as a base image and want to make additional configuration using `mc-conf.sh` you have to specify `--home=${MC_DATA}` flag for each `mc-conf` command. That makes sure that `mc-conf` stores data to the same folder that management-center will use at runtime
+If you create Docker image with `hazelcast/management-center` as a base image and want to make additional configuration using `mc-conf.sh` you have to specify `--home="${MC_DATA}"` flag for each `mc-conf` command. That makes sure that `mc-conf` stores data to the same directory that management-center will use at runtime.
 
 For example:
 
@@ -189,3 +191,5 @@ CMD ["bash", "-c", "set -euo pipefail \
       && /mc-start.sh \
      "]
 ```
+
+**NOTE:** `$MC_DATA` env variable is coming from `hazelcast/management-center` and used to save the configuration and other needed data during Management Center running time
