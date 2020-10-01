@@ -59,7 +59,7 @@ docker run --rm -m 512m -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080
 ```
 
 ## Enabling TLS/SSL
-[Enabling TLS/SSL]: #enabling-tls-ssl
+[Enabling TLS/SSL]: #enabling-tls/ssl
 
 To enable TLS/SSL, you need to provide the keystore and expose the default port (`8443`):
 
