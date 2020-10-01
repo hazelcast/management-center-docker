@@ -8,7 +8,7 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
 ## Table of Content
  - [Quick Start]
  - [Mounting Management Center Home Directory]
- - [Enabling TLS/SSL]
+ - [Enabling TLS/SSL](Enabling TLS SSL)
  - [Hazelcast Member Configuration]
  - [Using Custom Logback Configuration File]
  - [Starting with an Extra Classpath]
@@ -59,7 +59,7 @@ docker run --rm -m 512m -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080
 ```
 
 ## Enabling TLS/SSL
-[Enabling TLS/SSL]: #enabling-tls\/ssl
+[Enabling TLS SSL]: #enabling-tls-ssl
 
 To enable TLS/SSL, you need to provide the keystore and expose the default port (`8443`):
 
