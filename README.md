@@ -6,17 +6,17 @@ Hazelcast Management Center enables you to monitor and manage your cluster membe
 You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/latest/manual/html-single/) and [Management Center Documentation](http://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html) for more information.
 
 ## Table of Content
- - [Quick Start]: (#quick-start)
- - [Mounting Management Center Home Directory]: (#mounting-management-center-home-directory)
- - [Enabling TLS/SSL]: (#enabling-TLS-SSL)
- - [Hazelcast Member Configuration]: (#hazelcast-member-configuration)
- - [Using Custom Logback Configuration File]: (#using-custom-logback-configuration-file)
- - [Starting with an Extra Classpath]: (#starting-with-an-extra-classpath)
- - [Enabling Health Check Endpoint]: (#enabling-health-check-endpoint)
- - [Customizing container setup]: (#customizing-container-setup)
- - [Start with a preconfigured admin user]: (#start-with-a-preconfigured-admin-user)
- - [JVM heap configuration]: (#JVM-heap-configuration)
- - [Configuring management center incide in you custome Docker image]: #configuring-management-center-incide-in-you-custome-docker-image
+ - [Quick Start]
+ - [Mounting Management Center Home Directory]
+ - [Enabling TLS/SSL]
+ - [Hazelcast Member Configuration]
+ - [Using Custom Logback Configuration File]
+ - [Starting with an Extra Classpath]
+ - [Enabling Health Check Endpoint]
+ - [Customizing container setup]
+ - [Start with a preconfigured admin user]
+ - [JVM heap configuration]
+ - [Configuring management center inside you custome Docker image]
 
 ## Quick Start
 [Quick Start]: #quick-start
@@ -169,8 +169,8 @@ docker run -ti  --name hazelcast-mc \
          --rm hazelcast/management-center
 ```
 
-## Configuring management center incide in you custome Docker image
-[Configuring management center incide in you custome Docker image]: #configuring-management-center-incide-in-you-custome-docker-image
+## Configuring management center inside you custome Docker image
+[Configuring management center inside you custome Docker image]: #configuring-management-center-inside-you-custome-docker-image
 
 If you are creating Docker imange with `hazelcast/management-center` as a base image and want to make additional configuration using `mc-conf.sh` you have to specify `--home=${MC_DATA}` flag for each `mc-conf` command. That makes sure that `mc-conf` stores data to the same folder that management-center will use at runtime
 
