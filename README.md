@@ -8,7 +8,7 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
 ## Table of Content
  - [Quick Start]
  - [Mounting Management Center Home Directory]
- - [Enabling TLS/SSL](#enabling-tls-ssl)
+ - [Enabling TLS/SSL](enabling-tls-ssl)
  - [Hazelcast Member Configuration]
  - [Using Custom Logback Configuration File]
  - [Starting with an Extra Classpath]
