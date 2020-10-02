@@ -31,6 +31,7 @@ RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} \
           http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
  && unzip ${MC_INSTALL_ZIP} \
       -x ${MC_INSTALL_NAME}/docs/* \
+      -x ${MC_INSTALL_NAME}/*.bat \
  && rm -rf ${MC_INSTALL_ZIP} \
  && mv ${MC_INSTALL_NAME}/* . \
  && rm -rf ${MC_INSTALL_NAME}
