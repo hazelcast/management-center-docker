@@ -130,7 +130,7 @@ docker run -m 512m -p 8080:8080 -p 8081:8081 \
 This endpoint may be used in container-orchestraction systems, like Kubernetes. Refer to [the Management Center documentation](https://docs.hazelcast.org/docs/management-center/3.12.5/manual/html/index.html#enabling-health-check-endpoint) for more information.
 
 ## Customizing Container Setup
-[Customizing container setup]: #customizing-container-setup
+[Customizing Container Setup]: #customizing-container-setup
 
 You can make modifications to the container on container startup by defining environment variables.
 
