@@ -16,7 +16,7 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
  - [Customizing container setup]
  - [Start with a preconfigured admin user]
  - [JVM heap configuration]
- - [Configuring management center inside you custome Docker image]
+ - [Configuring Management Center inside your custom Docker image]
 
 ## Quick Start
 [Quick Start]: #quick-start
