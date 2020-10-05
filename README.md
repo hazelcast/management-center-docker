@@ -174,7 +174,7 @@ docker run -ti  --name hazelcast-mc \
 ## Configuring Management Center Inside Your Custom Docker Image
 [Configuring management center inside you custome Docker image]: #configuring-management-center-inside-you-custome-docker-image
 
-If you create Docker image with `hazelcast/management-center` as a base image and want to make additional configuration using `mc-conf.sh` you have to specify `--home="${MC_DATA}"` flag for each `mc-conf` command. That makes sure that `mc-conf` stores data to the same directory that management-center will use at runtime.
+If you create Docker image with `hazelcast/management-center` as a base image and want to make additional configuration using `mc-conf.sh`, you have to specify `--home="${MC_DATA}"` flag for each `mc-conf` command. That makes sure that `mc-conf` stores data to the same directory that Management Center will use at runtime.
 
 For example:
 
