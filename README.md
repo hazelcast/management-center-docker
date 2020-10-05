@@ -27,7 +27,7 @@ You can launch Hazelcast Management Center by simply running the following comma
 docker run --rm -m 512m -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
-**NOTE:** Please, make sure that you are not using `:latest` tag, because 3.x and 4.x versions are not compatible. You can check [Supported Environments](https://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html#supported-environments) section for more info on compatibility versions between Management Center and IMDG, Jet clusters.
+**NOTE:** Please, make sure that you are not using `latest` tag, because 3.x and 4.x versions are not compatible. You can check [Supported Environments](https://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html#supported-environments) section for more info on version compatibility between Management Center and IMDG/Jet clusters.
 
 Now you can reach Hazelcast Management Center from your browser using the URL `http://localhost:8080`. 
 
