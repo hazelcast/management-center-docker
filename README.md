@@ -13,9 +13,9 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
  - [Using Custom Logback Configuration File]
  - [Starting with an Extra Classpath]
  - [Enabling Health Check Endpoint]
- - [Customizing container setup]
- - [Start with a preconfigured admin user]
- - [JVM heap configuration]
+ - [Customizing Container Setup]
+ - [Start with a Preconfigured Admin User]
+ - [JVM Heap Configuration]
  - [Configuring Management Center inside your custom Docker image]
 
 ## Quick Start
@@ -139,8 +139,8 @@ You can make modifications to the container on container startup by defining env
 
 The commands defined by the variables are executed before starting the Management Center in the listed order.
 
-## Start with a preconfigured admin user
-[Start with a preconfigured admin user]: #start-with-a-preconfigured-admin-user
+## Start with a Preconfigured Admin User
+[Start with a Preconfigured Admin User]: #start-with-a-preconfigured-admin-user
 
 You can start the Management Center with an administrative user by setting the following optional environmental variables:
 ```
@@ -150,8 +150,8 @@ docker run -m 512m -ti  --name hazelcast-mc \
          --rm hazelcast/management-center
 ```
 
-## JVM heap configuration
-[JVM heap configuration]: #jvm-heap-configuration
+## JVM Heap Configuration
+[JVM Heap Configuration]: #jvm-heap-configuration
 
 By default the container uses the `-XX:+UseContainerSupport -XX:MaxRAMPercentage=80` java options to automatically size the memory available to the jvm.
 If you don't use the memory resource limit (i.e. `docker run -m 512m ...`, or the limit of a docker orchestration solutions like [Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)) the container might use up to 80% percent of the available system memory.
@@ -172,7 +172,7 @@ docker run -ti  --name hazelcast-mc \
 ```
 
 ## Configuring Management Center Inside Your Custom Docker Image
-[Configuring management center inside you custome Docker image]: #configuring-management-center-inside-you-custome-docker-image
+[Configuring Management Center Inside Your Custom Docker Image]: #configuring-management-center-inside-you-custome-docker-image
 
 If you create Docker image with `hazelcast/management-center` as a base image and want to make additional configuration using `mc-conf.sh`, you have to specify `--home="${MC_DATA}"` flag for each `mc-conf` command. That makes sure that `mc-conf` stores data to the same directory that Management Center will use at runtime.
 
