@@ -192,4 +192,4 @@ CMD ["bash", "-c", "set -euo pipefail \
      "]
 ```
 
-**NOTE:** `$MC_DATA` env variable is coming from `hazelcast/management-center` and used to save the configuration and other needed data during Management Center running time
+**NOTE:** `$MC_DATA` env variable is coming from `hazelcast/management-center`. It is used to save the configuration and other needed data when running Management Center.
