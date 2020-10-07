@@ -38,7 +38,7 @@ fi
 
 if [ -n "${MC_ADMIN_USER}" ] && [ -n "${MC_ADMIN_PASSWORD}" ]; then
   echo "Creating admin user"
-  source ./mc-conf.sh user create -H=${MC_DATA} -n=${MC_ADMIN_USER} -p=${MC_ADMIN_PASSWORD} -r=admin
+  source ./mc-conf.sh user create --lenient=true -H=${MC_DATA} -n=${MC_ADMIN_USER} -p=${MC_ADMIN_PASSWORD} -r=admin
   if [ $? -eq 0 ]; then
     echo "User created successfully"
   else
