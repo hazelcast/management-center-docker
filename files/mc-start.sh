@@ -26,7 +26,7 @@ else
     export JAVA_OPTS="${JAVA_OPTS} -XX:+UseContainerSupport -XX:MaxRAMPercentage=80"
 fi
 
-export MC_RUNTIME="${MC_HOME}/${MC_INSTALL_JAR}"
+export MC_RUNTIME="${MC_HOME}/${MC_JAR}"
 if [ -n "${MC_CLASSPATH}" ]; then
     export MC_CLASSPATH="${MC_RUNTIME}:${MC_CLASSPATH}"
 else
