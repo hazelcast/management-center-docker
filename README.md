@@ -10,6 +10,7 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
  - [Mounting Management Center Home Directory]
  - [Enabling TLS/SSL]
  - [Hazelcast Member Configuration]
+ - [Changing Logging Level]
  - [Using Custom Logback Configuration File]
  - [Starting with an Extra Classpath]
  - [Enabling Health Check Endpoint]
@@ -93,6 +94,23 @@ Please refer to [the Management Center documentation](https://docs.hazelcast.org
 [Hazelcast Member Configuration]: #hazelcast-member-configuration
 
 For the Hazelcast member configuration and the sample Hello World example, please refer to [Hazelcast Docker repository](https://github.com/hazelcast/hazelcast-docker).
+
+## Changing Logging Level
+
+The logging level can be changed using the `LOGGING_LEVEL` environment variable. For example, to see the `DEBUG` logs:
+
+```
+$ docker run -e LOGGING_LEVEL=DEBUG hazelcast/management-center
+```
+
+Available logging levels are (from highest to lowest): `OFF`, `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE` and `ALL`. 
+Invalid levels will be assumed `OFF`.
+
+Note that if you need a more customized logging configuration, you can specify a configuration file.
+
+```
+$ docker run -v <config-file-path>:/opt/hazelcast/log4j2-custom.properties hazelcast/hazelcast
+```
 
 ## Using Custom Logback Configuration File
 [Using Custom Logback Configuration File]: #using-custom-logback-configuration-file

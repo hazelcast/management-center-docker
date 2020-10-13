@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+
+export JAVA_OPTS_DEFAULT="-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack=true"
 if [ -n "${JAVA_OPTS}" ]; then
     export JAVA_OPTS="${JAVA_OPTS_DEFAULT} ${JAVA_OPTS}"
 else
     export JAVA_OPTS="${JAVA_OPTS_DEFAULT}"
+fi
+
+if [ -n "${LOGGING_LEVEL}" ]; then
+    export JAVA_OPTS="-Dhazelcast.mc.log.level=${LOGGING_LEVEL} ${JAVA_OPTS}"
 fi
 
 if [ "${CONTAINER_SUPPORT:-true}" = "false" ] ;then
@@ -20,6 +26,7 @@ else
     export JAVA_OPTS="${JAVA_OPTS} -XX:+UseContainerSupport -XX:MaxRAMPercentage=80"
 fi
 
+export MC_RUNTIME="${MC_HOME}/${MC_INSTALL_JAR}"
 if [ -n "${MC_CLASSPATH}" ]; then
     export MC_CLASSPATH="${MC_RUNTIME}:${MC_CLASSPATH}"
 else
