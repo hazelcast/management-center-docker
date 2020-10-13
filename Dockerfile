@@ -32,13 +32,15 @@ RUN echo "Installing new APT packages" \
         "container as non-root with \"docker run --user\" option" \
     && chmod a+rwx ${MC_HOME} ${MC_DATA} \
     && echo "Downloading Hazelcast Management Center" \
-    && curl --silent -o "${MC_HOME}/${MC_JAR}" -L "${MC_JAR_LOCATION}" \
-    && cd ${MC_HOME}
+    && curl -o "${MC_HOME}/${MC_JAR}" "${MC_JAR_LOCATION}"
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
 
 COPY files/mc-start.sh /mc-start.sh
+
+# uncomment to build with local JAR
+#COPY hazelcast-management-center-4.2020.10-SNAPSHOT.jar ${MC_HOME}/${MC_JAR}
 
 # Start Management Center
 CMD ["bash", "/mc-start.sh"]
