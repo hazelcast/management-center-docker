@@ -11,7 +11,7 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
  - [Enabling TLS/SSL]
  - [Hazelcast Member Configuration]
  - [Changing Logging Level]
- - [Using Custom Logback Configuration File]
+ - [Using Custom Log4j Configuration File]
  - [Starting with an Extra Classpath]
  - [Enabling Health Check Endpoint]
  - [Customizing Container Setup]
@@ -96,6 +96,7 @@ Please refer to [the Management Center documentation](https://docs.hazelcast.org
 For the Hazelcast member configuration and the sample Hello World example, please refer to [Hazelcast Docker repository](https://github.com/hazelcast/hazelcast-docker).
 
 ## Changing Logging Level
+[Changing Logging Level]: #changing-logging-level
 
 The logging level can be changed using the `LOGGING_LEVEL` environment variable. For example, to see the `DEBUG` logs:
 
@@ -112,17 +113,19 @@ Note that if you need a more customized logging configuration, you can specify a
 $ docker run -v <config-file-path>:/opt/hazelcast/log4j2-custom.properties hazelcast/hazelcast
 ```
 
-## Using Custom Logback Configuration File
-[Using Custom Logback Configuration File]: #using-custom-logback-configuration-file
+## Using Custom Log4j Configuration File
+[Using Custom Log4j Configuration File]: #using-custom-log4j-configuration-file
 
-Management Center can use your custom Logback configuration file. You need to create a mount to a folder named `/opt/hazelcast/mc_ext`, see the following on how to do it. `PATH_TO_PERSISTENT_FOLDER` must be replaced with the path to the folder that your custom Logback configuration file resides in. `CUSTOM_LOGBACK_FILE` must be replaced with the name of your custom Logback configuration file, for example `logback-custom.xml`.
+Management Center can use your custom Log4j configuration file. You need to create a mount to a folder named 
+`/opt/hazelcast/mc_ext`, see the following on how to do it. `PATH_TO_PERSISTENT_FOLDER` must be replaced with 
+the path to the folder that your custom Log4j configuration file resides in. `CUSTOM_LOG4J_FILE` must be 
+replaced with the name of your custom Log4j configuration file, for example `log4j2-custom.properties`.
 
 ```
-docker run -m 512m \
-         -e JAVA_OPTS='-Dlogback.configurationFile=/opt/hazelcast/mc_ext/CUSTOM_LOGBACK_FILE' \
-         -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mc_ext \
-         -p 8080:8080 \
-         hazelcast/management-center
+docker run -e JAVA_OPTS='-Dlog4j.configurationFile=/opt/hazelcast/mc_ext/CUSTOM_LOG4J_FILE' \
+           -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mc_ext \
+           -p 8080:8080 \
+           hazelcast/management-center
 ```
 
 ## Starting with an Extra Classpath
