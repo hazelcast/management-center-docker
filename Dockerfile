@@ -47,7 +47,7 @@ EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
 
 COPY files/mc-start.sh /mc-start.sh
 
-# uncomment to build with local JAR
+# copy local JAR to project root dir and uncomment to build with it
 # WARNING: mc-conf.sh is used from the downloaded artifact, not from your local JAR
 #COPY hazelcast-management-center-4.2020.10-SNAPSHOT.jar ${MC_HOME}/${MC_JAR}
 
