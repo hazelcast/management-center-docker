@@ -3,11 +3,10 @@ FROM openjdk:11.0.7-jre-slim
 ARG MC_VERSION=4.2020.08
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
-ARG MC_JAR="hazelcast-management-center-${MC_VERSION}.jar"
 
 # Runtime constants / variables
 ENV MC_HOME="/opt/hazelcast/management-center" \
-    MC_JAR="${MC_JAR}" \
+    MC_JAR="hazelcast-management-center-${MC_VERSION}.jar" \
     MC_DATA="/data" \
     MC_HTTP_PORT="8080" \
     MC_HTTPS_PORT="8443" \
