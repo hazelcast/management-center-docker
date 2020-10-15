@@ -182,7 +182,7 @@ The commands defined by the variables are executed before starting the Managemen
 You can start Management Center with an administrative user by setting the following optional environment variables:
 
 ```
-docker run -ti  --name hazelcast-mc \
+docker run --name hazelcast-mc \
          --env MC_ADMIN_USER=admin \
          --env MC_ADMIN_PASSWORD=myPassword11 \
          --rm hazelcast/management-center
@@ -209,7 +209,7 @@ following environment variables:
 Example:
 
 ```
-docker run -ti --rm --name hazelcast-mc \
+docker run --rm --name hazelcast-mc \
            -e CONTAINER_SUPPORT='false' \
            -e MIN_HEAP_SIZE='512M' \
            -e MAX_HEAP_SIZE='1024M' \
