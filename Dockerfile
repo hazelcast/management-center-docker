@@ -15,6 +15,9 @@ ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
 
 ENV MC_RUNTIME "${MC_HOME}/${MC_INSTALL_JAR}"
 
+ENV USER_NAME="hazelcast" \
+    USER_UID=10001
+
 # Install wget to download Management Center
 RUN apt-get update \
  && apt-get install --no-install-recommends --yes \
@@ -54,6 +57,15 @@ ENV MC_ADMIN_PASSWORD ""
 
 COPY files/mc-start.sh /mc-start.sh
 RUN chmod +x /mc-start.sh
+
+RUN echo "Adding non-root user" \
+    && useradd -l -u $USER_UID -r -g 0 -d $MC_HOME -s /sbin/nologin -c "${USER_UID} application user" $USER_NAME \
+    && chown -R $USER_UID:0 $MC_HOME ${MC_DATA} \
+    && chmod -R g=u "$MC_HOME" ${MC_DATA} \
+    && chmod -R +r $MC_HOME ${MC_DATA}
+
+### Switch to hazelcast user
+USER ${USER_UID}
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT}
