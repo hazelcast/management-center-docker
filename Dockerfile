@@ -5,7 +5,9 @@ ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
 # Runtime constants / variables
-ENV MC_HOME="/opt/hazelcast/management-center" \
+ENV USER_NAME="hazelcast" \
+    USER_UID=10001 \
+    MC_HOME="/opt/hazelcast/management-center" \
     MC_JAR="hazelcast-management-center-${MC_VERSION}.jar" \
     MC_DATA="/data" \
     MC_HTTP_PORT="8080" \
@@ -49,6 +51,15 @@ COPY files/mc-start.sh /mc-start.sh
 # copy local JAR to project root dir and uncomment to build with it
 # WARNING: mc-conf.sh is used from the downloaded artifact, not from your local JAR
 #COPY hazelcast-management-center-4.2020.10-SNAPSHOT.jar ${MC_HOME}/${MC_JAR}
+
+RUN echo "Adding non-root user" \
+    && useradd -l -u $USER_UID -r -g 0 -d $MC_HOME -s /sbin/nologin -c "${USER_UID} application user" $USER_NAME \
+    && chown -R $USER_UID:0 $MC_HOME ${MC_DATA} \
+    && chmod -R g=u "$MC_HOME" ${MC_DATA} \
+    && chmod -R +r $MC_HOME ${MC_DATA}
+
+### Switch to hazelcast user
+USER ${USER_UID}
 
 # Start Management Center
 WORKDIR ${MC_HOME}
