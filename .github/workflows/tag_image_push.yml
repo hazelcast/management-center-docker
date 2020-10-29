@@ -1,4 +1,4 @@
-name: Build/Push Management Center image
+name: Publish Management Center released version image
 
 on:
   create:
