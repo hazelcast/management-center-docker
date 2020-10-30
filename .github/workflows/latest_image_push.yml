@@ -1,4 +1,4 @@
-name: Build/Push Management Center latest image
+name: Publish Management Center latest image
 
 on:
   push:
