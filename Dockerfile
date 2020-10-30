@@ -20,7 +20,7 @@ ENV USER_NAME="hazelcast" \
 
 # Install wget to download Management Center
 RUN apt-get update \
- && apt-get install --no-install-recommends --yes \
+ && apt-get install -o APT::Immediate-Configure=false --no-install-recommends --yes \
       wget unzip \
  && rm -rf /var/lib/apt/lists/*
 

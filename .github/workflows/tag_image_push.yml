@@ -33,4 +33,4 @@ jobs:
         run: |
           docker buildx build --push \
             --tag hazelcast/management-center:${{ env.RELEASE_VERSION }} \
-            --platform=linux/arm64,linux/amd64,linux/ppc64le,linux/s390x .
+            --platform=linux/arm64,linux/amd64,linux/s390x .
