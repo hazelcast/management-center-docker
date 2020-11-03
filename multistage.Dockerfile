@@ -12,12 +12,11 @@ WORKDIR /tmp/build
 ENV MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
 COPY ${MC_INSTALL_WAR} .
+RUN unzip ${MC_INSTALL_WAR} start.sh
 
 RUN echo "Installing new APK packages" \
-    && apk add --no-cache unzip \
-    && unzip ${MC_INSTALL_WAR} start.sh
+    && apk add --no-cache bash wget unzip procps nss \
     && chmod +x start.sh
-
 
 
 
@@ -49,8 +48,8 @@ RUN echo "Installing new APK packages" \
 
 WORKDIR ${MC_HOME}
 
-COPY --from=builder /tmp/build/${MC_INSTALL_NAME}/${MC_INSTALL_WAR} .
-COPY --from=builder /tmp/build/${MC_INSTALL_NAME}/start.sh .
+COPY --from=builder /tmp/build/${MC_INSTALL_WAR} .
+COPY --from=builder /tmp/build/start.sh .
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT}
