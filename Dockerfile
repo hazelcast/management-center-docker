@@ -12,13 +12,20 @@ WORKDIR /tmp/build
 ENV MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
 RUN echo "Installing new APK packages" \
-    && apk add --no-cache bash wget unzip procps nss \
-    && echo "Downloading Management Center" \
+    && apk add --no-cache bash wget unzip procps nss
+
+# Comment out following RUN command to build from a local artifact
+RUN echo "Downloading Management Center" \
     && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
     && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
-    && chmod +x ${MC_INSTALL_NAME}/start.sh
+    && mv ${MC_INSTALL_NAME}/${MC_INSTALL_WAR} ${MC_INSTALL_WAR} \
+    && mv ${MC_INSTALL_NAME}/start.sh start.sh
 
+# Uncomment following two lines to build from a local artifact
+#COPY ${MC_INSTALL_WAR} .
+#RUN unzip ${MC_INSTALL_WAR} start.sh
 
+RUN chmod +x start.sh
 
 FROM alpine:3.12.1
 ARG MC_VERSION
@@ -48,8 +55,8 @@ RUN echo "Installing new APK packages" \
 
 WORKDIR ${MC_HOME}
 
-COPY --from=builder /tmp/build/${MC_INSTALL_NAME}/${MC_INSTALL_WAR} .
-COPY --from=builder /tmp/build/${MC_INSTALL_NAME}/start.sh .
+COPY --from=builder /tmp/build/${MC_INSTALL_WAR} .
+COPY --from=builder /tmp/build/start.sh .
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT}
