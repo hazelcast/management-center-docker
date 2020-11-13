@@ -1,4 +1,4 @@
-ARG MC_VERSION=3.12.12
+ARG MC_VERSION=3.12.13
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_WAR="hazelcast-mancenter-${MC_VERSION}.war"
 
