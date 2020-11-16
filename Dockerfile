@@ -1,6 +1,6 @@
 FROM openjdk:11.0.7-jre-slim
 
-ARG MC_VERSION=4.2020.08
+ARG MC_VERSION=4.2020.10
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
@@ -27,7 +27,7 @@ ENV USER_NAME="hazelcast" \
 
 RUN echo "Installing wget and unzip" \
     && apt-get update \
-    && apt-get install --no-install-recommends --yes wget unzip \
+    && apt-get install -o APT::Immediate-Configure=false --no-install-recommends --yes wget unzip \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p ${MC_HOME} ${MC_DATA} \
     && echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running" \
