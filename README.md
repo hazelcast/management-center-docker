@@ -10,7 +10,8 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
  - [Mounting Management Center Home Directory]
  - [Enabling TLS/SSL]
  - [Hazelcast Member Configuration]
- - [Using Custom Logback Configuration File]
+ - [Changing Logging Level]
+ - [Using Custom Log4j Configuration File]
  - [Starting with an Extra Classpath]
  - [Enabling Health Check Endpoint]
  - [Customizing Container Setup]
@@ -21,43 +22,51 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
 ## Quick Start
 [Quick Start]: #quick-start
 
-You can launch Hazelcast Management Center by simply running the following command. Please check available versions for $MANAGEMENT_CENTER on [Docker Store](https://store.docker.com/community/images/hazelcast/management-center/tags)
+You can launch Hazelcast Management Center by simply running the following command. Please check available 
+versions for `$MANAGEMENT_CENTER` on [Docker Hub](https://hub.docker.com/r/hazelcast/management-center/tags).
 
 ```
-docker run --rm -m 512m -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
+docker run --rm -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
-**NOTE:** Please, make sure that you are not using `latest` tag, because 3.x and 4.x versions are not compatible. You can check [Supported Environments](https://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html#supported-environments) section for more info on version compatibility between Management Center and IMDG/Jet clusters.
+**NOTE:** Please, make sure you are not using `latest` tag, because 3.x and 4.x versions are not compatible. 
+You can check [Supported Environments](https://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html#supported-environments)
+section for more info on version compatibility between Management Center and Hazelcast/Hazelcast Jet clusters.
 
-Now you can reach Hazelcast Management Center from your browser using the URL `http://localhost:8080`. 
+Now you can access Hazelcast Management Center from your browser using the URL `http://localhost:8080`. 
 
 If you are running the Docker image in the cloud, you should use a public IP of your machine instead of `localhost`. 
 
-`docker ps` and `docker inspect <container-id>` can be used to find `host-ip`. Once you find out `host-ip`, you can browse Hazelcast Management Center using the URL: `http://host-ip:8080`.
+Both `docker ps` and `docker inspect <container-id>` can be used to find `host-ip`. Once you find out `host-ip`, 
+you can browse Hazelcast Management Center using the URL: `http://host-ip:8080`.
 
-By default the container automatically sizes the java heap memory suitable to the specified resource limit or available memory.
+By default, the container automatically sizes the Java heap memory suitable to the specified resource limit or 
+available memory.
 
 ### Management Center Default Context Path
 
 Before version 4.0, default context path was `/hazelcast-mancenter`, so you would access Hazelcast 
-Management Center by using `http://localhost:8080/hazelcast-mancenter`. Starting with the version 4.0, 
+Management Center by using `http://localhost:8080/hazelcast-mancenter`. Starting with version 4.0, 
 it is changed to root context path (i.e. `/`), so you can access it by using `http://localhost:8080`.
 
-You can overwrite this default by setting the environment variable `MC_CONTEXT_PATH`.
+You can override this default by setting the environment variable `MC_CONTEXT_PATH`.
 
 ## Mounting Management Center Home Directory
 [Mounting Management Center Home Directory]: #mounting-management-center-home-directory
 
-Management Center uses the file system to store persistent data. However, that is by default inside the docker container and destroyed in case of container restarts. If you want to store Management Center data externally, you need to create a mount to a folder named `/data`. See the following for how to create a mount point. `PATH_TO_PERSISTENT_FOLDER` must be replaced by your persistent folder.
+Management Center uses the file system to store persistent data. However, that is by default inside the Docker 
+container and destroyed in case of container restarts. If you want to store Management Center data externally, 
+you need to create a mount to a folder named `/data`. See the following for how to create a mount point. 
+`PATH_TO_PERSISTENT_FOLDER` must be replaced by your persistent folder.
 
 ```
-docker run --rm -m 512m -p 8080:8080 -v PATH_TO_PERSISTENT_FOLDER:/data hazelcast/management-center:$MANAGEMENT_CENTER
+docker run --rm -p 8080:8080 -v PATH_TO_PERSISTENT_FOLDER:/data hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
-To provide a license key the system property `hazelcast.mc.license` can be used (requires version >= 3.9.3):
+To provide a license key, the command line argument `-Dhazelcast.mc.license` can be used (requires version 3.9.3 or newer):
 
 ```
-docker run --rm -m 512m -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
+docker run --rm -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080 hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
 ## Enabling TLS/SSL
@@ -66,7 +75,7 @@ docker run --rm -m 512m -e JAVA_OPTS='-Dhazelcast.mc.license=<key>' -p 8080:8080
 To enable TLS/SSL, you need to provide the keystore and expose the default port (`8443`):
 
 ```
-docker run --rm -m 512m \
+docker run --rm \
          -e JAVA_OPTS='-Dhazelcast.mc.tls.enabled=true \
          -Dhazelcast.mc.tls.keyStore=/keystore/yourkeystore.jks \
          -Dhazelcast.mc.tls.keyStorePassword=yourpassword' \
@@ -75,10 +84,11 @@ docker run --rm -m 512m \
          hazelcast/management-center
 ```
 
-The default port can be changed by overriding the `MC_HTTPS_PORT` environment variable. For example, to use port `8444` you can run the following command:
+The default port can be changed by overriding the `MC_HTTPS_PORT` environment variable. For example, 
+you can run the following command to use port `8444`:
 
 ```
-docker run --rm -m 512m -e MC_HTTPS_PORT=8444 \
+docker run --rm -e MC_HTTPS_PORT=8444 \
         -e JAVA_OPTS='-Dhazelcast.mc.tls.enabled=true \
         -Dhazelcast.mc.tls.keyStore=/keystore/yourkeystore.jks \
         -Dhazelcast.mc.tls.keyStorePassword=yourpassword' \
@@ -87,47 +97,73 @@ docker run --rm -m 512m -e MC_HTTPS_PORT=8444 \
         hazelcast/management-center
 ```
 
-Please refer to [the Management Center documentation](https://docs.hazelcast.org/docs/management-center/3.12/manual/html/index.html#enabling-tslssl-when-starting-with-war-file) for more information on available options.
+Please refer to 
+[Management Center Reference Manual](https://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html#enabling-tslssl-when-starting-with-jar-file) 
+for more information on available options.
 
 ## Hazelcast Member Configuration
 [Hazelcast Member Configuration]: #hazelcast-member-configuration
 
-For the Hazelcast member configuration and the sample Hello World example, please refer to [Hazelcast Docker repository](https://github.com/hazelcast/hazelcast-docker).
+For the Hazelcast member configuration and the sample Hello World example, please refer to 
+[Hazelcast Docker repository](https://github.com/hazelcast/hazelcast-docker).
 
-## Using Custom Logback Configuration File
-[Using Custom Logback Configuration File]: #using-custom-logback-configuration-file
+## Changing Logging Level
+[Changing Logging Level]: #changing-logging-level
 
-Management Center can use your custom Logback configuration file. You need to create a mount to a folder named `/opt/hazelcast/mc_ext`, see the following on how to do it. `PATH_TO_PERSISTENT_FOLDER` must be replaced with the path to the folder that your custom Logback configuration file resides in. `CUSTOM_LOGBACK_FILE` must be replaced with the name of your custom Logback configuration file, for example `logback-custom.xml`.
+The logging level can be changed using the `LOGGING_LEVEL` environment variable. For example, to see the `DEBUG` logs:
 
 ```
-docker run -m 512m \
-         -e JAVA_OPTS='-Dlogback.configurationFile=/opt/hazelcast/mc_ext/CUSTOM_LOGBACK_FILE' \
-         -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mc_ext \
-         -p 8080:8080 \
-         hazelcast/management-center
+$ docker run -e LOGGING_LEVEL=DEBUG hazelcast/management-center
+```
+
+Available logging levels are (from highest to lowest): `OFF`, `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE` and `ALL`. 
+Invalid levels will be assumed `OFF`.
+
+Note that if you need a more customized logging configuration, you can specify a configuration file.
+
+```
+$ docker run -v <config-file-path>:/opt/hazelcast/log4j2-custom.properties hazelcast/hazelcast
+```
+
+## Using Custom Log4j Configuration File
+[Using Custom Log4j Configuration File]: #using-custom-log4j-configuration-file
+
+Management Center can use your custom Log4j configuration file. You need to create a mount to a folder named 
+`/opt/hazelcast/mc_ext`, see the following on how to do it. `PATH_TO_PERSISTENT_FOLDER` must be replaced with 
+the path to the folder that your custom Log4j configuration file resides in. `CUSTOM_LOG4J_FILE` must be 
+replaced with the name of your custom Log4j configuration file, for example `log4j2-custom.properties`.
+
+```
+docker run -e JAVA_OPTS='-Dlog4j.configurationFile=/opt/hazelcast/mc_ext/CUSTOM_LOG4J_FILE' \
+           -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mc_ext \
+           -p 8080:8080 \
+           hazelcast/management-center
 ```
 
 ## Starting with an Extra Classpath
 [Starting with an Extra Classpath]: #starting-with-an-extra-classpath
 
-You can start the Management Center with an extra classpath entry (for example, when using JAAS authentication) by using the `MC_CLASSPATH` environment variable:
+You can start Management Center with an extra classpath entry (for example, when using JAAS authentication) 
+by using the `MC_CLASSPATH` environment variable:
 
 ```
-docker run -m 512m -e MC_CLASSPATH='/path/to/your-extra.jar' -p 8080:8080 hazelcast/management-center
+docker run -e MC_CLASSPATH='/path/to/your-extra.jar' -p 8080:8080 hazelcast/management-center
 ```
 
 ## Enabling Health Check Endpoint
 [Enabling Health Check Endpoint]: #enabling-health-check-endpoint
 
-When running the Management Center, you can enable the Health Check endpoint:
+When running Management Center, you can enable the Health Check endpoint:
 
 ```
-docker run -m 512m -p 8080:8080 -p 8081:8081 \
-         -e JAVA_OPTS='-Dhazelcast.mc.healthCheck.enable=true' \
-         hazelcast/management-center:$MANAGEMENT_CENTER
+docker run -p 8080:8080 -p 8081:8081 \
+           -e JAVA_OPTS='-Dhazelcast.mc.healthCheck.enable=true' \
+           hazelcast/management-center:$MANAGEMENT_CENTER
 ```
 
-This endpoint may be used in container-orchestraction systems, like Kubernetes. Refer to [the Management Center documentation](https://docs.hazelcast.org/docs/management-center/3.12.5/manual/html/index.html#enabling-health-check-endpoint) for more information.
+You can use this endpoint with container orchestraction systems, like Kubernetes. Refer to 
+[Management Center Reference Manual](https://docs.hazelcast.org/docs/management-center/latest/manual/html/#enabling-health-check-endpoint) 
+for more information.
 
 ## Customizing Container Setup
 [Customizing Container Setup]: #customizing-container-setup
@@ -135,16 +171,18 @@ This endpoint may be used in container-orchestraction systems, like Kubernetes. 
 You can make modifications to the container on container startup by defining environment variables.
 
 * `MC_INIT_CMD`: Execute one or more commands separated by semicolons.
-* `MC_INIT_SCRIPT`: Execute a script in bash syntax in the context of the [entry-script](files/mc-start.sh). Make this file available by layering to a new container or by assigning a docker volume.
+* `MC_INIT_SCRIPT`: Execute a script in Bash syntax in the context of the [entry-script](files/mc-start.sh). 
+Make this file available by layering to a new container or by assigning a Docker volume.
 
 The commands defined by the variables are executed before starting the Management Center in the listed order.
 
 ## Start with a Preconfigured Admin User
 [Start with a Preconfigured Admin User]: #start-with-a-preconfigured-admin-user
 
-You can start the Management Center with an administrative user by setting the following optional environmental variables:
+You can start Management Center with an administrative user by setting the following optional environment variables:
+
 ```
-docker run -m 512m -ti  --name hazelcast-mc \
+docker run --name hazelcast-mc \
          --env MC_ADMIN_USER=admin \
          --env MC_ADMIN_PASSWORD=myPassword11 \
          --rm hazelcast/management-center
@@ -153,28 +191,38 @@ docker run -m 512m -ti  --name hazelcast-mc \
 ## JVM Heap Configuration
 [JVM Heap Configuration]: #jvm-heap-configuration
 
-By default the container uses the `-XX:+UseContainerSupport -XX:MaxRAMPercentage=80` java options to automatically size the memory available to the jvm.
-If you don't use the memory resource limit (i.e. `docker run -m 512m ...`, or the limit of a docker orchestration solutions like [Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)) the container might use up to 80% percent of the available system memory.
+By default, the container uses `-XX:+UseContainerSupport -XX:MaxRAMPercentage=80` Java options to automatically size 
+the memory available to the JVM. If you don't use the memory resource limit (i.e. `docker run -m 512m ...`, or the 
+limit of a Docker orchestration solution like 
+[Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)), the container might 
+use up to 80% percent of the available system memory.
 
-You can define the following variables:
+You can define the following variables to change this behavior:
 
 * `CONTAINER_SUPPORT="true"` (default) : use automatic memory resource configuration
-* `CONTAINER_SUPPORT="false"` : suppress automatic resource configuration and configure the limits by using the following environment variables:
+* `CONTAINER_SUPPORT="false"` : suppress automatic resource configuration and configure the limits by using the 
+following environment variables:
    * `MIN_HEAP_SIZE` : set the minium heap by `-Xms ...` 
    * `MAX_HEAP_SIZE` : set the maximum heap by `-Xmx ...`
    * `JAVA_OPTS` : use a custom configuration like `-Xms64m -Xmn1024m -Xmx2G -XX:MaxGCPauseMillis=200`
 
 Example:
+
 ```
-docker run -ti  --name hazelcast-mc \
-         -e CONTAINER_SUPPORT='false' -e MIN_HEAP_SIZE='512M' -e MAX_HEAP_SIZE='1024M' -e JAVA_OPTS='-XX:MaxGCPauseMillis=200' \
-         --rm hazelcast/management-center
+docker run --rm --name hazelcast-mc \
+           -e CONTAINER_SUPPORT='false' \
+           -e MIN_HEAP_SIZE='512M' \
+           -e MAX_HEAP_SIZE='1024M' \
+           -e JAVA_OPTS='-XX:MaxGCPauseMillis=200' \
+           hazelcast/management-center
 ```
 
 ## Configuring Management Center Inside Your Custom Docker Image
 [Configuring Management Center Inside Your Custom Docker Image]: #configuring-management-center-inside-your-custom-docker-image
 
-If you create Docker image with `hazelcast/management-center` as a base image and want to make additional configuration using `mc-conf.sh`, you have to specify `--home="${MC_DATA}"` flag for each `mc-conf` command. That makes sure that `mc-conf` stores data to the same directory that Management Center will use at runtime.
+If you create a Docker image with `hazelcast/management-center` as the base image and want to configure it further 
+using `mc-conf.sh`, you need to specify `--home="${MC_DATA}"` flag for each `mc-conf` command. It makes sure that 
+`mc-conf` stores data in the same directory that Management Center will use at runtime.
 
 For example:
 
@@ -192,4 +240,5 @@ CMD ["bash", "-c", "set -euo pipefail \
      "]
 ```
 
-**NOTE:** `$MC_DATA` env variable is coming from `hazelcast/management-center`. It is used to save the configuration and other needed data when running Management Center.
+**NOTE:** `$MC_DATA` env variable comes from `hazelcast/management-center`. It is used to save the configuration and 
+any other data needed when running Management Center.
