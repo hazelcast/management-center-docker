@@ -11,14 +11,20 @@ WORKDIR /tmp/build
 
 ENV MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
+# Comment out following RUN command to build from a local artifact
 RUN echo "Installing new APK packages" \
     && apk add --no-cache bash wget unzip procps nss \
     && echo "Downloading Management Center" \
     && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
     && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
-    && chmod +x ${MC_INSTALL_NAME}/start.sh
+    && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
+    && mv ${MC_INSTALL_NAME}/start.sh start.sh
 
+# Uncomment following two lines to build from a local artifact
+#COPY ${MC_INSTALL_JAR} .
+#RUN unzip ${MC_INSTALL_JAR} start.sh
 
+RUN chmod +x start.sh
 
 FROM alpine:3.12.1
 ARG MC_VERSION
@@ -55,15 +61,11 @@ RUN echo "Installing new APK packages" \
 
 WORKDIR ${MC_HOME}
 
-COPY --from=builder /tmp/build/${MC_INSTALL_NAME}/${MC_INSTALL_JAR} .
-COPY --from=builder /tmp/build/${MC_INSTALL_NAME}/start.sh .
+COPY --from=builder /tmp/build/${MC_INSTALL_JAR} .
+COPY --from=builder /tmp/build/start.sh .
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
-
-# copy local JAR to project root dir and uncomment to build with it
-# WARNING: mc-conf.sh is used from the downloaded artifact, not from your local JAR
-#COPY hazelcast-management-center-4.2020.11-SNAPSHOT.jar ${MC_HOME}/${MC_INSTALL_JAR}
 
 RUN echo "Adding non-root user" \
     && adduser --uid $USER_UID --system --home $MC_HOME --shell /sbin/nologin $USER_NAME \
@@ -71,7 +73,7 @@ RUN echo "Adding non-root user" \
     && chmod -R g=u "$MC_HOME" ${MC_DATA} \
     && chmod -R +r $MC_HOME ${MC_DATA}
 
-### Switch to hazelcast user
+# Switch to hazelcast user
 USER ${USER_UID}
 
 # Start Management Center
