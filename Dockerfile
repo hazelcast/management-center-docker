@@ -1,4 +1,4 @@
-ARG MC_VERSION=4.2020.11-SNAPSHOT
+ARG MC_VERSION=4.2020.10
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
 
@@ -12,20 +12,18 @@ WORKDIR /tmp/build
 ENV MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
 # Comment out following RUN command to build from a local artifact
-#RUN echo "Installing new APK packages" \
-#    && apk add --no-cache bash wget unzip procps nss \
-#    && echo "Downloading Management Center" \
-#    && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
-#    && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
-#    && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
-#    && mv ${MC_INSTALL_NAME}/start.sh start.sh \
-#    && mv ${MC_INSTALL_NAME}/mc-conf.sh mc-conf.sh
+RUN echo "Installing new APK packages" \
+    && apk add --no-cache bash wget unzip procps nss \
+    && echo "Downloading Management Center" \
+    && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
+    && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
+    && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
+    && mv ${MC_INSTALL_NAME}/start.sh start.sh \
+    && mv ${MC_INSTALL_NAME}/mc-conf.sh mc-conf.sh
 
 # Uncomment following two lines to build from a local artifact
-COPY ${MC_INSTALL_JAR} .
-RUN unzip ${MC_INSTALL_JAR} bin/start.sh bin/mc-conf.sh \
-    && cp bin/start.sh . \
-    && cp bin/mc-conf.sh .
+#COPY ${MC_INSTALL_JAR} .
+#RUN unzip ${MC_INSTALL_JAR} start.sh mc-conf.sh
 
 RUN chmod +x start.sh mc-conf.sh
 
