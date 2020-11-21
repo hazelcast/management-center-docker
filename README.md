@@ -29,7 +29,7 @@ You can overwrite this default by setting the environment variable `MC_CONTEXT`.
 
 ## Mounting Management Center Home Directory
 
-Management Center uses the file system to store persistent data. However, that is by default inside the docker container and destroyed in case of container restarts. If you want to store Management Center data externally, you need to create a mount to a folder named `/data`. See the following for how to create a mount point. `PATH_TO_PERSISTENT_FOLDER` must be replaced by your persistent folder.
+Management Center uses the file system to store persistent data. However, that is by default inside the Docker container and destroyed in case of container restarts. If you want to store Management Center data externally, you need to create a mount to a folder named `/data`. See the following for how to create a mount point. `PATH_TO_PERSISTENT_FOLDER` must be replaced by your persistent folder.
 
 ```
 docker run -p 8080:8080 -v PATH_TO_PERSISTENT_FOLDER:/data hazelcast/management-center:$MANAGEMENT_CENTER
@@ -92,7 +92,7 @@ This endpoint may be used in container-orchestraction systems, like Kubernetes. 
 You can make modifications to the container on container startup by defining environment variables.
 
 * `MC_INIT_CMD`: Execute one or more commands separated by semicolons.
-* `MC_INIT_SCRIPT`: Execute a script in bash syntax in the context of the [entry-script](files/mc-start.sh). Make this file available by layering to a new container or by assigning a docker volume.
+* `MC_INIT_SCRIPT`: Execute a script in bash syntax in the context of the [entry-script](files/mc-start.sh). Make this file available by layering to a new container or by assigning a Docker volume.
 
 The commands defined by the variables are executed before starting the management center in the listed order.
 You can use this command for example to create an administrative user by defining the following command:
