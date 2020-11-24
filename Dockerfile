@@ -19,13 +19,14 @@ RUN echo "Downloading Management Center" \
     && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
     && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
     && mv ${MC_INSTALL_NAME}/${MC_INSTALL_WAR} ${MC_INSTALL_WAR} \
-    && mv ${MC_INSTALL_NAME}/start.sh start.sh
+    && mv ${MC_INSTALL_NAME}/start.sh start.sh \
+    && mv ${MC_INSTALL_NAME}/mc-conf.sh mc-conf.sh
 
 # Uncomment following two lines to build from a local artifact
 #COPY ${MC_INSTALL_WAR} .
-#RUN unzip ${MC_INSTALL_WAR} start.sh
+#RUN unzip ${MC_INSTALL_WAR} start.sh mc-conf.sh
 
-RUN chmod +x start.sh
+RUN chmod +x start.sh mc-conf.sh
 
 FROM alpine:3.12.1
 ARG MC_VERSION
@@ -57,6 +58,8 @@ WORKDIR ${MC_HOME}
 
 COPY --from=builder /tmp/build/${MC_INSTALL_WAR} .
 COPY --from=builder /tmp/build/start.sh .
+COPY --from=builder /tmp/build/mc-conf.sh .
+COPY files/mc-start.sh .
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT}
@@ -64,4 +67,4 @@ EXPOSE ${MC_HTTPS_PORT}
 EXPOSE ${MC_HEALTH_CHECK_PORT}
 
 # Start Management Center
-CMD ["bash", "start.sh"]
+CMD ["bash", "mc-start.sh"]
