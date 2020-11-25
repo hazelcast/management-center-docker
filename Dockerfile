@@ -18,8 +18,8 @@ RUN echo "Installing new APK packages" \
     && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
     && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
     && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
-    && mv ${MC_INSTALL_NAME}/start.sh start.sh \
-    && mv ${MC_INSTALL_NAME}/mc-conf.sh mc-conf.sh
+    && mv ${MC_INSTALL_NAME}/bin/start.sh start.sh \
+    && mv ${MC_INSTALL_NAME}/bin/mc-conf.sh mc-conf.sh
 
 # Uncomment following two lines to build from a local artifact
 #COPY ${MC_INSTALL_JAR} .
@@ -64,8 +64,8 @@ RUN echo "Installing new APK packages" \
 WORKDIR ${MC_HOME}
 
 COPY --from=builder /tmp/build/${MC_INSTALL_JAR} .
-COPY --from=builder /tmp/build/start.sh .
-COPY --from=builder /tmp/build/mc-conf.sh .
+COPY --from=builder /tmp/build/start.sh ./bin/start.sh
+COPY --from=builder /tmp/build/mc-conf.sh ./bin/mc-conf.sh
 COPY files/mc-start.sh .
 
 VOLUME ["${MC_DATA}"]
