@@ -1,4 +1,4 @@
-ARG MC_VERSION=4.2020.10
+ARG MC_VERSION=4.2020.11-BETA-1
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
 
@@ -64,8 +64,8 @@ RUN echo "Installing new APK packages" \
 WORKDIR ${MC_HOME}
 
 COPY --from=builder /tmp/build/${MC_INSTALL_JAR} .
-COPY --from=builder /tmp/build/start.sh .
-COPY --from=builder /tmp/build/mc-conf.sh .
+COPY --from=builder /tmp/build/start.sh ./bin/start.sh
+COPY --from=builder /tmp/build/mc-conf.sh ./bin/mc-conf.sh
 COPY files/mc-start.sh .
 
 VOLUME ["${MC_DATA}"]
