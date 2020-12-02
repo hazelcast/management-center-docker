@@ -45,11 +45,11 @@ if [ -n "${MC_INIT_SCRIPT}" ]; then
 fi
 
 if [ -n "${MC_ADMIN_USER}" ] && [ -n "${MC_ADMIN_PASSWORD}" ]; then
-  echo "Creating admin user."  1>&2
+  echo "Creating admin user."
   source ./bin/mc-conf.sh user create --lenient=true -H="${MC_DATA}" -n="${MC_ADMIN_USER}" -p="${MC_ADMIN_PASSWORD}" -r=admin
   # shellcheck disable=SC2181
   if [ $? -eq 0 ]; then
-    echo "User created successfully." 1>&2
+    echo "User created successfully."
   else
     exit 1
   fi
@@ -62,6 +62,7 @@ echo "##################################################" 1>&2
 # --add-opens flag is required to prevent this issue: https://jira.spring.io/browse/SPR-15859
 set -x
 # shellcheck disable=SC2086
+echo "Starting MC"
 exec java \
     --add-opens java.base/java.lang=ALL-UNNAMED \
     -server ${JAVA_OPTS} \

@@ -16,7 +16,8 @@ RUN echo "Installing new APK packages" \
     && apk add --no-cache bash wget unzip procps nss \
     && echo "Downloading Management Center" \
     && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
-    && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
+    && ls -la \
+    && unzip ${MC_HOME}/${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
     && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
     && mv ${MC_INSTALL_NAME}/bin/start.sh start.sh \
     && mv ${MC_INSTALL_NAME}/bin/mc-conf.sh mc-conf.sh
@@ -66,7 +67,7 @@ WORKDIR ${MC_HOME}
 COPY --from=builder /tmp/build/${MC_INSTALL_JAR} .
 COPY --from=builder /tmp/build/start.sh ./bin/start.sh
 COPY --from=builder /tmp/build/mc-conf.sh ./bin/mc-conf.sh
-COPY files/mc-start.sh .
+COPY files/mc-start.sh ./bin/mc-start.sh
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
@@ -81,4 +82,4 @@ RUN echo "Adding non-root user" \
 USER ${USER_UID}
 
 # Start Management Center
-CMD ["bash", "mc-start.sh"]
+CMD ["bash", "./bin/mc-start.sh"]
