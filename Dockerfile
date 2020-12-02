@@ -16,7 +16,6 @@ RUN echo "Installing new APK packages" \
     && apk add --no-cache bash wget unzip procps nss \
     && echo "Downloading Management Center" \
     && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
-    && ls -la \
     && unzip ${MC_HOME}/${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
     && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
     && mv ${MC_INSTALL_NAME}/bin/start.sh start.sh \
