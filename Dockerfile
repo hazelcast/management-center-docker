@@ -66,7 +66,7 @@ WORKDIR ${MC_HOME}
 COPY --from=builder /tmp/build/${MC_INSTALL_JAR} .
 COPY --from=builder /tmp/build/start.sh ./bin/start.sh
 COPY --from=builder /tmp/build/mc-conf.sh ./bin/mc-conf.sh
-COPY files/mc-start.sh .
+COPY files/mc-start.sh ./bin/mc-start.sh
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
@@ -81,4 +81,4 @@ RUN echo "Adding non-root user" \
 USER ${USER_UID}
 
 # Start Management Center
-CMD ["bash", "mc-start.sh"]
+CMD ["bash", "./bin/mc-start.sh"]
