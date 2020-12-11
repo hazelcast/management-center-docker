@@ -1,4 +1,4 @@
-ARG MC_VERSION=4.2020.11-BETA-1
+ARG MC_VERSION=4.2020.12
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
 
