@@ -15,7 +15,7 @@ jobs:
           repository: hazelcast/management-center
           ref: 'master'
           path: 'mc'
-          token: '${{ secrets.my_pat }}'
+          token: '${{ secrets.gh_pat }}'
 
       - name: Checkout Docker repo
         uses: actions/checkout@v2
