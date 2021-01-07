@@ -25,9 +25,6 @@ jobs:
       - name: Install xmllint
         run: sudo apt-get install libxml2-utils
 
-      - name: ls
-        run: ls $GITHUB_WORKSPACE
-
       - name: Set MC version
         run: echo "MC_VERSION=$(xmllint --xpath "/*[local-name() = 'project']/*[local-name() = 'version']/text()" mc/pom.xml)" >> $GITHUB_ENV
 
