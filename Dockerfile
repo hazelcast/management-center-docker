@@ -1,15 +1,15 @@
 ARG MC_VERSION=4.2020.12
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
+ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
 FROM alpine:3.12.1 AS builder
 ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_JAR
+ARG MC_INSTALL_ZIP
 
 WORKDIR /tmp/build
-
-ENV MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
 # Comment out following RUN command to build from a local artifact
 RUN echo "Installing new APK packages" \
@@ -31,6 +31,7 @@ FROM alpine:3.12.1
 ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_JAR
+ARG MC_INSTALL_ZIP
 
 ENV MC_HOME=/opt/hazelcast/management-center \
     MC_DATA=/data
