@@ -1,36 +1,18 @@
 name: Publish latest-snapshot Docker image for Management Center
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      mcVersion:
+        description: 'MC Version'
+        required: true
 
 jobs:
-  build:
+  publish_latest_snapshot:
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout main MC repo
-        uses: actions/checkout@v2
-        with:
-          repository: hazelcast/management-center
-          ref: 'master'
-          path: 'mc'
-          token: '${{ secrets.gh_pat }}'
-
       - name: Checkout Docker repo
         uses: actions/checkout@v2
-        with:
-          path: 'mc-docker'
-
-      - name: Install xmllint
-        run: sudo apt-get install libxml2-utils
-
-      - name: Set MC version
-        run: echo "MC_VERSION=$(xmllint --xpath "/*[local-name() = 'project']/*[local-name() = 'version']/text()" mc/pom.xml)" >> $GITHUB_ENV
-
-      - name: Print MC version
-        run: |
-          echo ${{ env.MC_VERSION }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.0.1
@@ -43,11 +25,14 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+      - name: Print MC version
+        run: |
+          echo ${{ github.event.inputs.mcVersion }}
+
       - name: Build/Push Management Center image
         run: |
           docker buildx build --push \
-            --build-arg MC_VERSION=${{ env.MC_VERSION }} \
+            --build-arg MC_VERSION=${{ github.event.inputs.mcVersion }} \
             --build-arg MC_INSTALL_ZIP=management-center-latest-snapshot.zip \
             --tag hazelcast/management-center:latest-snapshot \
-            --file mc-docker/Dockerfile \
-            --platform=linux/arm64,linux/amd64 mc-docker
+            --platform=linux/arm64,linux/amd64 .
