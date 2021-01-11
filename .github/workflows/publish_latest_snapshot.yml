@@ -6,6 +6,9 @@ on:
       mcVersion:
         description: 'MC Version'
         required: true
+      mcRevision:
+        description: 'MC Revision'
+        required: true
 
 jobs:
   publish_latest_snapshot:
@@ -33,6 +36,7 @@ jobs:
         run: |
           docker buildx build --push \
             --build-arg MC_VERSION=${{ github.event.inputs.mcVersion }} \
+            --build-arg MC_REVISION=${{ github.event.inputs.mcRevision }} \
             --build-arg MC_INSTALL_ZIP=management-center-latest-snapshot.zip \
             --tag hazelcast/management-center:latest-snapshot \
             --platform=linux/arm64,linux/amd64 .

@@ -32,6 +32,9 @@ ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_JAR
 ARG MC_INSTALL_ZIP
+ARG MC_REVISION=${MC_VERSION}
+
+LABEL hazelcast.mc.revision=${MC_REVISION}
 
 ENV MC_HOME=/opt/hazelcast/management-center \
     MC_DATA=/data
