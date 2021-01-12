@@ -16,4 +16,3 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: hazelcast/management-center
           short-description: Hazelcast Management Center Docker Image
-          readme-filepath: ./README.md
