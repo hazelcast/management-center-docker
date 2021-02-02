@@ -2,7 +2,7 @@ ARG MC_VERSION=3.12.14
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_WAR="hazelcast-mancenter-${MC_VERSION}.war"
 
-FROM alpine:3.12.1 AS builder
+FROM alpine:3.13.1 AS builder
 ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_WAR
@@ -28,7 +28,7 @@ RUN echo "Downloading Management Center" \
 
 RUN chmod +x start.sh mc-conf.sh
 
-FROM alpine:3.12.1
+FROM alpine:3.13.1
 ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_WAR
