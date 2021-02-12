@@ -31,5 +31,5 @@ jobs:
       - name: Build/Push Management Center image
         run: |
           docker buildx build --push \
-            --tag hazelcast/management-center:${{ env.RELEASE_VERSION }} --tag hazelcast/management-center:latest \
+            --tag hazelcast/management-center:${{ env.RELEASE_VERSION }} \
             --platform=linux/arm64,linux/amd64 .
