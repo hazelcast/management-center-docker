@@ -47,7 +47,9 @@ ENV MC_HTTP_PORT=8080 \
     JAVA_OPTS="" \
     MC_INIT_SCRIPT="" \
     MC_INIT_CMD="" \
-    MC_CLASSPATH=""
+    MC_CLASSPATH="" \
+    USER_NAME="hazelcast" \
+    USER_UID=10001
 
 RUN echo "Installing new APK packages" \
     && apk add --no-cache openjdk11-jre bash \
@@ -65,6 +67,15 @@ VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT}
 EXPOSE ${MC_HTTPS_PORT}
 EXPOSE ${MC_HEALTH_CHECK_PORT}
+
+RUN echo "Adding non-root user" \
+    && adduser --uid $USER_UID --system --home $MC_HOME --shell /sbin/nologin $USER_NAME \
+    && chown -R $USER_UID:0 $MC_HOME ${MC_DATA} \
+    && chmod -R g=u "$MC_HOME" ${MC_DATA} \
+    && chmod -R +r $MC_HOME ${MC_DATA}
+
+# Switch to hazelcast user
+USER ${USER_UID}
 
 # Start Management Center
 CMD ["bash", "mc-start.sh"]
