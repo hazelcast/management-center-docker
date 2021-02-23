@@ -42,13 +42,13 @@ jobs:
 
       - name: Build/Push Management Center image
         run: |
-        TAGS="--tag hazelcast/management-center:${{ env.RELEASE_VERSION }}"
-        if [[ "${{ env.PUSH_LATEST }}" == "yes" ]]; then
-        TAGS="${TAGS} --tag hazelcast/management-center:latest"
-        fi
-        docker buildx build --push \
-        ${TAGS} \
-        --platform=linux/arm64,linux/amd64,linux/ppc64le,linux/s390x .
+          TAGS="--tag hazelcast/management-center:${{ env.RELEASE_VERSION }}"
+          if [[ "${{ env.PUSH_LATEST }}" == "yes" ]]; then
+            TAGS="${TAGS} --tag hazelcast/management-center:latest"
+          fi
+          docker buildx build --push \
+            ${TAGS} \
+            --platform=linux/arm64,linux/amd64,linux/ppc64le,linux/s390x .
 
       - name: Update Docker Hub Description of Management Center image
         if: env.PUSH_LATEST == 'yes'
