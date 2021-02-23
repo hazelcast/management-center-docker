@@ -34,7 +34,7 @@ ENV MC_INSTALL_JAR="${MC_INSTALL_JAR}" \
     MC_ADMIN_PASSWORD=""
 
 LABEL name="Hazelcast Management Center" \
-      maintainer="info@hazelcast.com" \
+      maintainer="management-center@hazelcast.com" \
       vendor="Hazelcast, Inc." \
       url="http://www.hazelcast.com" \
       version="${MC_VERSION}" \
