@@ -235,8 +235,8 @@ ENV MC_CLUSTER1_ADDRESSLIST=127.0.0.1:5701
 
 # Start Management Center
 CMD ["bash", "-c", "set -euo pipefail \
-      && ./mc-conf.sh cluster add --cluster-name=\"${MC_CLUSTER1_NAME}\" --member-addresses=\"${MC_CLUSTER1_ADDRESSLIST}\" --home=\"${MC_DATA}\" \
-      && ./mc-start.sh \
+      && ./bin/mc-conf.sh cluster add --cluster-name=\"${MC_CLUSTER1_NAME}\" --member-addresses=\"${MC_CLUSTER1_ADDRESSLIST}\" --home=\"${MC_DATA}\" \
+      && ./bin/mc-start.sh \
      "]
 ```
 
