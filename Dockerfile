@@ -52,7 +52,7 @@ ENV MC_HTTP_PORT=8080 \
     USER_UID=10001
 
 RUN echo "Installing new APK packages" \
-    && apk add --no-cache openjdk11-jre bash \
+    && apk add --no-cache openjdk11-jre-headless bash \
     && mkdir -p ${MC_HOME} ${MC_DATA} \
     && chmod a+rwx ${MC_HOME} ${MC_DATA}
 
