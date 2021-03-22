@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-export JAVA_OPTS_DEFAULT="-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack=true"
 if [ -n "${JAVA_OPTS}" ]; then
     export JAVA_OPTS="${JAVA_OPTS_DEFAULT} ${JAVA_OPTS}"
 else
@@ -46,7 +45,7 @@ fi
 
 if [ -n "${MC_ADMIN_USER}" ] && [ -n "${MC_ADMIN_PASSWORD}" ]; then
   echo "Creating admin user."  1>&2
-  source ./bin/mc-conf.sh user create --lenient=true -H="${MC_DATA}" -n="${MC_ADMIN_USER}" -p="${MC_ADMIN_PASSWORD}" -r=admin
+  source ./bin/mc-conf.sh user create --lenient=true -n="${MC_ADMIN_USER}" -p="${MC_ADMIN_PASSWORD}" -r=admin
   # shellcheck disable=SC2181
   if [ $? -eq 0 ]; then
     echo "User created successfully." 1>&2

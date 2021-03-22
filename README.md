@@ -220,9 +220,8 @@ docker run --rm --name hazelcast-mc \
 ## Configuring Management Center Inside Your Custom Docker Image
 [Configuring Management Center Inside Your Custom Docker Image]: #configuring-management-center-inside-your-custom-docker-image
 
-If you create a Docker image with `hazelcast/management-center` as the base image and want to configure it further 
-using `mc-conf.sh`, you need to specify `--home="${MC_DATA}"` flag for each `mc-conf` command. It makes sure that 
-`mc-conf` stores data in the same directory that Management Center will use at runtime.
+You can create a Docker image with `hazelcast/management-center` as the base image and configure it further 
+using `mc-conf.sh`.
 
 For example:
 
@@ -235,10 +234,7 @@ ENV MC_CLUSTER1_ADDRESSLIST=127.0.0.1:5701
 
 # Start Management Center
 CMD ["bash", "-c", "set -euo pipefail \
-      && ./mc-conf.sh cluster add --cluster-name=\"${MC_CLUSTER1_NAME}\" --member-addresses=\"${MC_CLUSTER1_ADDRESSLIST}\" --home=\"${MC_DATA}\" \
+      && ./mc-conf.sh cluster add --cluster-name=\"${MC_CLUSTER1_NAME}\" --member-addresses=\"${MC_CLUSTER1_ADDRESSLIST}\" \
       && ./mc-start.sh \
      "]
 ```
-
-**NOTE:** `$MC_DATA` env variable comes from `hazelcast/management-center`. It is used to save the configuration and 
-any other data needed when running Management Center.
