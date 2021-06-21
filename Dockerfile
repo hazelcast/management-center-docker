@@ -3,7 +3,7 @@ ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
-FROM alpine:3.13.5 AS builder
+FROM alpine:3.14.0 AS builder
 ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_JAR
@@ -27,7 +27,7 @@ RUN echo "Installing new APK packages" \
 
 RUN chmod +x start.sh mc-conf.sh
 
-FROM alpine:3.13.5
+FROM alpine:3.14.0
 ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_JAR
