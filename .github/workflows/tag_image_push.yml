@@ -1,35 +1,67 @@
 name: Publish Management Center released version image
 
 on:
-  create:
+  push:
     tags:
-      - 'v*'
-
+      - "v*.*"
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set Release Version
         run: echo "RELEASE_VERSION=${GITHUB_REF:11}" >> $GITHUB_ENV
+
       - name: Print Release Version
         run: |
           echo ${{ env.RELEASE_VERSION }}
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.0.1
+
       - name: Set up Docker Buildx
-        id: buildx
-        uses: crazy-max/ghaction-docker-buildx@v1
+        uses: docker/setup-buildx-action@v1.1.1
         with:
-          buildx-version: v0.4.1
-          qemu-version: 4.2.0-7
+          version: v0.5.1
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+      - name: Check if latest tag should be pushed
+        run: |
+          FILTERED_TAGS=$(git tag --list "v*" |  grep -E -v '*BETA*' )
+          LATEST_TAG=$((IFS=$'\n' && echo "${FILTERED_TAGS[*]}") | sort | tail -n 1)
+          echo "PUSH_LATEST=$([[ "$LATEST_TAG" = "${GITHUB_REF:10}" ]] && echo yes || echo no)" >> $GITHUB_ENV
+
       - name: Build/Push Management Center image
         run: |
+          TAGS="--tag hazelcast/management-center:${{ env.RELEASE_VERSION }}"
+          if [[ "${{ env.PUSH_LATEST }}" == "yes" ]]; then
+            TAGS="${TAGS} --tag hazelcast/management-center:latest"
+          fi
           docker buildx build --push \
-            --tag hazelcast/management-center:${{ env.RELEASE_VERSION }} \
-            --platform=linux/arm64,linux/amd64 .
+            ${TAGS} \
+            --platform=linux/arm64,linux/amd64,linux/ppc64le,linux/s390x .
+
+      - name: Update Docker Hub Description of Management Center image
+        if: env.PUSH_LATEST == 'yes'
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: hazelcast/management-center
+          short-description: Hazelcast Management Center Docker Image
+          readme-filepath: ./README.md
+
+      - uses: actions/checkout@v2
+        with:
+          repository: hazelcast/management-center
+          ref: master
+
+      - name: Run end to end UI tests
+        working-directory: ui-tests
+        run: mvn clean test -Dgroups=pr -Ddocker.image="hazelcast/management-center:${{ env.RELEASE_VERSION }}"
