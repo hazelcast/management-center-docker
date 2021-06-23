@@ -226,7 +226,7 @@ using `mc-conf.sh`.
 For example:
 
 ```
-FROM hazelcast/management-center:4.2020.08
+FROM hazelcast/management-center:4.2021.06
 
 # Preconfigure cluster connections
 ENV MC_CLUSTER1_NAME=my-cluster
@@ -234,7 +234,7 @@ ENV MC_CLUSTER1_ADDRESSLIST=127.0.0.1:5701
 
 # Start Management Center
 CMD ["bash", "-c", "set -euo pipefail \
-      && ./mc-conf.sh cluster add --cluster-name=\"${MC_CLUSTER1_NAME}\" --member-addresses=\"${MC_CLUSTER1_ADDRESSLIST}\" \
-      && ./mc-start.sh \
+      && ./bin/mc-conf.sh cluster add --cluster-name=\"${MC_CLUSTER1_NAME}\" --member-addresses=\"${MC_CLUSTER1_ADDRESSLIST}\" \
+      && ./bin/mc-start.sh \
      "]
 ```
