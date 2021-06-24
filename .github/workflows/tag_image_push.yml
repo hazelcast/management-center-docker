@@ -45,7 +45,7 @@ jobs:
           fi
           docker buildx build --push \
             ${TAGS} \
-            --platform=linux/arm64,linux/amd64,linux/ppc64le,linux/s390x .
+            --platform=linux/arm64,linux/amd64 .
 
       - name: Update Docker Hub Description of Management Center image
         if: env.PUSH_LATEST == 'yes'
@@ -61,7 +61,3 @@ jobs:
         with:
           repository: hazelcast/management-center
           ref: master
-
-      - name: Run end to end UI tests
-        working-directory: ui-tests
-        run: mvn clean test -Dgroups=pr -Ddocker.image="hazelcast/management-center:${{ env.RELEASE_VERSION }}"
