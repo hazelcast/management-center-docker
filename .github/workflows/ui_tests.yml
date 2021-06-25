@@ -1,0 +1,21 @@
+name: Run end to end UI tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      mcDockerImageTag:
+        description: 'Management Center Docker image tag'
+        required: true
+
+jobs:
+  run_ui_tests:
+    runs-on: ubuntu-20.04
+
+  - uses: actions/checkout@v2
+    with:
+      repository: hazelcast/management-center
+      ref: master
+
+  - name: Run end to end UI tests
+    working-directory: ui-tests
+    run: mvn clean test -Dgroups=pr -Ddocker.image="hazelcast/management-center:${{ env.MC_DOCKER_IMAGE_TAG }}"
