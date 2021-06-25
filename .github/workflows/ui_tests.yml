@@ -14,9 +14,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         repository: hazelcast/management-center
-        ref: v${{ env.MC_VERSION }}
+        ref: v${{ github.event.inputs.mcVersion }}
         token: ${{ secrets.GH_API_TOKEN }}
 
     - name: Run end to end UI tests
       working-directory: ui-tests
-      run: mvn clean test -Dgroups=pr -Ddocker.image="hazelcast/management-center:${{ env.MC_VERSION }}"
+      run: mvn clean test -Dgroups=pr -Ddocker.image="hazelcast/management-center:${{ github.event.inputs.mcVersion }}"
