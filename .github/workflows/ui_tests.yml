@@ -3,8 +3,8 @@ name: Run end to end UI tests
 on:
   workflow_dispatch:
     inputs:
-      mcDockerImageTag:
-        description: 'Management Center Docker image tag'
+      mcVersion:
+        description: 'Management Center version'
         required: true
 
 jobs:
@@ -14,8 +14,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         repository: hazelcast/management-center
-        ref: master
+        ref: v${{ env.MC_VERSION }}
+        token: ${{ secrets.GH_API_TOKEN }}
 
     - name: Run end to end UI tests
       working-directory: ui-tests
-      run: mvn clean test -Dgroups=pr -Ddocker.image="hazelcast/management-center:${{ env.MC_DOCKER_IMAGE_TAG }}"
+      run: mvn clean test -Dgroups=pr -Ddocker.image="hazelcast/management-center:${{ env.MC_VERSION }}"
