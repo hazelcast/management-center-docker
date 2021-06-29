@@ -21,3 +21,5 @@ jobs:
         with:
           image: hazelcast/management-center:${{ github.sha }}
           fail-build: true
+      - name: grype scan JSON results
+        run: for j in `ls ./anchore-reports/*.json`; do echo "---- ${j} ----"; cat ${j}; echo; done
