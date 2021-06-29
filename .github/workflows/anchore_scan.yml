@@ -18,7 +18,7 @@ jobs:
 
       - name: Scan Management Center image by Anchore
         if: always()
-        uses: anchore/scan-action@v2.0.4
+        uses: anchore/scan-action@v2
         with:
           image: hazelcast/management-center:${{ github.sha }}
           fail-build: false
