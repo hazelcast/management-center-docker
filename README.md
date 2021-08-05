@@ -16,6 +16,7 @@ You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/late
  - [Enabling Health Check Endpoint]
  - [Customizing Container Setup]
  - [Start with a Preconfigured Admin User]
+ - [Start with a Preconfigured Cluster]
  - [JVM Heap Configuration]
  - [Configuring Management Center Inside Your Custom Docker Image]
 
@@ -187,6 +188,21 @@ docker run --name hazelcast-mc \
          --env MC_ADMIN_PASSWORD=myPassword11 \
          --rm hazelcast/management-center
 ```
+
+## Start with a Preconfigured Cluster
+[Start with a Preconfigured Cluster]: #start-with-a-preconfigured-cluster
+
+You can start Management Center with a preconfigured cluster by setting the following optional environment variables:
+
+```
+docker run --name hazelcast-mc \
+         --env HZ_MC_CLUSTER=my-cluster \
+         --env HZ_MC_MEMBERS=192.168.0.10,192.168.0.11 \
+         --rm hazelcast/management-center
+```
+
+`HZ_MC_MEMBERS` contains a comma-separated list of the cluster member addresses. `HZ_MC_CLUSTER` contains the cluster
+name and defaults to `dev` if not provided.
 
 ## JVM Heap Configuration
 [JVM Heap Configuration]: #jvm-heap-configuration
