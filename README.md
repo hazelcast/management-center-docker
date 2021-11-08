@@ -196,8 +196,8 @@ You can start Management Center with a preconfigured cluster by setting the foll
 
 ```
 docker run --name hazelcast-mc \
-         --env HZ_MC_CLUSTER=my-cluster \
-         --env HZ_MC_MEMBERS=192.168.0.10,192.168.0.11 \
+         --env MC_DEFAULT_CLUSTER=my-cluster \
+         --env MC_DEFAULT_CLUSTER_MEMBERS=192.168.0.10,192.168.0.11 \
          --rm hazelcast/management-center
 ```
 
@@ -242,7 +242,7 @@ using `mc-conf.sh`.
 For example:
 
 ```
-FROM hazelcast/management-center:4.2021.06
+FROM hazelcast/management-center:$MANAGEMENT_CENTER
 
 # Preconfigure cluster connections
 ENV MC_CLUSTER1_NAME=my-cluster
