@@ -39,7 +39,7 @@ LABEL hazelcast.mc.revision=${MC_REVISION}
 ENV MC_HOME=/opt/hazelcast/management-center \
     MC_DATA=/data
 
-ENV JAVA_OPTS_DEFAULT="-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack=true" \
+ENV JAVA_OPTS_DEFAULT="-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack=true --illegal-access=permit" \
     MC_INSTALL_JAR="${MC_INSTALL_JAR}" \
     USER_NAME="hazelcast" \
     USER_UID=10001 \
