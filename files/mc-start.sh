@@ -27,9 +27,9 @@ fi
 
 export MC_RUNTIME="${MC_HOME}/${MC_INSTALL_JAR}"
 if [ -n "${MC_CLASSPATH}" ]; then
-    export MC_CLASSPATH="${MC_RUNTIME}:${MC_CLASSPATH}"
+    export MC_CLASSPATH="${MC_RUNTIME}:${MC_CLASSPATH}:./user-lib/*"
 else
-    export MC_CLASSPATH="${MC_RUNTIME}"
+    export MC_CLASSPATH="${MC_RUNTIME}:./user-lib/*"
 fi
 
 if [ -n "${MC_INIT_CMD}" ]; then
