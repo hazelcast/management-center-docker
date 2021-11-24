@@ -76,7 +76,7 @@ COPY files/mc-start.sh ./bin/mc-start.sh
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
 
-RUN mkdir user-lib
+RUN mkdir bin/user-lib
 
 RUN echo "Adding non-root user" \
     && adduser --uid $USER_UID --system --home $MC_HOME --shell /sbin/nologin $USER_NAME \
