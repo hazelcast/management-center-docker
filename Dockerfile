@@ -15,7 +15,7 @@ WORKDIR /tmp/build
 RUN echo "Installing new APK packages" \
     && apk add --no-cache bash wget unzip procps nss \
     && echo "Downloading Management Center" \
-    && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
+    && wget -O ${MC_INSTALL_ZIP} https://hazelcast.jfrog.io/artifactory/download/management-center/${MC_INSTALL_ZIP} \
     && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
     && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
     && mv ${MC_INSTALL_NAME}/bin/start.sh start.sh \
@@ -60,7 +60,7 @@ ENV JAVA_OPTS_DEFAULT="-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack
 
 RUN echo "Installing new APK packages" \
     && apk add --no-cache openjdk11-jre-headless bash \
-    && apk add --no-cache rocksdb --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    && apk add --no-cache rocksdb --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing \
     && mkdir -p ${MC_HOME} ${MC_DATA} \
     && echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running" \
         "container as non-root with \"docker run --user\" option" \

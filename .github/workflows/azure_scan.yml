@@ -12,8 +12,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build Management Center image
-        run: |
-          docker build -t hazelcast/management-center:${{ github.sha }} .
+        run: docker build -t hazelcast/management-center:${{ github.sha }} .
 
       - name: Scan Management Center image by Azure (Trivy + Dockle)
         if: always()
