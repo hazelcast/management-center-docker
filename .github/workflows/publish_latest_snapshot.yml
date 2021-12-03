@@ -5,9 +5,11 @@ on:
     inputs:
       mcVersion:
         description: 'MC Version'
+        type: string
         required: true
       mcRevision:
         description: 'MC Revision'
+        type: string
         required: true
 
 jobs:
@@ -29,17 +31,16 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Print MC version
-        run: |
-          echo ${{ github.event.inputs.mcVersion }}
+        run: echo ${{ github.event.inputs.mcVersion }}
 
       - name: Build/Push Management Center image
-        run: |
-          docker buildx build --push \
-            --build-arg MC_VERSION=${{ github.event.inputs.mcVersion }} \
-            --build-arg MC_REVISION=${{ github.event.inputs.mcRevision }} \
-            --build-arg MC_INSTALL_ZIP=management-center-latest-snapshot.zip \
-            --tag hazelcast/management-center:latest-snapshot \
-            --platform=linux/arm64,linux/amd64 .
+        run: >-
+          docker buildx build --push
+          --build-arg MC_VERSION=${{ github.event.inputs.mcVersion }}
+          --build-arg MC_REVISION=${{ github.event.inputs.mcRevision }}
+          --build-arg MC_INSTALL_ZIP=hazelcast-management-center-latest-snapshot.zip
+          --tag hazelcast/management-center:latest-snapshot
+          --platform=linux/arm64,linux/amd64 .
 
       - name: Trigger Helm Chart Snapshot Actions
         run: |
