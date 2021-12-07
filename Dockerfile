@@ -19,6 +19,7 @@ RUN echo "Installing new APK packages" \
     && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
     && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
     && mv ${MC_INSTALL_NAME}/bin/start.sh start.sh \
+    && mv ${MC_INSTALL_NAME}/bin/mc-start.sh mc-start.sh \
     && mv ${MC_INSTALL_NAME}/bin/mc-conf.sh mc-conf.sh
 
 # Uncomment following two lines to build from a local artifact
@@ -70,8 +71,8 @@ WORKDIR ${MC_HOME}
 
 COPY --from=builder /tmp/build/${MC_INSTALL_JAR} .
 COPY --from=builder /tmp/build/start.sh ./bin/start.sh
+COPY --from=builder /tmp/build/mc-start.sh ./bin/mc-start.sh
 COPY --from=builder /tmp/build/mc-conf.sh ./bin/mc-conf.sh
-COPY files/mc-start.sh ./bin/mc-start.sh
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
