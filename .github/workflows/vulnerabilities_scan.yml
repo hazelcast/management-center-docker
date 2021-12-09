@@ -1,0 +1,39 @@
+name: Vulnerabilities Scan
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  azure-trivy-dockle:
+    name: Azure (Trivy + Dockle) Vulnerability Scan
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build Management Center image
+        run: docker build -t hazelcast/management-center:${{ github.sha }} .
+
+      - name: Scan Management Center image by Azure (Trivy + Dockle)
+        uses: Azure/container-scan@v0
+        with:
+          image-name: hazelcast/management-center:${{ github.sha }}
+
+  snyk:
+    name: Snyk Vulnerability Scan
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build Management Center image
+        run: docker build -t hazelcast/management-center:${{ github.sha }} .
+
+      - name: Scan Management Center image by Snyk
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: hazelcast/management-center:${{ github.sha }}
+          args: --file=Dockerfile --policy-path=.github/containerscan
