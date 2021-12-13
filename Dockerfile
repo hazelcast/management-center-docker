@@ -1,4 +1,4 @@
-ARG MC_VERSION=5.0.2
+ARG MC_VERSION=4.2021.12
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
