@@ -48,7 +48,7 @@ ENV JAVA_OPTS_DEFAULT="-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack
     MC_HEALTH_CHECK_PORT="8081" \
     LOGGING_LEVEL="" \
     MC_CONTEXT_PATH="/" \
-    NO_CONTAINER_SUPPORT="false" \
+    CONTAINER_SUPPORT="true" \
     MIN_HEAP_SIZE="" \
     MAX_HEAP_SIZE="" \
     JAVA_OPTS="" \
