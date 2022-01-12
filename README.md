@@ -172,7 +172,7 @@ for more information.
 You can make modifications to the container on container startup by defining environment variables.
 
 * `MC_INIT_CMD`: Execute one or more commands separated by semicolons.
-* `MC_INIT_SCRIPT`: Execute a script in Bash syntax in the context of the [entry-script](files/mc-start.sh). 
+* `MC_INIT_SCRIPT`: Execute a script in Bash syntax.
 Make this file available by layering to a new container or by assigning a Docker volume.
 
 The commands defined by the variables are executed before starting the Management Center in the listed order.
@@ -251,6 +251,6 @@ ENV MC_CLUSTER1_ADDRESSLIST=127.0.0.1:5701
 # Start Management Center
 CMD ["bash", "-c", "set -euo pipefail \
       && ./bin/mc-conf.sh cluster add --cluster-name=\"${MC_CLUSTER1_NAME}\" --member-addresses=\"${MC_CLUSTER1_ADDRESSLIST}\" \
-      && ./bin/mc-start.sh \
+      && ./bin/hz-mc start \
      "]
 ```
