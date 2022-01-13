@@ -11,21 +11,23 @@ ARG MC_INSTALL_ZIP
 
 WORKDIR /tmp/build
 
-# Comment out following RUN command to build from a local artifact
 RUN echo "Installing new APK packages" \
-    && apk add --no-cache bash wget unzip procps nss \
-    && echo "Downloading Management Center" \
-    && wget -O ${MC_INSTALL_ZIP} https://hazelcast.jfrog.io/artifactory/download/management-center/${MC_INSTALL_ZIP} \
-    && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
+    && apk add --no-cache bash wget unzip procps nss
+
+# Comment out the following RUN command to build from a local zip artifact
+RUN echo "Downloading Management Center" \
+    && wget -O ${MC_INSTALL_ZIP} https://hazelcast.jfrog.io/artifactory/download/management-center/${MC_INSTALL_ZIP}
+
+# ...and uncomment the line below
+#COPY ${MC_INSTALL_ZIP} .
+
+RUN unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
     && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
     && mv ${MC_INSTALL_NAME}/bin/start.sh start.sh \
-    && mv ${MC_INSTALL_NAME}/bin/mc-conf.sh mc-conf.sh
+    && mv ${MC_INSTALL_NAME}/bin/mc-conf.sh mc-conf.sh \
+    && mv ${MC_INSTALL_NAME}/bin/hz-mc hz-mc
 
-# Uncomment following two lines to build from a local artifact
-#COPY ${MC_INSTALL_JAR} .
-#RUN unzip ${MC_INSTALL_JAR} start.sh mc-conf.sh
-
-RUN chmod +x start.sh mc-conf.sh
+RUN chmod +x start.sh mc-conf.sh hz-mc
 
 FROM alpine:3.15.0
 ARG MC_VERSION
@@ -71,7 +73,7 @@ WORKDIR ${MC_HOME}
 COPY --from=builder /tmp/build/${MC_INSTALL_JAR} .
 COPY --from=builder /tmp/build/start.sh ./bin/start.sh
 COPY --from=builder /tmp/build/mc-conf.sh ./bin/mc-conf.sh
-COPY files/mc-start.sh ./bin/mc-start.sh
+COPY --from=builder /tmp/build/hz-mc ./bin/hz-mc
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
@@ -86,4 +88,6 @@ RUN echo "Adding non-root user" \
 USER ${USER_UID}
 
 # Start Management Center
-CMD ["bash", "./bin/mc-start.sh"]
+CMD ["bash", "-c" , "./bin/hz-mc start -Dhazelcast.mc.contextPath=${MC_CONTEXT_PATH} \
+                                          -Dhazelcast.mc.http.port=${MC_HTTP_PORT} \
+                                          -Dhazelcast.mc.https.port=${MC_HTTPS_PORT}"]
