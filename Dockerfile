@@ -83,7 +83,9 @@ RUN echo "Adding non-root user" \
     && adduser --uid $USER_UID --system --home $MC_HOME --shell /sbin/nologin $USER_NAME \
     && chown -R $USER_UID:0 $MC_HOME ${MC_DATA} \
     && chmod -R g=u "$MC_HOME" ${MC_DATA} \
-    && chmod -R +r $MC_HOME ${MC_DATA}
+    && chmod -R +r $MC_HOME ${MC_DATA} \
+    && echo "Setting mc-start.sh permissions" \
+    && chmod +x ./bin/mc-start.sh
 
 # Switch to hazelcast user
 USER ${USER_UID}
