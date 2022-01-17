@@ -74,6 +74,7 @@ COPY --from=builder /tmp/build/${MC_INSTALL_JAR} .
 COPY --from=builder /tmp/build/start.sh ./bin/start.sh
 COPY --from=builder /tmp/build/mc-conf.sh ./bin/mc-conf.sh
 COPY --from=builder /tmp/build/hz-mc ./bin/hz-mc
+COPY files/mc-start.sh ./bin/mc-start.sh
 
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
@@ -88,6 +89,4 @@ RUN echo "Adding non-root user" \
 USER ${USER_UID}
 
 # Start Management Center
-CMD ["bash", "-c" , "./bin/hz-mc start -Dhazelcast.mc.contextPath=${MC_CONTEXT_PATH} \
-                                          -Dhazelcast.mc.http.port=${MC_HTTP_PORT} \
-                                          -Dhazelcast.mc.https.port=${MC_HTTPS_PORT}"]
+CMD ["bash", "./bin/mc-start.sh"]
