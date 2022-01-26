@@ -1,7 +1,7 @@
-ARG MC_VERSION=5.1-BETA-1
+ARG MC_VERSION=5.1-SNAPSHOT
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
-ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
+ARG MC_INSTALL_ZIP="hazelcast-management-center-latest-snapshot.zip"
 
 FROM alpine:3.15.0 AS builder
 ARG MC_VERSION
@@ -16,12 +16,12 @@ RUN echo "Installing new APK packages" \
 
 # Comment out the following RUN command to build from a local zip artifact
 RUN echo "Downloading Management Center" \
-    && wget -O ${MC_INSTALL_ZIP} https://hazelcast.jfrog.io/artifactory/download/management-center/${MC_INSTALL_ZIP}
+    && wget -O ${MC_INSTALL_ZIP} https://repository.hazelcast.com/download/management-center/${MC_INSTALL_ZIP}
 
 # ...and uncomment the line below
 #COPY ${MC_INSTALL_ZIP} .
 
-RUN unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
+RUN unzip ${MC_INSTALL_ZIP} \
     && mv ${MC_INSTALL_NAME}/${MC_INSTALL_JAR} ${MC_INSTALL_JAR} \
     && mv ${MC_INSTALL_NAME}/bin/start.sh start.sh \
     && mv ${MC_INSTALL_NAME}/bin/mc-conf.sh mc-conf.sh \
@@ -61,8 +61,9 @@ ENV JAVA_OPTS_DEFAULT="-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack
     MC_ADMIN_PASSWORD=""
 
 RUN echo "Installing new APK packages" \
-    && apk add --no-cache openjdk11-jre-headless bash \
+    && apk add --no-cache openjdk17-jre-headless bash \
     && apk add --no-cache rocksdb --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    && rm -rf /var/cache/apk/* \
     && mkdir -p ${MC_HOME} ${MC_DATA} \
     && echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running" \
         "container as non-root with \"docker run --user\" option" \
