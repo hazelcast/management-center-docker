@@ -28,4 +28,4 @@ jobs:
         run: >-
           docker buildx build
           --tag hazelcast/management-center:ci-build
-          --platform=linux/amd64 .
+          --platform=linux/arm64,linux/amd64 .
