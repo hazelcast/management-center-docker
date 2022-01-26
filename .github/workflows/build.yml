@@ -10,7 +10,7 @@ on:
       - master
 
 jobs:
-  publish_latest_snapshot:
+  build:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Docker repo
