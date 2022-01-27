@@ -24,7 +24,7 @@ jobs:
         with:
           version: v0.7.1
 
-      - name: Build/Push Management Center image
+      - name: Build Management Center image
         run: >-
           docker buildx build
           --tag hazelcast/management-center:ci-build
