@@ -4,4 +4,4 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-./bin/hz-mc start "$@"
+exec ./bin/hz-mc start "$@"
