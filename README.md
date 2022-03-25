@@ -42,7 +42,7 @@ available memory.
 
 ## Configuration options
 
-With from Management Center version 5.1, configuration options have been consolidated. System properties and environment variables
+In Management Center version 5.1 and later, system properties and environment variables
 can be used interchangeably. The complete reference of available settings is available in the [Management Center Reference Manual](https://docs.hazelcast.com/management-center/latest/deploy-manage/system-properties). Below you can find example configurations
 common in docker environments.
 
