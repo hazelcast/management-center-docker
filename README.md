@@ -132,10 +132,6 @@ Invalid levels will be assumed `OFF`.
 
 Note that if you need a more customized logging configuration, you can specify a configuration file.
 
-```
-$ docker run -v <config-file-path>:/opt/hazelcast/log4j2-custom.properties hazelcast/management-center:$MC_VERSION
-```
-
 ### Using Custom Log4j Configuration File
 [Using Custom Log4j Configuration File]: #using-custom-log4j-configuration-file
 
