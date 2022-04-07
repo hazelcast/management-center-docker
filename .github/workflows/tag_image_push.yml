@@ -42,7 +42,6 @@ jobs:
           if [[ "${{ env.PUSH_LATEST }}" == "yes" ]]; then
             TAGS="${TAGS} --tag hazelcast/management-center:latest"
           fi
-          TAGS="${TAGS} --tag hazelcast/management-center:5.1"
           docker buildx build --push \
             ${TAGS} \
             --platform=linux/arm64,linux/amd64 .
