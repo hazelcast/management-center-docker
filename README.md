@@ -145,7 +145,7 @@ the path to the folder that your custom Log4j configuration file resides in. `CU
 replaced with the name of your custom Log4j configuration file, for example `log4j2-custom.properties`.
 
 ```
-docker run ---env JAVA_OPTS='-Dlog4j.configurationFile=/opt/hazelcast/mc_ext/CUSTOM_LOG4J_FILE' \
+docker run --env JAVA_OPTS='-Dlog4j.configurationFile=/opt/hazelcast/mc_ext/CUSTOM_LOG4J_FILE' \
            -v PATH_TO_LOCAL_FOLDER:/opt/hazelcast/mc_ext \
            -p 8080:8080 \
            hazelcast/management-center:$MC_VERSION
