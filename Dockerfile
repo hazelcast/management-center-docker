@@ -1,6 +1,6 @@
 ARG MC_VERSION=5.1.2
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
-ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
+ARG MC_INSTALL_JAR="${MC_INSTALL_NAME}.jar"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
 FROM alpine:3.15.4 AS builder
