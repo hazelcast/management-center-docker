@@ -62,7 +62,7 @@ ENV JAVA_OPTS_DEFAULT="-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack
 
 RUN echo "Installing new APK packages" \
     && apk add --no-cache openjdk17-jre-headless bash \
-    && apk add --no-cache rocksdb --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    && apk add --no-cache rocksdb --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
     && rm -rf /var/cache/apk/* \
     && mkdir -p ${MC_HOME} ${MC_DATA} \
     && echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running" \
