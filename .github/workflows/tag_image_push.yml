@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "v*.*"
+
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -25,23 +26,36 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.0.0
         with:
-          version: v0.5.1
+          version: v0.8.2
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Check if latest tag should be pushed
+      - name: Compute tags
         run: |
-          FILTERED_TAGS=$(git tag --list "v*" |  grep -E -v '*BETA*' )
-          LATEST_TAG=$((IFS=$'\n' && echo "${FILTERED_TAGS[*]}") | sort | tail -n 1)
-          echo "PUSH_LATEST=$([[ "$LATEST_TAG" = "${GITHUB_REF:10}" ]] && echo yes || echo no)" >> $GITHUB_ENV
-
-      - name: Build/Push Management Center image
-        run: |
+          CURRENT_TAG=${GITHUB_REF:10}
           TAGS="--tag hazelcast/management-center:${{ env.RELEASE_VERSION }}"
-          if [[ "${{ env.PUSH_LATEST }}" == "yes" ]]; then
+
+          FILTERED_TAGS=$(git tag --list "v*" | grep -E -v '*BETA*' )
+          LATEST_TAG=$((IFS=$'\n' && echo "${FILTERED_TAGS[*]}") | sort | tail -n 1)
+          if [[ "$LATEST_TAG" = "${CURRENT_TAG}" ]]; then
             TAGS="${TAGS} --tag hazelcast/management-center:latest"
+            echo "PUSH_LATEST=yes" >> $GITHUB_ENV
           fi
+
+          MINOR_TAG=${CURRENT_TAG:0:4}
+          FILTERED_TAGS_IN_MINOR_LINE=$(git tag --list "${MINOR_TAG}*" | grep -E -v '*BETA*' )
+          LATEST_TAG_IN_MINOR_LINE=$((IFS=$'\n' && echo "${FILTERED_TAGS_IN_MINOR_LINE[*]}") | sort | tail -n 1)
+          if [[ "$LATEST_TAG_IN_MINOR_LINE" = "${CURRENT_TAG}" ]]; then
+            TAGS="${TAGS} --tag hazelcast/management-center:${MINOR_TAG:1}"
+          fi
+          echo "TAGS=${TAGS}" >> $GITHUB_ENV
+
+      - name: Print docker image tags
+        run: echo ${{ env.TAGS }}
+
+      - name: Build & Push Management Center image
+        run: |
           docker buildx build --push \
             ${TAGS} \
             --platform=linux/arm64,linux/amd64 .
