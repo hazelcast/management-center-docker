@@ -12,6 +12,10 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
+concurrency:
+  group: scan-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
+  cancel-in-progress: true
+
 jobs:
   scan:
     env:
