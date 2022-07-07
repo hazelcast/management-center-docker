@@ -1,6 +1,11 @@
 name: Vulnerabilities Scan
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/vulnerabilities_scan.yml
+      - .github/containerscan/*
+      - Dockerfile
   push:
     branches:
       - master
@@ -8,35 +13,40 @@ on:
     - cron: '0 2 * * *'
 
 jobs:
-  azure-trivy-dockle:
+  scan:
+    env:
+      IMAGE_NAME: hazelcast/management-center:${{ github.sha }}
     name: Azure (Trivy + Dockle) Vulnerability Scan
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Build Management Center image
-        run: docker build -t hazelcast/management-center:${{ github.sha }} .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Scan Management Center image by Azure (Trivy + Dockle)
-        uses: Azure/container-scan@v0
+      - name: Build
+        uses: docker/build-push-action@v3
         with:
-          image-name: hazelcast/management-center:${{ github.sha }}
+          context: .
+          tags: ${{ env.IMAGE_NAME }}
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-  snyk:
-    name: Snyk Vulnerability Scan
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Scan image by Azure (Trivy + Dockle)
+        uses: Azure/container-scan@v0
+        env:
+          # See https://github.com/goodwithtech/dockle/issues/188
+          DOCKLE_HOST: "unix:///var/run/docker.sock"
+        with:
+          image-name: ${{ env.IMAGE_NAME }}
 
-      - name: Build Management Center image
-        run: docker build -t hazelcast/management-center:${{ github.sha }} .
-
-      - name: Scan Management Center image by Snyk
+      - name: Scan image by Snyk
+        if: ${{ !cancelled() }}
         uses: snyk/actions/docker@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: hazelcast/management-center:${{ github.sha }}
+          image: ${{ env.IMAGE_NAME }}
           args: --file=Dockerfile --policy-path=.github/containerscan

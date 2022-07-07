@@ -24,8 +24,11 @@ jobs:
         with:
           version: v0.8.2
 
-      - name: Build Management Center image
-        run: >-
-          docker buildx build
-          --tag hazelcast/management-center:ci-build
-          --platform=linux/arm64,linux/amd64 .
+      - name: Build and push docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          tags: hazelcast/management-center:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

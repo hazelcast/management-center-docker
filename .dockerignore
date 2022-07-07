@@ -1,4 +1,2 @@
-.git
-.github
-.idea
-.DS_Store
+**/*
+!files/*
