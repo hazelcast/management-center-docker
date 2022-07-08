@@ -28,37 +28,46 @@ jobs:
         with:
           version: v0.8.2
 
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Compute tags
         run: |
           CURRENT_TAG=${GITHUB_REF:10}
-          TAGS="--tag hazelcast/management-center:${{ env.RELEASE_VERSION }}"
+          TAGS="hazelcast/management-center:${{ env.RELEASE_VERSION }}"
 
           FILTERED_TAGS=$(git tag --list "v*" | grep -E -v '*BETA*' )
           LATEST_TAG=$((IFS=$'\n' && echo "${FILTERED_TAGS[*]}") | sort | tail -n 1)
           if [[ "$LATEST_TAG" = "${CURRENT_TAG}" ]]; then
-            TAGS="${TAGS} --tag hazelcast/management-center:latest"
+            TAGS="${TAGS},hazelcast/management-center:latest"
             echo "PUSH_LATEST=yes" >> $GITHUB_ENV
           fi
 
           MINOR_TAG=${CURRENT_TAG:0:4}
-          FILTERED_TAGS_IN_MINOR_LINE=$(git tag --list "${MINOR_TAG}*" | grep -E -v '*BETA*' )
-          LATEST_TAG_IN_MINOR_LINE=$((IFS=$'\n' && echo "${FILTERED_TAGS_IN_MINOR_LINE[*]}") | sort | tail -n 1)
-          if [[ "$LATEST_TAG_IN_MINOR_LINE" = "${CURRENT_TAG}" ]]; then
-            TAGS="${TAGS} --tag hazelcast/management-center:${MINOR_TAG:1}"
+          if [[ "$MINOR_TAG" != "${CURRENT_TAG}" ]]; then
+            FILTERED_TAGS_IN_MINOR_LINE=$(git tag --list "${MINOR_TAG}*" | grep -E -v '*BETA*' )
+            LATEST_TAG_IN_MINOR_LINE=$((IFS=$'\n' && echo "${FILTERED_TAGS_IN_MINOR_LINE[*]}") | sort | tail -n 1)
+            if [[ "$LATEST_TAG_IN_MINOR_LINE" = "${CURRENT_TAG}" ]]; then
+              TAGS="${TAGS},hazelcast/management-center:${MINOR_TAG:1}"
+            fi
           fi
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
 
       - name: Print docker image tags
         run: echo ${{ env.TAGS }}
 
-      - name: Build & Push Management Center image
-        run: |
-          docker buildx build --push \
-            ${TAGS} \
-            --platform=linux/arm64,linux/amd64 .
+      - name: Build and push docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.TAGS }}
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Update Docker Hub Description of Management Center image
         if: env.PUSH_LATEST == 'yes'
