@@ -3,7 +3,7 @@ ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_JAR="${MC_INSTALL_NAME}.jar"
 ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
 
-FROM alpine:3.16.0 AS builder
+FROM alpine:3.16.1 AS builder
 ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_JAR
@@ -29,7 +29,7 @@ RUN unzip ${MC_INSTALL_ZIP} \
 
 RUN chmod +x start.sh mc-conf.sh hz-mc
 
-FROM alpine:3.16.0
+FROM alpine:3.16.1
 ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_JAR
