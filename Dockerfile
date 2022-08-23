@@ -1,4 +1,4 @@
-ARG MC_VERSION=3.12.17
+ARG MC_VERSION=3.12.18
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_WAR="hazelcast-mancenter-${MC_VERSION}.war"
 
@@ -16,7 +16,7 @@ RUN echo "Installing new APK packages" \
 
 # Comment out following RUN command to build from a local artifact
 RUN echo "Downloading Management Center" \
-    && wget -O ${MC_INSTALL_ZIP} http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
+    && wget -O ${MC_INSTALL_ZIP} https://repository.hazelcast.com/download/management-center/${MC_INSTALL_ZIP} \
     && unzip ${MC_INSTALL_ZIP} -x ${MC_INSTALL_NAME}/docs/* \
     && mv ${MC_INSTALL_NAME}/${MC_INSTALL_WAR} ${MC_INSTALL_WAR} \
     && mv ${MC_INSTALL_NAME}/start.sh start.sh \
