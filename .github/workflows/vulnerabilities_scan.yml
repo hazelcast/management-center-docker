@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/vulnerabilities_scan.yml
-      - .github/containerscan/*
+      - .snyk
       - Dockerfile
   push:
     branches:
@@ -18,16 +18,16 @@ concurrency:
 
 jobs:
   scan:
+    name: Scan docker image
     env:
-      IMAGE_NAME: hazelcast/management-center:${{ github.sha }}
-    name: Azure (Trivy + Dockle) Vulnerability Scan
+      IMAGE_NAME: phone-home:${{ github.sha }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.2.1
+        uses: docker/setup-buildx-action@v2
 
       - name: Build
         uses: docker/build-push-action@v3
@@ -38,19 +38,22 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Scan image by Azure (Trivy + Dockle)
-        uses: Azure/container-scan@v0
-        env:
-          # See https://github.com/goodwithtech/dockle/issues/188
-          DOCKLE_HOST: "unix:///var/run/docker.sock"
-        with:
-          image-name: ${{ env.IMAGE_NAME }}
-
       - name: Scan image by Snyk
-        if: ${{ !cancelled() }}
         uses: snyk/actions/docker@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ env.IMAGE_NAME }}
-          args: --file=Dockerfile --policy-path=.github/containerscan
+          json: true
+          args: >-
+            --file=Dockerfile
+            --print-deps
+            --exclude-base-image-vulns
+            --policy-path=.snyk
+
+      - name: Upload SNYK report
+        uses: actions/upload-artifact@v3
+        if: ${{ failure() }}
+        with:
+          name: SNYK dependency check report
+          path: ${{github.workspace}}/snyk.json
