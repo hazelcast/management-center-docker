@@ -1,7 +1,0 @@
-general:
-  vulnerabilities:
-  bestPracticeViolations:
-    # MC_ADMIN_PASSWORD included as an env variable
-    - CIS-DI-0010
-    # We don't sign Hazelcast Docker images
-    - CIS-DI-0005

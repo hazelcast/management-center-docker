@@ -28,7 +28,7 @@ jobs:
         with:
           version: v0.8.2
 
-      - name: Build and push docker image
+      - name: Build docker image
         uses: docker/build-push-action@v3
         with:
           context: .
