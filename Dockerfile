@@ -27,7 +27,7 @@ RUN unzip ${MC_INSTALL_ZIP} \
  && mv ${MC_INSTALL_NAME}/bin/mc-conf.sh mc-conf.sh \
  && mv ${MC_INSTALL_NAME}/bin/hz-mc hz-mc
 
-FROM redhat/ubi8-minimal:8.7-923
+FROM redhat/ubi8-minimal:8.7-923.1669829893
 ARG MC_VERSION
 ARG MC_INSTALL_NAME
 ARG MC_INSTALL_JAR
