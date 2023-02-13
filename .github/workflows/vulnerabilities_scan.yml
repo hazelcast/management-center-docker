@@ -44,16 +44,14 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ env.IMAGE_NAME }}
-          json: true
           args: >-
             --file=Dockerfile
             --print-deps
             --exclude-base-image-vulns
             --policy-path=.snyk
 
-      - name: Upload SNYK report
-        uses: actions/upload-artifact@v3
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
         if: ${{ failure() }}
         with:
-          name: SNYK dependency check report
-          path: ${{github.workspace}}/snyk.json
+          sarif_file: snyk.sarif
