@@ -2,15 +2,6 @@ name: Publish latest-snapshot Docker image for Management Center
 
 on:
   workflow_dispatch:
-    inputs:
-      mcVersion:
-        description: 'MC Version'
-        type: string
-        required: true
-      mcRevision:
-        description: 'MC Revision'
-        type: string
-        required: true
 
 jobs:
   publish_latest_snapshot:
@@ -33,20 +24,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Print MC version and revision
-        run: |
-          echo "mcVersion = ${{ inputs.mcVersion }}"
-          echo "mcRevision = ${{ inputs.mcVersion }}"
-
       - name: Build and push docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/s390x
           build-args: |
-            MC_VERSION=${{ inputs.mcVersion }}
-            MC_REVISION=${{ inputs.mcRevision }}
-            MC_INSTALL_ZIP=hazelcast-management-center-latest-snapshot.zip
+            MC_VERSION=latest-snapshot
           tags: hazelcast/management-center:latest-snapshot
           push: true
           cache-from: type=gha
