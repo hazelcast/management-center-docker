@@ -14,7 +14,7 @@ RUN echo "Downloading Management Center"\
  | tar --extract --ungzip --wildcards --no-anchored --strip-components 1\
  '*/bin/start.sh' '*/bin/mc-conf.sh' '*/bin/hz-mc' '*/hazelcast-management-center-*.jar'
 
-FROM redhat/ubi8-minimal:8.7-1049
+FROM redhat/ubi8-minimal:8.7-1049.1675784874
 ARG MC_VERSION
 
 ENV MC_HOME=/opt/hazelcast/management-center \
