@@ -1,4 +1,4 @@
-ARG MC_VERSION=latest-snapshot
+ARG MC_VERSION=5.2.1
 
 FROM alpine:3.17.2 AS builder
 ARG MC_VERSION
