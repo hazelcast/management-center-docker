@@ -8,23 +8,20 @@ get_image()
     local RHEL_API_KEY=$4
 
     if [[ $PUBLISHED == "published" ]]; then
-        local PUBLISHED_FILTER="repositories.published==true"
+        local PUBLISHED_FILTER="published==true"
     elif [[ $PUBLISHED == "not_published" ]]; then
-        local PUBLISHED_FILTER="repositories.published!=true"
+        local PUBLISHED_FILTER="published==false"
     else
         echo "Need first parameter as 'published' or 'not_published'." ; return 1
     fi
 
-    local FILTER="filter=deleted==false;${PUBLISHED_FILTER}"
+    local FILTER="filter=deleted==false;repositories=em=(${PUBLISHED_FILTER};tags.name==${VERSION})"
     local INCLUDE="include=total,data.repositories.tags.name,data.scan_status,data._id"
 
-    local RESPONSE=$( \
-        curl --silent \
-             --request GET \
-             --header "X-API-KEY: ${RHEL_API_KEY}" \
-             "https://catalog.redhat.com/api/containers/v1/projects/certification/id/${RHEL_PROJECT_ID}/images?${FILTER}&${INCLUDE}")
-
-    echo "${RESPONSE}" | jq ".data[] | select(.repositories[].tags[]?.name==\"${VERSION}\")" | jq -s '{data:., total: length}'
+    curl --silent \
+         --request GET \
+         --header "X-API-KEY: ${RHEL_API_KEY}" \
+         "https://catalog.redhat.com/api/containers/v1/projects/certification/id/${RHEL_PROJECT_ID}/images?${FILTER}&${INCLUDE}"
 }
 
 wait_for_container_scan()
