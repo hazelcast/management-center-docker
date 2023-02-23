@@ -1,7 +1,6 @@
 name: Build and publish Management Center RHEL image
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - "v5.*"
@@ -68,7 +67,7 @@ jobs:
           ./preflight-linux-amd64 check container ${{ env.RHEL_IMAGE_TAG }}
           --pyxis-api-token=${{ secrets.RHEL_API_KEY }}
           --certification-project-id=${{ secrets.RHEL_PROJECT_ID }}
-          --docker-config=~/.docker/config.json
+          --docker-config=$HOME/.docker/config.json
           --submit
 
       - name: Wait for scan to complete
