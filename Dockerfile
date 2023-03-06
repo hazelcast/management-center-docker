@@ -1,18 +1,19 @@
 ARG MC_VERSION=5.2.1
+ARG MC_DOWNLOAD_BASE_PATH=https://repository.hazelcast.com/download/management-center
 
 FROM alpine:3.17.2 AS builder
 ARG MC_VERSION
+ARG MC_DOWNLOAD_BASE_PATH
 
 WORKDIR /tmp/build
 
 RUN echo "Installing new APK packages"\
- && apk add --no-cache wget tar
+ && apk add --no-cache wget unzip
 
 RUN echo "Downloading Management Center"\
- && wget -q --show-progress --progress=bar:force\
- https://repository.hazelcast.com/download/management-center/hazelcast-management-center-${MC_VERSION}.tar.gz -O -\
- | tar --extract --ungzip --wildcards --no-anchored --strip-components 1\
- '*/bin/start.sh' '*/bin/mc-conf.sh' '*/bin/hz-mc' '*/hazelcast-management-center-*.jar'
+ && wget -O mc.zip -q --show-progress --progress=bar:force ${MC_DOWNLOAD_BASE_PATH}/hazelcast-management-center-${MC_VERSION}.zip\
+ && unzip mc.zip\
+ && rm -f mc.zip
 
 FROM redhat/ubi8-minimal:8.7-1085
 ARG MC_VERSION
@@ -69,8 +70,8 @@ RUN echo "Installing new packages" \
 
 WORKDIR ${MC_HOME}
 
-COPY --from=builder /tmp/build/*.jar .
-COPY --from=builder --chmod=755 /tmp/build/bin/* ./bin/
+COPY --from=builder /tmp/build/hazelcast-management-center-*/*.jar .
+COPY --from=builder --chmod=755 /tmp/build/hazelcast-management-center-*/bin/mc-conf.sh /tmp/build/hazelcast-management-center-*/bin/hz-mc /tmp/build/hazelcast-management-center-*/bin/hz-mc ./bin/
 COPY --chmod=755 files/mc-start.sh ./bin/mc-start.sh
 
 VOLUME ["${MC_DATA}"]
