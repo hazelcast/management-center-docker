@@ -39,19 +39,19 @@ jobs:
           CURRENT_TAG=${GITHUB_REF:10}
           TAGS="hazelcast/management-center:${{ env.RELEASE_VERSION }}"
 
-          FILTERED_TAGS=$(git tag --list "v*" | grep -E -v '*BETA*' )
-          LATEST_TAG=$((IFS=$'\n' && echo "${FILTERED_TAGS[*]}") | sort | tail -n 1)
+          LATEST_TAG=$(git tag --list --sort=refname "v*" | grep -E -v 'v*BETA*' | tail -n 1)
           if [[ "$LATEST_TAG" = "${CURRENT_TAG}" ]]; then
             TAGS="${TAGS},hazelcast/management-center:latest"
+            echo "Latest tag added: ${TAGS}"
             echo "PUSH_LATEST=yes" >> $GITHUB_ENV
           fi
 
           MINOR_TAG=${CURRENT_TAG:0:4}
           if [[ "$MINOR_TAG" != "${CURRENT_TAG}" ]]; then
-            FILTERED_TAGS_IN_MINOR_LINE=$(git tag --list "${MINOR_TAG}*" | grep -E -v '*BETA*' )
-            LATEST_TAG_IN_MINOR_LINE=$((IFS=$'\n' && echo "${FILTERED_TAGS_IN_MINOR_LINE[*]}") | sort | tail -n 1)
+            LATEST_TAG_IN_MINOR_LINE=$(git tag --list --sort=refname "${MINOR_TAG}*" | grep -E -v 'v*BETA*' | tail -n 1)
             if [[ "$LATEST_TAG_IN_MINOR_LINE" = "${CURRENT_TAG}" ]]; then
               TAGS="${TAGS},hazelcast/management-center:${MINOR_TAG:1}"
+              echo "Latest tag in minor line added: ${TAGS}"
             fi
           fi
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
