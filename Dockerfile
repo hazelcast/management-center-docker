@@ -15,7 +15,7 @@ RUN echo "Downloading Management Center"\
  && unzip mc.zip\
  && rm -f mc.zip
 
-FROM redhat/ubi8-minimal:8.7-1107
+FROM redhat/ubi8-minimal:8.8-860
 ARG MC_VERSION
 
 ENV MC_HOME=/opt/hazelcast/management-center \
