@@ -66,22 +66,21 @@ RUN echo "Installing new packages" \
  && microdnf -y clean all \
  && mkdir -p ${MC_HOME} ${MC_DATA} \
  && echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running container as non-root with \"docker run --user\" option" \
- && chmod a+rwx ${MC_HOME} ${MC_DATA}
-
-WORKDIR ${MC_HOME}
-
-COPY --from=builder /tmp/build/hazelcast-management-center-*/*.jar .
-COPY --from=builder --chmod=755 /tmp/build/hazelcast-management-center-*/bin/mc-conf.sh /tmp/build/hazelcast-management-center-*/bin/hz-mc /tmp/build/hazelcast-management-center-*/bin/hz-mc ./bin/
-COPY --chmod=755 files/mc-start.sh ./bin/mc-start.sh
-
-VOLUME ["${MC_DATA}"]
-EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
-
-RUN echo "Adding non-root user" \
+ && chmod a+rwx ${MC_HOME} ${MC_DATA} \
+ && echo "Adding non-root user" \
  && adduser --uid $USER_UID --system --home $MC_HOME --shell /sbin/nologin $USER_NAME \
  && chown -R $USER_UID:0 $MC_HOME ${MC_DATA} \
  && chmod -R g=u $MC_HOME ${MC_DATA} \
  && chmod -R +r $MC_HOME ${MC_DATA}
+
+WORKDIR ${MC_HOME}
+
+COPY --from=builder --chown=$USER_UID:0 /tmp/build/hazelcast-management-center-*/*.jar .
+COPY --from=builder --chmod=775 --chown=$USER_UID:0 /tmp/build/hazelcast-management-center-*/bin/mc-conf.sh /tmp/build/hazelcast-management-center-*/bin/hz-mc /tmp/build/hazelcast-management-center-*/bin/hz-mc ./bin/
+COPY --chmod=775 --chown=$USER_UID:0 files/mc-start.sh ./bin/mc-start.sh
+
+VOLUME ["${MC_DATA}"]
+EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
 
 # Switch to hazelcast user
 USER ${USER_UID}
