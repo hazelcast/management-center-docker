@@ -1,4 +1,4 @@
-ARG MC_VERSION=5.3.1
+ARG MC_VERSION=5.3.2
 ARG MC_DOWNLOAD_BASE_PATH=https://repository.hazelcast.com/download/management-center
 
 FROM alpine:3.18.3 AS builder
