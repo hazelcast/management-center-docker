@@ -20,7 +20,7 @@ jobs:
   scan:
     name: Scan docker image
     env:
-      IMAGE_NAME: phone-home:${{ github.sha }}
+      IMAGE_NAME: hazelcast/management-center:${{ github.sha }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
