@@ -53,7 +53,7 @@ jobs:
             --fail-on=upgradable
 
       - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: ${{ failure() }}
         with:
           sarif_file: snyk.sarif
