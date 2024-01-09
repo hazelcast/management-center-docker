@@ -60,18 +60,18 @@ COPY --link files/licenses /licenses
 ### Atomic Help File
 COPY --link files/help.1 /help.1
 
-RUN echo "Installing new packages" \
- && microdnf upgrade --nodocs \
- && microdnf -y --nodocs install java-21-openjdk \
- && rm -rf /var/cache/microdnf \
- && microdnf -y clean all \
- && mkdir -p ${MC_HOME} ${MC_DATA} \
- && echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running container as non-root with \"docker run --user\" option" \
- && chmod a+rwx ${MC_HOME} ${MC_DATA} \
- && echo "Adding non-root user" \
- && adduser --uid ${USER_UID} --system --home ${MC_HOME} --shell /sbin/nologin ${USER_NAME} \
- && chown -R ${USER_UID}:0 ${MC_HOME} ${MC_DATA} \
- && chmod -R g=u ${MC_HOME} ${MC_DATA} \
+RUN echo "Installing new packages"\
+ && microdnf -y --nodocs upgrade\
+ && microdnf -y --nodocs install java-21-openjdk\
+ && rm -rf /var/cache/microdnf\
+ && microdnf -y clean all\
+ && mkdir -p ${MC_HOME} ${MC_DATA}\
+ && echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running container as non-root with \"docker run --user\" option"\
+ && chmod a+rwx ${MC_HOME} ${MC_DATA}\
+ && echo "Adding non-root user"\
+ && adduser --uid ${USER_UID} --system --home ${MC_HOME} --shell /sbin/nologin ${USER_NAME}\
+ && chown -R ${USER_UID}:0 ${MC_HOME} ${MC_DATA}\
+ && chmod -R g=u ${MC_HOME} ${MC_DATA}\
  && chmod -R +r ${MC_HOME} ${MC_DATA}
 
 WORKDIR ${MC_HOME}

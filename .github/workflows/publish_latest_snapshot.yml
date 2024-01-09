@@ -5,6 +5,7 @@ on:
 
 jobs:
   publish_latest_snapshot:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Docker repo

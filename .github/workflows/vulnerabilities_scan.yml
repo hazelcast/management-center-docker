@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   scan:
+    timeout-minutes: 10
     name: Scan docker image
     env:
       IMAGE_NAME: hazelcast/management-center:${{ github.sha }}
