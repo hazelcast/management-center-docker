@@ -8,13 +8,19 @@ ARG MC_DOWNLOAD_BASE_PATH
 
 WORKDIR /tmp/build
 
+COPY --link files/hazelcast-management-center.zip /tmp/build/
+
 RUN echo "Installing new APK packages"\
  && apk add --no-cache wget unzip
 
-RUN echo "Downloading Management Center"\
- && wget -O mc.zip -q --show-progress --progress=bar:force ${MC_DOWNLOAD_BASE_PATH}/hazelcast-management-center-${MC_VERSION}.zip\
- && unzip mc.zip\
- && rm -f mc.zip
+RUN if [[ ! -f hazelcast-management-center.zip ]]; then \
+       echo "Downloading Management Center"; \
+       wget -O hazelcast-management-center.zip -q --show-progress --progress=bar:force ${MC_DOWNLOAD_BASE_PATH}/hazelcast-management-center-${MC_VERSION}.zip; \
+    else \
+           echo "Using local hazelcast-management-center.zip"; \
+    fi \
+ && unzip hazelcast-management-center.zip\
+ && rm -f hazelcast-management-center.zip
 
 FROM redhat/ubi9-minimal:9.3
 ARG MC_VERSION
