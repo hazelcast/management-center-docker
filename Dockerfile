@@ -8,7 +8,7 @@ ARG MC_DOWNLOAD_BASE_PATH
 
 WORKDIR /tmp/build
 
-COPY --link files/hazelcast-management-center.zip /tmp/build/
+COPY --link files/hazelcast-management-center.zip* /tmp/build/
 
 RUN echo "Installing new APK packages"\
  && apk add --no-cache wget unzip
