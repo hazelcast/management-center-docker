@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-ARG MC_VERSION=5.4.0-BETA-2
+ARG MC_VERSION=5.4.0
 ARG MC_DOWNLOAD_BASE_PATH=https://repository.hazelcast.com/download/management-center
 
 FROM alpine:3.19.1 AS builder
