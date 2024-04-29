@@ -1,6 +1,7 @@
 name: Build and publish Management Center RHEL image
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "v5.*"
@@ -47,9 +48,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-#          RedHat OpenShift publishing infrastructure still doesn't support multi-arch images
-#          platforms: linux/amd64,linux/arm64,linux/s390x
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64,linux/s390x
           tags: ${{ env.RHEL_IMAGE_TAG }}
           push: true
           cache-from: type=gha
