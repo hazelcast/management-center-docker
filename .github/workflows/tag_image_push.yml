@@ -64,6 +64,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/s390x
           tags: ${{ env.TAGS }}
+          provenance: false
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max

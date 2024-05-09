@@ -51,6 +51,7 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/s390x
           tags: ${{ env.RHEL_IMAGE_TAG }}
           push: true
+          provenance: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
