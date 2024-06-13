@@ -1,7 +1,7 @@
 name: Publish snapshot Docker image for Management Center
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       MC_VERSION:
         description: 'MC version'
