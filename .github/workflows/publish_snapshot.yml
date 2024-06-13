@@ -1,43 +1,43 @@
 name: Publish snapshot Docker image for Management Center
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      mcVersion:
-        description: 'MC Version'
+      MC_VERSION:
+        description: 'MC version'
         type: string
-        required: true
-      mcRevision:
-        description: 'MC Revision'
-        type: string
-        required: true
+        required: false
+        default: 'latest-snapshot'
 
 jobs:
   publish_snapshot:
-    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Docker repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1.6.0
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
         with:
-          version: v0.5.1
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Print MC version
-        run: echo ${{ github.event.inputs.mcVersion }}
-
-      - name: Build/Push Management Center image
-        run: >-
-          docker buildx build --push
-          --build-arg MC_VERSION=${{ github.event.inputs.mcVersion }}
-          --build-arg MC_REVISION=${{ github.event.inputs.mcRevision }}
-          --build-arg MC_INSTALL_ZIP=hazelcast-management-center-${{ github.event.inputs.mcVersion }}.zip
-          --tag hazelcast/management-center:${{ github.event.inputs.mcVersion }}
-          --platform=linux/arm64,linux/amd64 .
+      - name: Build and push docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/s390x
+          build-args: |
+            MC_VERSION=${{ inputs.MC_VERSION }}
+          tags: hazelcast/management-center:${{ inputs.MC_VERSION }}
+          provenance: false
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
