@@ -1,10 +1,16 @@
-name: Publish latest-snapshot Docker image for Management Center
+name: Publish snapshot Docker image for Management Center
 
 on:
   workflow_dispatch:
+    inputs:
+      MC_VERSION:
+        description: 'MC version'
+        type: string
+        required: false
+        default: 'latest-snapshot'
 
 jobs:
-  publish_latest_snapshot:
+  publish_snapshot:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -29,8 +35,8 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/s390x
           build-args: |
-            MC_VERSION=latest-snapshot
-          tags: hazelcast/management-center:latest-snapshot
+            MC_VERSION=${{ inputs.MC_VERSION }}
+          tags: hazelcast/management-center:${{ inputs.MC_VERSION }}
           provenance: false
           push: true
           cache-from: type=gha
