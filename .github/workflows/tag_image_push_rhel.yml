@@ -52,8 +52,6 @@ jobs:
           tags: ${{ env.RHEL_IMAGE_TAG }}
           push: true
           provenance: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Install preflight tool
         run: |

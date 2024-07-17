@@ -39,5 +39,3 @@ jobs:
           tags: hazelcast/management-center:${{ inputs.MC_VERSION }}
           provenance: false
           push: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max

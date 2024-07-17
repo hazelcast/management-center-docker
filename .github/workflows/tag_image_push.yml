@@ -66,8 +66,6 @@ jobs:
           tags: ${{ env.TAGS }}
           provenance: false
           push: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Update Docker Hub Description of Management Center image
         if: env.PUSH_LATEST == 'yes'
