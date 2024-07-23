@@ -36,8 +36,6 @@ jobs:
           context: .
           tags: ${{ env.IMAGE_NAME }}
           load: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Scan image by Snyk
         uses: snyk/actions/docker@master
