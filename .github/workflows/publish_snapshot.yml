@@ -3,14 +3,35 @@ name: Publish snapshot Docker image for Management Center
 on:
   workflow_dispatch:
     inputs:
-      MC_VERSION:
-        description: 'MC version'
+      mc-full-version:
+        description: 'MC full version'
         type: string
-        required: false
-        default: 'latest-snapshot'
-
+        required: true
+      latest-snapshot:
+        description: 'Add additional `latest-snapshot` tag?'
+        type: boolean
+        required: true
+        default: false
+  workflow_call:
+    inputs:
+      mc-full-version:
+        description: 'MC full version'
+        type: string
+        required: true
+      latest-snapshot:
+        description: 'Add additional `latest-snapshot` tag?'
+        type: boolean
+        required: true
+        default: false
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_PASSWORD:
+        required: true
 jobs:
   publish_snapshot:
+    env:
+      TAGS: hazelcast/management-center:${{ inputs.mc-full-version }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -29,13 +50,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Concat latest-snapshot to TAGS env var
+        if: ${{ inputs.latest-snapshot }}
+        run: |
+          echo "TAGS=${{ env.TAGS }},hazelcast/management-center:latest-snapshot" >> $GITHUB_ENV
+
       - name: Build and push docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/s390x
           build-args: |
-            MC_VERSION=${{ inputs.MC_VERSION }}
-          tags: hazelcast/management-center:${{ inputs.MC_VERSION }}
+            MC_VERSION=${{ inputs.mc-full-version }}
+          tags: ${{ env.TAGS }}
           provenance: false
           push: true
