@@ -37,6 +37,8 @@ jobs:
     steps:
       - name: Checkout Docker repo
         uses: actions/checkout@v4
+        with:
+          repository: 'hazelcast/management-center-docker'
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
