@@ -30,6 +30,7 @@ on:
         required: true
 jobs:
   publish_snapshot:
+    name: "Release docker image"
     env:
       TAGS: hazelcast/management-center:${{ inputs.mc-full-version }}
     timeout-minutes: 10
