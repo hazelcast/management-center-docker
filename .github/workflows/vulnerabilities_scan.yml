@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - .github/workflows/vulnerabilities_scan.yml
+#      - .github/workflows/vulnerabilities_scan.yml
       - .snyk
-      - Dockerfile
+#      - Dockerfile
   push:
     branches:
       - master
