@@ -1,4 +1,4 @@
-name: Check base images
+name: Rebuild maintained images
 
 on:
   workflow_dispatch:
@@ -11,37 +11,33 @@ on:
     - cron: '0 6 * * *'
 
 jobs:
-  get-latest-patch-versions:
+  get-latest-patch-versions-to-rebuild:
     runs-on: ubuntu-latest
-    name: Get latest patch versions
+    name: Get latest patch versions since
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    env:
-      MIN_VERSION: ${{ inputs.minimal-supported-version || '5.3'  }}
+      versions-count: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.versions-count }}
+      matrix: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.matrix }}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - id: set-matrix
-        name: Get latest patch versions
-        run: |
-          echo "Getting latest patch versions starting from $MIN_VERSION"
-          versions_since_min = $(git tag --list --sort=refname "v*" | sed 's/^v//' | sed -n "/^${MIN_VERSION}.*\$/,\$p" | grep -v BETA | grep -v DEVEL
-          latest_patches=$(echo "$versions_since_min" | while IFS=. read -r major minor patch; do
-            key="${major}.${minor}"
-            if [[ -z "${seen[$key]}" || $patch -gt ${seen[$key]} ]]; then
-              seen[$key]=$patch
-              latest[$key]="${major}.${minor}.${patch}"
-            fi
-          done
-          for version in "${latest[@]}"; do
-            echo "$version"
-          done | jq -R . | jq -c -s .)
-          
-          echo '## Found latest patch versions' >> $GITHUB_STEP_SUMMARY
-          echo "```json
-          $latest_patches
-          ```" >> $GITHUB_STEP_SUMMARY
 
-          echo "matrix={\"version\":$latest_patches}" >> $GITHUB_OUTPUT
+      - name: Get changed image versions
+        uses: ./.github/actions/get-latest-patch-versions-to-rebuild
+        id: get-latest-patch-versions-to-rebuild
+        with:
+          since-version: ${{ inputs.minimal-supported-version || '5.3'  }}
+          image-name: hazelcast/management-center
+
+  rebuild:
+    if: ${{ needs.get-latest-patch-versions-to-rebuild.outputs.versions-count > 0 }}
+    name: Rebuild ${{ matrix.version }}
+    needs: get-latest-patch-versions-to-rebuild
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.matrix) }}
+    uses: ./.github/workflows/tag_image_push.yml
+    with:
+      dry-run: true
+      tag: 'v${{ matrix.version }}'
+    secrets: inherit

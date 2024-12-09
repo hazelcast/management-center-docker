@@ -1,0 +1,70 @@
+name: 'get-latest-patch-versions-to-rebuild'
+inputs:
+  since-version:
+    description: "Check only versions greater than or equal to this version"
+    required: true
+  image-name:
+    description: "Include only versions greater than or equal to this version"
+    required: true
+  path-to-dockerfile:
+    description: "Path to Dockerfile from repo root"
+    required: false
+    default: 'Dockerfile'
+outputs:
+  versions-count:
+    description: "Versions to rebuild count"
+    value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.versions-count }}
+  matrix:
+    description: "Latest patch versions to rebuild as JSON array string"
+    value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.matrix }}
+runs:
+  using: "composite"
+  steps:
+    - id: get-latest-patch-versions-to-rebuild
+      run: |
+        set -e -o pipefail ${RUNNER_DEBUG:+-x}
+        
+        # use API instead of git, so we don't need to cloen all tags?       
+        latest_patch_versions=$(git tag --list "v*" | sort -V | sed 's/^v//' | sed -n "/^${{ inputs.since-version }}.*\$/,\$p" |
+          grep -v BETA | grep -v DEVEL | awk -F. '{
+            key = $1 "." $2;
+            latest[key] = $0;
+          }
+          END {
+            for (key in latest) {
+              print latest[key];
+            }
+          }' | sort -V)
+
+        echo '## Base image digest diffs' >> $GITHUB_STEP_SUMMARY
+        
+        latest_patch_versions_to_rebuild='[]'
+        while read -r version; do
+          wget -q -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/v${version}/${{ inputs.path-to-dockerfile }}"
+          BASE_IMAGE=$(grep '^FROM ' "Dockerfile.v$version" | tail -n 1 | cut -d' ' -f2)
+    
+          docker pull -q "$BASE_IMAGE"
+          BASE_IMAGE_SHA=$(docker image inspect "$BASE_IMAGE" | jq -r '.[].RootFS.Layers[0]')
+    
+          CURRENT_IMAGE="${{ inputs.image-name }}:$version"
+          docker pull -q "$CURRENT_IMAGE"
+          CURRENT_IMAGE_SHA=$(docker image inspect "$CURRENT_IMAGE" | jq -r '.[].RootFS.Layers[0]')
+          
+          echo "### $version" >> $GITHUB_STEP_SUMMARY
+          echo '| Image | Layer[0] Digest |' >> $GITHUB_STEP_SUMMARY
+          echo '| --- | --- |' >> $GITHUB_STEP_SUMMARY
+          echo "| $CURRENT_IMAGE | $CURRENT_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
+          echo "| $BASE_IMAGE | $BASE_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+
+          if [ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]; then
+            latest_patch_versions_to_rebuild=$(echo "$latest_patch_versions_to_rebuild" | jq -c --arg v "$version" '. + [$v]')
+          fi
+        done <<< "$latest_patch_versions"
+
+        echo "matrix={\"version\":${latest_patch_versions_to_rebuild}}"
+        echo "versions-count=$(echo "${latest_patch_versions_to_rebuild}" | jq 'length')"
+
+        echo "matrix={\"version\":${latest_patch_versions_to_rebuild}}" >> $GITHUB_OUTPUT
+        echo "versions-count=$(echo "${latest_patch_versions_to_rebuild}" | jq 'length')" >> $GITHUB_OUTPUT
+      shell: bash
