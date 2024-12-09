@@ -24,6 +24,9 @@ runs:
             }
           }' | sort -V | jq -R . | jq -c -s .)
         echo "latest-patch-versions=${latest_patch_versions}" >> $GITHUB_OUTPUT
+      shell: bash
+
     - run: |
         echo '## Found latest patch versions since ${{ inputs.since-version }}' >> $GITHUB_STEP_SUMMARY
         echo '`${{ steps.get-latest-patch-versions.outputs.latest-patch-versions }}`' >> $GITHUB_STEP_SUMMARY
+      shell: bash

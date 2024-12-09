@@ -28,3 +28,4 @@ runs:
           fi
         done
         echo "changed=$CHANGED" >> $GITHUB_OUTPUT
+      shell: bash
