@@ -52,7 +52,8 @@ jobs:
       - name: Get base image from Dockerfile
         id: get-base-image-from-dockerfile
         run: |
-          echo "base-image=$(grep '^FROM ' v${{ matrix.version }}/Dockerfile | cut -d' ' -f2)" >> $GITHUB_OUTPUT
+          BASE_IMAGE=$(grep '^FROM ' v${{ matrix.version }}/Dockerfile | cut -d' ' -f2)
+          echo "base-image=$BASE_IMAGE" >> $GITHUB_OUTPUT
 
       - uses: ./.github/actions/find-base-image-digest-diff
         id: base-image-diff
