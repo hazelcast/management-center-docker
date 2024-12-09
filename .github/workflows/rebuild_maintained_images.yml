@@ -10,13 +10,12 @@ on:
   schedule:
     - cron: '0 6 * * *'
 
-env:
-  MIN_VERSION: ${{ inputs.minimal-supported-version || '5.3'  }}
-
 jobs:
   get-latest-patch-versions:
     runs-on: ubuntu-latest
     name: Get latest patch versions since ${{ env.MIN_VERSION }}
+    env:
+      MIN_VERSION: ${{ inputs.minimal-supported-version || '5.3'  }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
