@@ -19,9 +19,9 @@ runs:
         echo '| Arch | ${{ inputs.base-image }} .digest | ${{ inputs.image }} .layers[0].digest |' >> $GITHUB_STEP_SUMMARY
         echo '| --- | --- | --- |' >> $GITHUB_STEP_SUMMARY
         
-        for ARCH in $(echo "$IMAGE_MANIFEST" | jq -r '.manifests[].platform.architecture'); do
-          NEWEST_BASE_IMAGE_DIGEST=$(echo "$BASE_IMAGE_MANIFEST" | jq -r ".manifests[] | select(.platform.architecture==\"$ARCH\") | .digest")
-          CURRENT_BASE_IMAGE_DIGEST=$(echo "$IMAGE_MANIFEST" | jq -r ".manifests[] | select(.platform.architecture==\"$ARCH\") | .layers[0].digest")
+        for ARCH in $(echo "$IMAGE_MANIFEST" | jq -r '.[].Descriptor.platform.architecture'); do
+          NEWEST_BASE_IMAGE_DIGEST=$(echo "$BASE_IMAGE_MANIFEST" | jq -r ".[].Descriptor | select(.platform.architecture==\"$ARCH\") | .digest")
+          CURRENT_BASE_IMAGE_DIGEST=$(echo "$IMAGE_MANIFEST" | jq -r ".[] | select(.Descriptor.platform.architecture==\"$ARCH\") | .SchemaV2Manifest.layers[0].digest")
           echo "| $ARCH | $NEWEST_BASE_IMAGE_DIGEST | $CURRENT_BASE_IMAGE_DIGEST |" >> $GITHUB_STEP_SUMMARY
           if [ "$NEWEST_BASE_IMAGE_DIGEST" != "$CURRENT_BASE_IMAGE_DIGEST" ]; then
               CHANGED=true
