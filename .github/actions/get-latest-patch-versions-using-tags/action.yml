@@ -1,0 +1,29 @@
+name: 'get-latest-patch-versions-using-tags'
+inputs:
+  since-version:
+    description: "Include only versions greater than or equal to this version"
+    required: true
+outputs:
+  latest-patch-versions:
+    description: "Latest patch versions as JSON array string"
+    value: ${{ steps.get-latest-patch-versions.outputs.patch-versions }}
+runs:
+  using: "composite"
+  steps:
+    - id: get-latest-patch-versions
+      run: |
+        set -e -o pipefail ${RUNNER_DEBUG:+-x}
+        latest_patch_versions=$(git tag --list "v*" | sort -V | sed 's/^v//' | sed -n "/^${{ inputs.since-version }}.*\$/,\$p" |
+          grep -v BETA | grep -v DEVEL | awk -F. '{
+            key = $1 "." $2;
+            latest[key] = $0;
+          }
+          END {
+            for (key in latest) {
+              print latest[key];
+            }
+          }' | sort -V | jq -R . | jq -c -s .)
+        echo "latest-patch-versions=${latest_patch_versions}" >> $GITHUB_OUTPUT
+    - run: |
+        echo '## Found latest patch versions since ${{ inputs.since-version }}' >> $GITHUB_STEP_SUMMARY
+        echo '`${{ steps.get-latest-patch-versions.outputs.latest-patch-versions }}`' >> $GITHUB_STEP_SUMMARY

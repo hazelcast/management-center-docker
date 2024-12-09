@@ -10,39 +10,53 @@ on:
   schedule:
     - cron: '0 6 * * *'
 
+env:
+  MIN_VERSION: ${{ inputs.minimal-supported-version || '5.3'  }}
+
 jobs:
   get-latest-patch-versions:
     runs-on: ubuntu-latest
-    name: Get latest patch versions
+    name: Get latest patch versions since ${{ env.MIN_VERSION }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-    env:
-      MIN_VERSION: ${{ inputs.minimal-supported-version || '5.3'  }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - id: set-matrix
-        name: Get latest patch versions
-        run: |
-          set -e -o pipefail ${RUNNER_DEBUG:+-x}
-          echo "Getting latest patch versions starting from $MIN_VERSION"
-          latest_patches=$(git tag --list "v*" | sort -V | sed 's/^v//' | sed -n "/^${MIN_VERSION}.*\$/,\$p" |
-            grep -v BETA | grep -v DEVEL | awk -F. '{
-              key = $1 "." $2;
-              latest[key] = $0;
-            }
-            END {
-              for (key in latest) {
-                print latest[key];
-              }
-            }' | sort -V | jq -R . | jq -c -s .)
-          
-          echo '## Found latest patch versions' >> $GITHUB_STEP_SUMMARY
-          echo '```json' >> $GITHUB_STEP_SUMMARY
-          echo "$latest_patches" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+      - uses: ./.github/actions/get-latest-patch-versions-using-tags
+        id: get-latest-patch-versions
+        with:
+          since-version: ${{ env.MIN_VERSION }}
 
-          echo "matrix={\"version\":$latest_patches}" >> $GITHUB_OUTPUT
+      - id: set-matrix
+        run: |
+          echo 'matrix={"version":${{ steps.get-latest-patch-versions.outputs.latest-patch-versions }}}' >> $GITHUB_OUTPUT
+
+  trigger-rebuilds:
+    runs-on: ubuntu-latest
+    name: Rebuild ${{ matrix.version }} if base image changed
+    needs: get-latest-patch-versions
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.get-latest-patch-versions.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout version ${{ matrix.version }}
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ matrix.version }}
+          path: v${{ matrix.version }}
+
+      - name: Get base image from Dockerfile
+        id: get-base-image-from-dockerfile
+        run: |
+          echo "base-image=$(grep '^FROM ' v${{ matrix.version }}/Dockerfile | cut -d' ' -f2)" >> $GITHUB_OUTPUT
+
+      - uses: ./.github/actions/find-base-image-digest-diff
+        id: base-image-diff
+        with:
+          image: hazelcast/management-center:${{ matrix.version }}
+          base-image: ${{ steps.get-base-image-from-dockerfile.outputs.base-image }}
