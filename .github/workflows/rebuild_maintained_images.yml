@@ -31,7 +31,8 @@ jobs:
           echo "Getting latest patch versions starting from $MIN_VERSION"
           declare -A latest
           latest_patches=$(git tag --list "v*" | sort -V | sed 's/^v//' | sed -n "/^${MIN_VERSION}.*\$/,\$p" | grep -v BETA | grep -v DEVEL | while IFS=. read -r major minor patch; do
-              latest["${major}.${minor}"]="${major}.${minor}.${patch}"
+              key="${major}.${minor}"
+              latest[$key]="${major}.${minor}.${patch}"
             done
             printf "%s\n" "${latest[@]}" | jq -R . | jq -c -s .)
           
