@@ -13,7 +13,7 @@ on:
 jobs:
   get-latest-patch-versions:
     runs-on: ubuntu-latest
-    name: Get latest patch versions since ${{ env.MIN_VERSION }}
+    name: Get latest patch versions since
     env:
       MIN_VERSION: ${{ inputs.minimal-supported-version || '5.3'  }}
     outputs:
