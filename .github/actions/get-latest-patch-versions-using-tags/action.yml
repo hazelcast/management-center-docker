@@ -6,7 +6,7 @@ inputs:
 outputs:
   latest-patch-versions:
     description: "Latest patch versions as JSON array string"
-    value: ${{ steps.get-latest-patch-versions.outputs.patch-versions }}
+    value: ${{ steps.get-latest-patch-versions.outputs.latest-patch-versions }}
 runs:
   using: "composite"
   steps:
