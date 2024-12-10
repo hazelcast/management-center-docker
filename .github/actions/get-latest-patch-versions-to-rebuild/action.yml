@@ -11,6 +11,8 @@ inputs:
     required: false
     default: 'Dockerfile'
 outputs:
+  versions-count:
+    value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.rebuilds-needed }}
   matrix:
     description: "Latest patch versions to rebuild as JSON array string"
     value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.matrix }}
@@ -53,7 +55,7 @@ runs:
           echo "| $CURRENT_IMAGE | $CURRENT_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
           echo "| $BASE_IMAGE | $BASE_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
           echo '' >> $GITHUB_STEP_SUMMARY
-    
+
           if [ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]; then
             latest_patch_versions_to_rebuild=$(echo "$latest_patch_versions_to_rebuild" | jq -c --arg v "$version" '. + [$v]')
           fi
@@ -61,5 +63,8 @@ runs:
 
         echo "latest_patch_versions_to_rebuild=$latest_patch_versions_to_rebuild"
         echo "matrix={\"version\":$latest_patch_versions_to_rebuild}"
+        echo "versions-count=$(echo "$latest_patch_versions_to_rebuild" | jq 'length')"
+
         echo "matrix={\"version\":$latest_patch_versions_to_rebuild}" >> $GITHUB_OUTPUT
+        echo "versions-count=$(echo "$latest_patch_versions_to_rebuild" | jq 'length')" >> $GITHUB_OUTPUT
       shell: bash

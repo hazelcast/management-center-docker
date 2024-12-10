@@ -17,6 +17,7 @@ jobs:
     env:
       MIN_VERSION: ${{ inputs.minimal-supported-version || '5.3'  }}
     outputs:
+      versions-count: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.versions-count }}
       matrix: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +31,8 @@ jobs:
           since-version: ${{ env.MIN_VERSION }}
           image-name: hazelcast/management-center
 
-  trigger-rebuilds:
+  rebuild:
+    if: ${{ needs.get-latest-patch-versions-to-rebuild.outputs.versions-count > 0 }}
     runs-on: ubuntu-latest
     name: Rebuild ${{ matrix.version }}
     needs: get-latest-patch-versions-to-rebuild
