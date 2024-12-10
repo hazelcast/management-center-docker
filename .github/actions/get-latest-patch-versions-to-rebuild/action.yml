@@ -57,15 +57,15 @@ runs:
           echo '' >> $GITHUB_STEP_SUMMARY
 
           if [ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]; then
-            echo "$latest_patch_versions_to_rebuild" | jq -c --arg v "$version" '. + [$v]' 
             latest_patch_versions_to_rebuild=$(echo "$latest_patch_versions_to_rebuild" | jq -c --arg v "$version" '. + [$v]')
+            echo "latest_patch_versions_to_rebuild=${latest_patch_versions_to_rebuild}"
           else
             echo "$version: digests are same"
           fi
         done
 
         echo "latest_patch_versions_to_rebuild=$latest_patch_versions_to_rebuild"
-        echo "matrix={\"version\":$latest_patch_versions_to_rebuild}"
+        echo "matrix={\"version\":${latest_patch_versions_to_rebuild}}"
         echo "versions-count=$(echo "$latest_patch_versions_to_rebuild" | jq 'length')"
 
         echo "matrix={\"version\":$latest_patch_versions_to_rebuild}" >> $GITHUB_OUTPUT
