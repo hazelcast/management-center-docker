@@ -58,6 +58,8 @@ runs:
 
           if [ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]; then
             latest_patch_versions_to_rebuild=$(echo "$latest_patch_versions_to_rebuild" | jq -c --arg v "$version" '. + [$v]')
+          else
+            echo "$version: digests are same"
           fi
         done
 
