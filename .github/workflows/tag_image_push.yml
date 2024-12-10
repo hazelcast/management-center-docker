@@ -75,21 +75,21 @@ jobs:
       - name: Print docker image tags
         run: echo ${{ env.TAGS }}
 
-#      - name: Build and push docker image
-#        uses: docker/build-push-action@v6
-#        with:
-#          context: .
-#          platforms: linux/amd64,linux/arm64,linux/s390x
-#          tags: ${{ env.TAGS }}
-#          provenance: false
-#          push: ${{ !env.DRY_RUN }}
-#
-#      - name: Update Docker Hub Description of Management Center image
-#        if: env.PUSH_LATEST == 'yes' && !env.DRY_RUN
-#        uses: peter-evans/dockerhub-description@v4
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-#          repository: hazelcast/management-center
-#          short-description: Hazelcast Management Center Docker Image
-#          readme-filepath: ./README.md
+      - name: Build and push docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/s390x
+          tags: ${{ env.TAGS }}
+          provenance: false
+          push: ${{ !env.DRY_RUN }}
+
+      - name: Update Docker Hub Description of Management Center image
+        if: env.PUSH_LATEST == 'yes' && !env.DRY_RUN
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: hazelcast/management-center
+          short-description: Hazelcast Management Center Docker Image
+          readme-filepath: ./README.md
