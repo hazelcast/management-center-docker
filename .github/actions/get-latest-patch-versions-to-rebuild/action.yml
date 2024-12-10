@@ -31,27 +31,31 @@ runs:
 
         echo '## Base image digest diffs' >> $GITHUB_STEP_SUMMARY
         
-        echo '| Image | Digest |' >> $GITHUB_STEP_SUMMARY
-        echo '| --- | --- |' >> $GITHUB_STEP_SUMMARY
-        
-        $latest_patch_versions_to_rebuild = $(echo "$latest_patch_versions" | while read -r version; do
-          wget -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/v${version}/Dockerfile"
+        latest_patch_versions_to_rebuild=()
+        echo "$latest_patch_versions" | while read -r version; do
+          wget -q -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/v${version}/Dockerfile"
           BASE_IMAGE=$(grep '^FROM ' "Dockerfile.v$version" | tail -n 1 | cut -d' ' -f2)
     
-          docker pull "$BASE_IMAGE"
+          docker pull -q "$BASE_IMAGE"
           BASE_IMAGE_SHA=$(docker image inspect "$BASE_IMAGE" | jq -r '.[].RootFS.Layers[0]')
     
           CURRENT_IMAGE="${{ inputs.image-name }}:$version"
-          docker pull "$CURRENT_IMAGE"
+          docker pull -q "$CURRENT_IMAGE"
           CURRENT_IMAGE_SHA=$(docker image inspect "$CURRENT_IMAGE" | jq -r '.[].RootFS.Layers[0]')
           
+          echo "### $version" >> $GITHUB_STEP_SUMMARY
+          echo '| Image | Layer[0] Digest |' >> $GITHUB_STEP_SUMMARY
+          echo '| --- | --- |' >> $GITHUB_STEP_SUMMARY
           echo "| $CURRENT_IMAGE | $CURRENT_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
           echo "| $BASE_IMAGE | $BASE_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
     
           if [ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]; then
-            echo "$version"
+            latest_patch_versions_to_rebuild+=("$version")
           fi
-        done | jq -R . | jq -c -s .)
+        done
+        
+        latest_patch_versions_to_rebuild_json_array=$(printf '%s\n "$latest_patch_versions_to_rebuild[@]" | jq -R . | jq -c -s .)
 
-        echo "matrix={\"version\":$latest_patch_versions_to_rebuild}" >> $GITHUB_OUTPUT
+        echo "matrix={\"version\":$latest_patch_versions_to_rebuild_json_array}" >> $GITHUB_OUTPUT
       shell: bash
