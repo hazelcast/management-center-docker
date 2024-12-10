@@ -38,7 +38,7 @@ runs:
         echo '## Base image digest diffs' >> $GITHUB_STEP_SUMMARY
         
         latest_patch_versions_to_rebuild='[]'
-        echo "$latest_patch_versions" | while read -r version; do
+        while read -r version; do
           wget -q -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/v${version}/${{ inputs.path-to-dockerfile }}"
           BASE_IMAGE=$(grep '^FROM ' "Dockerfile.v$version" | tail -n 1 | cut -d' ' -f2)
     
@@ -58,13 +58,9 @@ runs:
 
           if [ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]; then
             latest_patch_versions_to_rebuild=$(echo "$latest_patch_versions_to_rebuild" | jq -c --arg v "$version" '. + [$v]')
-          else
-            echo "$version: digests are same"
           fi
-          echo "latest_patch_versions_to_rebuild=${latest_patch_versions_to_rebuild}"
-        done
+        done <<< "$latest_patch_versions"
 
-        echo "latest_patch_versions_to_rebuild=${latest_patch_versions_to_rebuild}"
         echo "matrix={\"version\":${latest_patch_versions_to_rebuild}}"
         echo "versions-count=$(echo "${latest_patch_versions_to_rebuild}" | jq 'length')"
 
