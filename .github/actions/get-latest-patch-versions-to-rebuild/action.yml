@@ -29,9 +29,7 @@ runs:
             }
           }')
 
-        echo '## Base image digest diff' >> $GITHUB_STEP_SUMMARY
-        echo "| version | $BASE_IMAGE | ${{ inputs.image-name }} |" >> $GITHUB_STEP_SUMMARY
-        echo '| --- | --- | --- |' >> $GITHUB_STEP_SUMMARY
+        echo '## Base image digest diffs' >> $GITHUB_STEP_SUMMARY
 
         $latest_patch_versions_to_rebuild = $(echo "$latest_patch_versions" | while read -r version; do
           wget -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/v${version}/Dockerfile"
@@ -43,11 +41,14 @@ runs:
           CURRENT_IMAGE="${{ inputs.image-name }}:$version"
           docker pull "$CURRENT_IMAGE"
           CURRENT_IMAGE_SHA=$(docker image inspect "$CURRENT_IMAGE" | jq -r '.[].RootFS.Layers[0]')
-    
-          echo "| $version | $BASE_IMAGE_SHA | $CURRENT_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
+          
+          echo '| Image | Digest |' >> $GITHUB_STEP_SUMMARY
+          echo '| --- | --- |' >> $GITHUB_STEP_SUMMARY    
+          echo "| $CURRENT_IMAGE | $CURRENT_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
+          echo "| $BASE_IMAGE | $BASE_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
     
           if [ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]; then
-            print version;
+            echo "$version"
           fi
         done | jq -R . | jq -c -s .)
 
