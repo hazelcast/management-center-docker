@@ -29,7 +29,7 @@ runs:
             echo '| --- | --- | --- |' >> $GITHUB_STEP_SUMMARY
             for (key in latest) {
               version=latest[key]
-              gh api -H "Accept: application/vnd.github.v3.raw" "/repos/${{ github.repository_owner }}/${{ github.repository }}/contents/Dockerfile?ref=v$version" > "Dockerfile.v$version"  
+              wget -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository_owner }}/${{ github.repository }}/refs/tags/v${version}/Dockerfile"
               BASE_IMAGE=$(grep '^FROM ' "Dockerfile.v$version" | tail -n 1 | cut -d' ' -f2)
     
               docker pull "$BASE_IMAGE"
