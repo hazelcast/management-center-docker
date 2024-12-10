@@ -11,7 +11,7 @@ on:
     - cron: '0 6 * * *'
 
 jobs:
-  get-latest-patch-versions:
+  get-latest-patch-versions-to-rebuild:
     runs-on: ubuntu-latest
     name: Get latest patch versions since
     env:
@@ -32,10 +32,10 @@ jobs:
 
   trigger-rebuilds:
     runs-on: ubuntu-latest
-    name: Rebuild ${{ matrix.version }} if base image changed
-    needs: get-latest-patch-versions
+    name: Rebuild ${{ matrix.version }}
+    needs: get-latest-patch-versions-to-rebuild
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.get-latest-patch-versions.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4

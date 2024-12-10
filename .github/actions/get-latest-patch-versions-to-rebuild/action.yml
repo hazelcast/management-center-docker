@@ -6,6 +6,10 @@ inputs:
   image-name:
     description: "Include only versions greater than or equal to this version"
     required: true
+  path-to-dockerfile:
+    description: "Path to Dockerfile from repo root"
+    required: false
+    default: 'Dockerfile'
 outputs:
   matrix:
     description: "Latest patch versions to rebuild as JSON array string"
@@ -33,7 +37,7 @@ runs:
         
         latest_patch_versions_to_rebuild=()
         echo "$latest_patch_versions" | while read -r version; do
-          wget -q -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/v${version}/Dockerfile"
+          wget -q -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/v${version}/${{ inputs.path-to-dockerfile }}"
           BASE_IMAGE=$(grep '^FROM ' "Dockerfile.v$version" | tail -n 1 | cut -d' ' -f2)
     
           docker pull -q "$BASE_IMAGE"
