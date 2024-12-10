@@ -12,6 +12,7 @@ inputs:
     default: 'Dockerfile'
 outputs:
   versions-count:
+    description: "Versions to rebuild count"
     value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.versions-count }}
   matrix:
     description: "Latest patch versions to rebuild as JSON array string"
