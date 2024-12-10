@@ -27,10 +27,13 @@ runs:
             for (key in latest) {
               print latest[key];
             }
-          }')
+          }' | sort -V)
 
         echo '## Base image digest diffs' >> $GITHUB_STEP_SUMMARY
-
+        
+        echo '| Image | Digest |' >> $GITHUB_STEP_SUMMARY
+        echo '| --- | --- |' >> $GITHUB_STEP_SUMMARY
+        
         $latest_patch_versions_to_rebuild = $(echo "$latest_patch_versions" | while read -r version; do
           wget -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/v${version}/Dockerfile"
           BASE_IMAGE=$(grep '^FROM ' "Dockerfile.v$version" | tail -n 1 | cut -d' ' -f2)
@@ -42,8 +45,6 @@ runs:
           docker pull "$CURRENT_IMAGE"
           CURRENT_IMAGE_SHA=$(docker image inspect "$CURRENT_IMAGE" | jq -r '.[].RootFS.Layers[0]')
           
-          echo '| Image | Digest |' >> $GITHUB_STEP_SUMMARY
-          echo '| --- | --- |' >> $GITHUB_STEP_SUMMARY    
           echo "| $CURRENT_IMAGE | $CURRENT_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
           echo "| $BASE_IMAGE | $BASE_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
     
