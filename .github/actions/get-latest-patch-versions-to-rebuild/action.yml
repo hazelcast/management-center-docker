@@ -55,7 +55,7 @@ runs:
           fi
         done
         
-        latest_patch_versions_to_rebuild_json_array=$(printf '%s\n "$latest_patch_versions_to_rebuild[@]" | jq -R . | jq -c -s .)
+        latest_patch_versions_to_rebuild_json_array=$(printf '%s\n' "$latest_patch_versions_to_rebuild[@]" | jq -R . | jq -c -s .)
 
         echo "matrix={\"version\":$latest_patch_versions_to_rebuild_json_array}" >> $GITHUB_OUTPUT
       shell: bash
