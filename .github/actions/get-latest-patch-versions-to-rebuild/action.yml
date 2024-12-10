@@ -58,16 +58,16 @@ runs:
 
           if [ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]; then
             latest_patch_versions_to_rebuild=$(echo "$latest_patch_versions_to_rebuild" | jq -c --arg v "$version" '. + [$v]')
-            echo "latest_patch_versions_to_rebuild=${latest_patch_versions_to_rebuild}"
           else
             echo "$version: digests are same"
           fi
+          echo "latest_patch_versions_to_rebuild=${latest_patch_versions_to_rebuild}"
         done
 
-        echo "latest_patch_versions_to_rebuild=$latest_patch_versions_to_rebuild"
+        echo "latest_patch_versions_to_rebuild=${latest_patch_versions_to_rebuild}"
         echo "matrix={\"version\":${latest_patch_versions_to_rebuild}}"
-        echo "versions-count=$(echo "$latest_patch_versions_to_rebuild" | jq 'length')"
+        echo "versions-count=$(echo "${latest_patch_versions_to_rebuild}" | jq 'length')"
 
-        echo "matrix={\"version\":$latest_patch_versions_to_rebuild}" >> $GITHUB_OUTPUT
-        echo "versions-count=$(echo "$latest_patch_versions_to_rebuild" | jq 'length')" >> $GITHUB_OUTPUT
+        echo "matrix={\"version\":${latest_patch_versions_to_rebuild}}" >> $GITHUB_OUTPUT
+        echo "versions-count=$(echo "${latest_patch_versions_to_rebuild}" | jq 'length')" >> $GITHUB_OUTPUT
       shell: bash
