@@ -1,0 +1,51 @@
+name: 'get-latest-patch-versions-to-rebuild'
+inputs:
+  since-version:
+    description: "Check only versions greater than or equal to this version"
+    required: true
+  image-name:
+    description: "Include only versions greater than or equal to this version"
+    required: true
+outputs:
+  matrix:
+    description: "Latest patch versions to rebuild as JSON array string"
+    value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.matrix }}
+runs:
+  using: "composite"
+  steps:
+    - id: get-latest-patch-versions-to-rebuild
+      run: |
+        set -e -o pipefail ${RUNNER_DEBUG:+-x}
+        
+        # use API instead of git, so we don't need to cloen all tags?       
+        latest_patch_versions_to_rebuild=$(git tag --list "v*" | sort -V | sed 's/^v//' | sed -n "/^${{ inputs.since-version }}.*\$/,\$p" |
+          grep -v BETA | grep -v DEVEL | awk -F. '{
+            key = $1 "." $2;
+            latest[key] = $0;
+          }
+          END {
+            echo '## Base image digest diff' >> $GITHUB_STEP_SUMMARY
+            echo "| version | $BASE_IMAGE | ${{ inputs.image-name }} |" >> $GITHUB_STEP_SUMMARY
+            echo '| --- | --- | --- |' >> $GITHUB_STEP_SUMMARY
+            for (key in latest) {
+              version=latest[key]
+              gh api -H "Accept: application/vnd.github.v3.raw" "/repos/${{ github.repository_owner }}/${{ github.repository }}/contents/Dockerfile?ref=v$version" > "Dockerfile.v$version"  
+              BASE_IMAGE=$(grep '^FROM ' "Dockerfile.v$version" | tail -n 1 | cut -d' ' -f2)
+    
+              docker pull "$BASE_IMAGE"
+              BASE_IMAGE_SHA=$(docker image inspect "$BASE_IMAGE" | jq -r '.[].RootFS.Layers[0]')
+    
+              CURRENT_IMAGE="${{ inputs.image-name }}:$version"
+              docker pull "$CURRENT_IMAGE"
+              CURRENT_IMAGE_SHA=$(docker image inspect "$CURRENT_IMAGE" | jq -r '.[].RootFS.Layers[0]')
+    
+              echo "| $version | $BASE_IMAGE_SHA | $CURRENT_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
+    
+              if [ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]; then
+                print version;
+              fi
+            }
+          }' | jq -R . | jq -c -s .)
+        
+        echo "matrix={\"version\":$latest_patch_versions_to_rebuild}" >> $GITHUB_OUTPUT
+      shell: bash

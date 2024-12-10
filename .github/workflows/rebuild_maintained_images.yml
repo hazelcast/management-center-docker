@@ -17,21 +17,18 @@ jobs:
     env:
       MIN_VERSION: ${{ inputs.minimal-supported-version || '5.3'  }}
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.matrix }}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: ./.github/actions/get-latest-patch-versions-using-tags
-        id: get-latest-patch-versions
+      - name: Get changed image versions
+        uses: ./.github/actions/get-latest-patch-versions-to-rebuild
+        id: get-latest-patch-versions-to-rebuild
         with:
           since-version: ${{ env.MIN_VERSION }}
-
-      - id: set-matrix
-        run: |
-          echo 'matrix={"version":${{ steps.get-latest-patch-versions.outputs.latest-patch-versions }}}' >> $GITHUB_OUTPUT
+          image-name: hazelcast/management-center
 
   trigger-rebuilds:
     runs-on: ubuntu-latest
@@ -42,20 +39,3 @@ jobs:
       matrix: ${{ fromJSON(needs.get-latest-patch-versions.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Checkout version ${{ matrix.version }}
-        uses: actions/checkout@v4
-        with:
-          ref: v${{ matrix.version }}
-          path: v${{ matrix.version }}
-
-      - name: Get base image from Dockerfile
-        id: get-base-image-from-dockerfile
-        run: |
-          echo "base-image=$(grep '^FROM ' v${{ matrix.version }}/Dockerfile | tail -n 1 | cut -d' ' -f2)" >> $GITHUB_OUTPUT
-
-      - uses: ./.github/actions/find-base-image-digest-diff
-        id: base-image-diff
-        with:
-          image: hazelcast/management-center:${{ matrix.version }}
-          base-image: ${{ steps.get-base-image-from-dockerfile.outputs.base-image }}
