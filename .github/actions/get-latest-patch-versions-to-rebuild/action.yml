@@ -34,7 +34,7 @@ runs:
         echo '| --- | --- | --- |' >> $GITHUB_STEP_SUMMARY
 
         $latest_patch_versions_to_rebuild = $(echo "$latest_patch_versions" | while read -r version; do
-          wget -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository_owner }}/${{ github.repository }}/refs/tags/v${version}/Dockerfile"
+          wget -O "Dockerfile.v$version" "https://raw.githubusercontent.com/${{ github.repository }}/refs/tags/v${version}/Dockerfile"
           BASE_IMAGE=$(grep '^FROM ' "Dockerfile.v$version" | tail -n 1 | cut -d' ' -f2)
     
           docker pull "$BASE_IMAGE"
