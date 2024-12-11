@@ -10,6 +10,10 @@ inputs:
     description: "Path to Dockerfile from repo root"
     required: false
     default: 'Dockerfile'
+  upgrade-command:
+    description: "Command to execute for upgraded packages availability"
+    required: false
+    default: 'microdnf -y upgrade --nodocs'
 outputs:
   versions-count:
     description: "Versions to rebuild count"
@@ -62,13 +66,13 @@ runs:
             continue
           fi
 
-          PACKAGE_UPGRADES_OUTPUT=$(docker run --user 0 --rm $CURRENT_IMAGE sh -c 'microdnf -y upgrade --nodocs')
+          PACKAGE_UPGRADES_OUTPUT=$(docker run --user 0 --rm $CURRENT_IMAGE sh -c '${{ inputs.upgrade-command }}')
           PACKAGE_UPGRADES=$(echo "$PACKAGE_UPGRADES_OUTPUT" | grep --count Upgrading)
           if [ "$PACKAGE_UPGRADES" -ne 0 ]; then
             latest_patch_versions_to_rebuild=$(echo "$latest_patch_versions_to_rebuild" | jq -c --arg v "$version" '. + [$v]')
-            echo '\`\`\`' >> $GITHUB_STEP_SUMMARY
-            echo "$PACKAGE_UPGRADES_OUTPUT" | grep Upgrading >> $GITHUB_STEP_SUMMARY 
-            echo '\`\`\`' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "$PACKAGE_UPGRADES_OUTPUT" >> $GITHUB_STEP_SUMMARY 
+            echo '```' >> $GITHUB_STEP_SUMMARY
           fi
         done <<< "$latest_patch_versions"
 
