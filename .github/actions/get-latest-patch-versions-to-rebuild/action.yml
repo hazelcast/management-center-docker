@@ -63,10 +63,12 @@ runs:
           fi
 
           PACKAGE_UPGRADES_OUTPUT=$(docker run --user 0 --rm $CURRENT_IMAGE sh -c 'microdnf -y upgrade --nodocs')
-          echo "\`$PACKAGE_UPGRADES_OUTPUT\`" >> $GITHUB_STEP_SUMMARY
           PACKAGE_UPGRADES=$(echo "$PACKAGE_UPGRADES_OUTPUT" | grep --count Upgrading)
           if [ "$PACKAGE_UPGRADES" -ne 0 ]; then
             latest_patch_versions_to_rebuild=$(echo "$latest_patch_versions_to_rebuild" | jq -c --arg v "$version" '. + [$v]')
+            echo '\`\`\`' >> $GITHUB_STEP_SUMMARY
+            echo "$PACKAGE_UPGRADES_OUTPUT" | grep Upgrading >> $GITHUB_STEP_SUMMARY 
+            echo '\`\`\`' >> $GITHUB_STEP_SUMMARY
           fi
         done <<< "$latest_patch_versions"
 
