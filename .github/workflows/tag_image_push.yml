@@ -1,17 +1,28 @@
 name: Publish Management Center released version image
 
 on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        required: true
+        description: "Git tag to build"
+      dry-run:
+        type: boolean
+        required: false
+        description: "Build without push?"
+        default: false
   workflow_call:
     inputs:
       tag:
         type: string
         required: true
-        description: "Git tag to rebuild"
+        description: "Git tag to build"
       dry-run:
         type: boolean
         required: false
         description: "Build without push?"
-        default: true
+        default: false
     secrets:
       DOCKERHUB_USERNAME:
         required: true

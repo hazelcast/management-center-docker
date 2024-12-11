@@ -7,6 +7,11 @@ on:
         type: string
         description: 'Minimal supported version from which we should start checking images, e.g. 5.3, 5.4, 5.5. Default value is 5.3'
         required: false
+      dry-run:
+        type: boolean
+        description: 'Should not push images?'
+        required: false
+        default: true
   schedule:
     - cron: '0 6 * * *'
 
@@ -38,6 +43,6 @@ jobs:
       matrix: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.matrix) }}
     uses: ./.github/workflows/tag_image_push.yml
     with:
-      dry-run: true
+      dry-run: ${{ inputs.dry-run || false }}
       tag: 'v${{ matrix.version }}'
     secrets: inherit
