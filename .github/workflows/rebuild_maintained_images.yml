@@ -18,10 +18,9 @@ on:
 jobs:
   get-latest-patch-versions-to-rebuild:
     runs-on: ubuntu-latest
-    name: Get latest patch versions since
+    name: Get latest patch versions
     outputs:
-      versions-count: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.versions-count }}
-      matrix: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.matrix }}
+      versions: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.versions }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,12 +34,13 @@ jobs:
           image-name: hazelcast/management-center
 
   rebuild:
-    if: ${{ needs.get-latest-patch-versions-to-rebuild.outputs.versions-count > 0 }}
+    if: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.versions) != [] }}
     name: Rebuild ${{ matrix.version }}
     needs: get-latest-patch-versions-to-rebuild
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.matrix) }}
+      matrix:
+        - version: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.versions) }}
     uses: ./.github/workflows/tag_image_push.yml
     with:
       dry-run: ${{ inputs.dry-run || false }}
