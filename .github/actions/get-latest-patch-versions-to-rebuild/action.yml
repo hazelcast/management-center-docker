@@ -20,6 +20,8 @@ outputs:
     value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.matrix }}
 runs:
   using: "composite"
+  env:
+    GH_TOKEN: ${{ github.token }}
   steps:
     - id: get-latest-patch-versions-to-rebuild
       run: |
