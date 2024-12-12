@@ -73,12 +73,10 @@ runs:
           elif [[ $NUMBER_OF_PACKAGES_TO_UPGRADE -gt 0 ]]; then
             echo '> [!IMPORTANT]' >> $GITHUB_STEP_SUMMARY
             echo "> There are $NUMBER_OF_PACKAGES_TO_UPGRADE packages to upgrade, going to rebuild" >> $GITHUB_STEP_SUMMARY
-            echo "<details>" >> $GITHUB_STEP_SUMMARY
-            echo "<summary><strong>Full ${{ inputs.upgrade-command }} output</strong></summary>" >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "<details><summary><strong>Full ${{ inputs.upgrade-command }} output</strong></summary>" >> $GITHUB_STEP_SUMMARY
+            echo "<pre><code>" >> $GITHUB_STEP_SUMMARY
             echo "$PACKAGE_UPGRADES_OUTPUT" >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            echo "</details>" >> $GITHUB_STEP_SUMMARY
+            echo "</code></pre></details>" >> $GITHUB_STEP_SUMMARY
           else
             echo '> [!NOTE]' >> $GITHUB_STEP_SUMMARY
             echo '> Image is up-to-date' >> $GITHUB_STEP_SUMMARY
