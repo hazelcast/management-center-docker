@@ -15,9 +15,9 @@ inputs:
     required: false
     default: 'microdnf -y upgrade --nodocs'
 outputs:
-  matrix:
+  versions:
     description: "Latest patch versions to rebuild as JSON array string"
-    value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.matrix }}
+    value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.versions }}
 runs:
   using: "composite"
   steps:
