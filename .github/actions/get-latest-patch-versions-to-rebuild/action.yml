@@ -1,0 +1,88 @@
+name: 'get-latest-patch-versions-to-rebuild'
+inputs:
+  since-version:
+    description: "Check only versions greater than or equal to this version"
+    required: true
+  image-name:
+    description: "Docker image name without in format {repo}/{name}"
+    required: true
+  path-to-dockerfile:
+    description: "Path to Dockerfile from repo root"
+    required: false
+    default: 'Dockerfile'
+  upgrade-command:
+    description: "Command to execute for upgraded packages availability"
+    required: false
+    default: 'microdnf -y upgrade --nodocs'
+outputs:
+  versions:
+    description: "Latest patch versions to rebuild as JSON array string"
+    value: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.versions }}
+runs:
+  using: "composite"
+  steps:
+    - id: get-latest-patch-versions-to-rebuild
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -e -o pipefail ${RUNNER_DEBUG:+-x}
+        
+        # use API instead of git, so we don't need to cloen all tags?       
+        LATEST_PATCH_VERSIONS=$(git tag --list "v*" | sort -V | sed 's/^v//' | sed -n "/^${{ inputs.since-version }}.*\$/,\$p" |
+          grep -v BETA | grep -v DEVEL | awk -F. '{
+            key = $1 "." $2;
+            latest[key] = $0;
+          }
+          END {
+            for (key in latest) {
+              print latest[key];
+            }
+          }' | sort -V)
+
+        echo '## Base image digest diffs' >> $GITHUB_STEP_SUMMARY
+        
+        LATEST_PATCH_VERSIONS_TO_REBUILD='[]'
+        while read -r version; do
+          gh api -H "Accept: application/vnd.github.raw" "/repos/${{ github.repository }}/contents/${{ inputs.path-to-dockerfile }}?ref=v${version}" > "Dockerfile.v$version"
+          BASE_IMAGE=$(grep '^FROM ' "Dockerfile.v$version" | tail -n 1 | cut -d' ' -f2)
+    
+          docker pull "$BASE_IMAGE"
+          BASE_IMAGE_SHA=$(docker image inspect "$BASE_IMAGE" | jq -r '.[].RootFS.Layers[0]')
+    
+          CURRENT_IMAGE="${{ inputs.image-name }}:$version"
+          docker pull "$CURRENT_IMAGE"
+          CURRENT_IMAGE_SHA=$(docker image inspect "$CURRENT_IMAGE" | jq -r '.[].RootFS.Layers[0]')
+          
+          NUMBER_OF_PACKAGES_TO_UPGRADE=0
+          if [[ "$BASE_IMAGE_SHA" == "$CURRENT_IMAGE_SHA" ]]; then
+            PACKAGE_UPGRADES_OUTPUT=$(docker run --user 0 --rm $CURRENT_IMAGE sh -c '${{ inputs.upgrade-command }}')
+            NUMBER_OF_PACKAGES_TO_UPGRADE=$(echo "$PACKAGE_UPGRADES_OUTPUT" | grep ' Upgrading:' | awk '{print $2}')
+          fi
+          if [[ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" || $NUMBER_OF_PACKAGES_TO_UPGRADE -gt 0 ]]; then
+            LATEST_PATCH_VERSIONS_TO_REBUILD=$(echo "$LATEST_PATCH_VERSIONS_TO_REBUILD" | jq -c --arg v "$version" '. + [$v]')
+          fi
+
+          echo "### $version" >> $GITHUB_STEP_SUMMARY
+          echo '| Image| Layer[0] Digest |' >> $GITHUB_STEP_SUMMARY
+          echo '| --- | --- |' >> $GITHUB_STEP_SUMMARY
+          echo "| $CURRENT_IMAGE | $CURRENT_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
+          echo "| $BASE_IMAGE | $BASE_IMAGE_SHA |" >> $GITHUB_STEP_SUMMARY
+          if [[ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]]; then
+            echo '> [!IMPORTANT]' >> $GITHUB_STEP_SUMMARY
+            echo '> Base image was updated, going to rebuild' >> $GITHUB_STEP_SUMMARY
+          elif [[ $NUMBER_OF_PACKAGES_TO_UPGRADE -gt 0 ]]; then
+            echo '> [!IMPORTANT]' >> $GITHUB_STEP_SUMMARY
+            echo "> There are $NUMBER_OF_PACKAGES_TO_UPGRADE packages to upgrade, going to rebuild" >> $GITHUB_STEP_SUMMARY
+            echo "<details><summary><strong>Full ${{ inputs.upgrade-command }} output</strong></summary>" >> $GITHUB_STEP_SUMMARY
+            echo "<pre><code>" >> $GITHUB_STEP_SUMMARY
+            echo "$PACKAGE_UPGRADES_OUTPUT" >> $GITHUB_STEP_SUMMARY
+            echo "</code></pre></details>" >> $GITHUB_STEP_SUMMARY
+          else
+            echo '> [!NOTE]' >> $GITHUB_STEP_SUMMARY
+            echo '> Image is up-to-date' >> $GITHUB_STEP_SUMMARY
+          fi
+        done <<< "$LATEST_PATCH_VERSIONS"
+
+        echo "versions=${LATEST_PATCH_VERSIONS_TO_REBUILD}"
+        echo "versions=${LATEST_PATCH_VERSIONS_TO_REBUILD}" >> $GITHUB_OUTPUT
+      shell: bash
