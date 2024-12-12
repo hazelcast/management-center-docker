@@ -82,7 +82,7 @@ runs:
             $PACKAGE_UPGRADES_OUTPUT
             \`\`\`
             </details>
-          EOF
+        EOF
         done <<< "$LATEST_PATCH_VERSIONS"
 
         echo "versions=${LATEST_PATCH_VERSIONS_TO_REBUILD}"
