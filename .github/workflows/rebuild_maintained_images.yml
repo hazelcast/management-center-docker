@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        - version: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.versions) }}
+        version: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.versions) }}
     uses: ./.github/workflows/tag_image_push.yml
     with:
       dry-run: ${{ inputs.dry-run || false }}
