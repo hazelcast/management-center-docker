@@ -34,7 +34,7 @@ jobs:
           image-name: hazelcast/management-center
 
   rebuild:
-    if: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.versions) != [] }}
+    if: ${{ needs.get-latest-patch-versions-to-rebuild.outputs.versions  != '[]'}}
     name: Rebuild ${{ matrix.version }}
     needs: get-latest-patch-versions-to-rebuild
     strategy:
