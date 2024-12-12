@@ -71,18 +71,17 @@ runs:
             echo '> [!NOTE]' >> $GITHUB_STEP_SUMMARY
             echo '> Image is up-to-date' >> $GITHUB_STEP_SUMMARY
           fi
-          cat <<EOF >> $GITHUB_STEP_SUMMARY
-          |     Image      | Layer[0] Digest    |
-          | -------------- | ------------------ |
-          | $CURRENT_IMAGE | $CURRENT_IMAGE_SHA |
-          | $BASE_IMAGE    | $BASE_IMAGE_SHA    |
-          
-          <details>
-          <summary><strong>Full ${{ inputs.upgrade-command }} output</strong></summary>
-          \`\`\`
-          $PACKAGE_UPGRADES_OUTPUT
-          \`\`\`
-          </details>
+          cat <<- EOF >> $GITHUB_STEP_SUMMARY
+            |     Image      | Layer[0] Digest    |
+            | -------------- | ------------------ |
+            | $CURRENT_IMAGE | $CURRENT_IMAGE_SHA |
+            | $BASE_IMAGE    | $BASE_IMAGE_SHA    |
+            <details>
+            <summary><strong>Full ${{ inputs.upgrade-command }} output</strong></summary>
+            \`\`\`
+            $PACKAGE_UPGRADES_OUTPUT
+            \`\`\`
+            </details>
           EOF
         done <<< "$LATEST_PATCH_VERSIONS"
 
