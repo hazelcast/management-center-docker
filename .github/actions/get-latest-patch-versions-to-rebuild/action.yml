@@ -52,37 +52,39 @@ runs:
           CURRENT_IMAGE_SHA=$(docker image inspect "$CURRENT_IMAGE" | jq -r '.[].RootFS.Layers[0]')
           
           NUMBER_OF_PACKAGES_TO_UPGRADE=0
-          if [["$BASE_IMAGE_SHA" == "$CURRENT_IMAGE_SHA"]]; then
+          if [[ "$BASE_IMAGE_SHA" == "$CURRENT_IMAGE_SHA" ]]; then
             PACKAGE_UPGRADES_OUTPUT=$(docker run --user 0 --rm $CURRENT_IMAGE sh -c '${{ inputs.upgrade-command }}')
-            NUMBER_OF_PACKAGES_TO_UPGRADE=$(echo "$PACKAGES_UPGRADES_OUTPUT" | grep ' Upgrading:' | awk '{print $2}')
+            NUMBER_OF_PACKAGES_TO_UPGRADE=$(echo "$PACKAGE_UPGRADES_OUTPUT" | grep ' Upgrading:' | awk '{print $2}')
           fi
           if [[ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" || $NUMBER_OF_PACKAGES_TO_UPGRADE -gt 0 ]]; then
             LATEST_PATCH_VERSIONS_TO_REBUILD=$(echo "$LATEST_PATCH_VERSIONS_TO_REBUILD" | jq -c --arg v "$version" '. + [$v]')
           fi
 
           echo "### $version" >> $GITHUB_STEP_SUMMARY
-          if [[ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]]; then
-            echo '> [!IMPORTANT]' >> $GITHUB_STEP_SUMMARY
-            echo '> Base image was updated, going to rebuild' >> $GITHUB_STEP_SUMMARY
-          else if [[ $NUMBER_OF_PACKAGES_TO_UPGRADE -gt 0 ]]; then
-            echo '> [!IMPORTANT]' >> $GITHUB_STEP_SUMMARY
-            echo "> There are $NUMBER_OF_PACKAGES_TO_UPGRADE packages to upgrade, going to rebuild" >> $GITHUB_STEP_SUMMARY
-          else
-            echo '> [!NOTE]' >> $GITHUB_STEP_SUMMARY
-            echo '> Image is up-to-date' >> $GITHUB_STEP_SUMMARY
-          fi
           cat <<- EOF >> $GITHUB_STEP_SUMMARY
             |     Image      | Layer[0] Digest    |
             | -------------- | ------------------ |
             | $CURRENT_IMAGE | $CURRENT_IMAGE_SHA |
             | $BASE_IMAGE    | $BASE_IMAGE_SHA    |
-            <details>
-            <summary><strong>Full ${{ inputs.upgrade-command }} output</strong></summary>
-            \`\`\`
-            $PACKAGE_UPGRADES_OUTPUT
-            \`\`\`
-            </details>
         EOF
+          if [[ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" ]]; then
+            echo '> [!IMPORTANT]' >> $GITHUB_STEP_SUMMARY
+            echo '> Base image was updated, going to rebuild' >> $GITHUB_STEP_SUMMARY
+          elif [[ $NUMBER_OF_PACKAGES_TO_UPGRADE -gt 0 ]]; then
+            cat <<- EOF >> $GITHUB_STEP_SUMMARY
+              > [!IMPORTANT]
+              > There are $NUMBER_OF_PACKAGES_TO_UPGRADE packages to upgrade, going to rebuild
+              <details>
+              <summary><strong>Full microdnf -y upgrade output</strong></summary>
+              \`\`\`
+              $PACKAGE_UPGRADES_OUTPUT
+              \`\`\`
+              </details>
+        EOF
+          else
+            echo '> [!NOTE]' >> $GITHUB_STEP_SUMMARY
+            echo '> Image is up-to-date' >> $GITHUB_STEP_SUMMARY
+          fi
         done <<< "$LATEST_PATCH_VERSIONS"
 
         echo "versions=${LATEST_PATCH_VERSIONS_TO_REBUILD}"
