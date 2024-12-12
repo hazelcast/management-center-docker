@@ -73,7 +73,7 @@ jobs:
             echo "PUSH_LATEST=yes" >> $GITHUB_ENV
           fi
 
-          MINOR_TAG=${REF:0:4}
+          MINOR_TAG=$(echo "${REF}" | cut -d'.' -f1,2)
           if [[ "$MINOR_TAG" != "${REF}" ]]; then
             LATEST_TAG_IN_MINOR_LINE=$(git tag --list --sort=refname "${MINOR_TAG}*" | grep -E -v 'v*BETA*' | tail -n 1)
             if [[ "$LATEST_TAG_IN_MINOR_LINE" = "${REF}" ]]; then
