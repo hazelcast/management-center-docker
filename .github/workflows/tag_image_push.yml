@@ -93,10 +93,10 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/s390x
           tags: ${{ env.TAGS }}
           provenance: false
-          push: ${{ !env.DRY_RUN }}
+          push: ${{ env.DRY_RUN == 'false' }}
 
       - name: Update Docker Hub Description of Management Center image
-        if: env.PUSH_LATEST == 'yes' && !env.DRY_RUN
+        if: ${{ env.PUSH_LATEST == 'yes' && env.DRY_RUN == 'false' }}
         uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
