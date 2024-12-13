@@ -56,8 +56,10 @@ runs:
           NUMBER_OF_PACKAGES_TO_UPGRADE=0
           if [[ "$BASE_IMAGE_SHA" == "$CURRENT_IMAGE_SHA" ]]; then
             PACKAGE_UPGRADES_OUTPUT=$(docker run --user 0 --rm $CURRENT_IMAGE sh -c '${{ inputs.upgrade-command }}')
-            NUMBER_OF_PACKAGES_TO_UPGRADE=$(echo "$PACKAGE_UPGRADES_OUTPUT" | grep ' Upgrading:' | awk '{print $2}')
-            NUMBER_OF_PACKAGES_TO_UPGRADE=${NUMBER_OF_PACKAGES_TO_UPGRADE:-0}
+            UPGRADING_LINE=$(echo "$PACKAGE_UPGRADES_OUTPUT" | grep ' Upgrading:' || true)
+            if [[ -z "$UPGRADING_LINE" ]; then
+              NUMBER_OF_PACKAGES_TO_UPGRADE=$(echo "$UPGRADING_LINE" | awk '{print $2}')              
+            fi
           fi
           if [[ "$BASE_IMAGE_SHA" != "$CURRENT_IMAGE_SHA" || $NUMBER_OF_PACKAGES_TO_UPGRADE -gt 0 ]]; then
             LATEST_PATCH_VERSIONS_TO_REBUILD=$(echo "$LATEST_PATCH_VERSIONS_TO_REBUILD" | jq -c --arg v "$version" '. + [$v]')
