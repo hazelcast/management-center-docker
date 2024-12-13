@@ -57,7 +57,7 @@ runs:
           if [[ "$BASE_IMAGE_SHA" == "$CURRENT_IMAGE_SHA" ]]; then
             PACKAGE_UPGRADES_OUTPUT=$(docker run --user 0 --rm $CURRENT_IMAGE sh -c '${{ inputs.upgrade-command }}')
             UPGRADING_LINE=$(echo "$PACKAGE_UPGRADES_OUTPUT" | grep ' Upgrading:' || true)
-            if [[ -z "$UPGRADING_LINE" ]; then
+            if [[ -n "$UPGRADING_LINE" ]; then
               NUMBER_OF_PACKAGES_TO_UPGRADE=$(echo "$UPGRADING_LINE" | awk '{print $2}')              
             fi
           fi
