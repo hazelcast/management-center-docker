@@ -22,6 +22,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout hazelcast-docker repo
+        uses: actions/checkout@v4
+        with:
+          repository: hazelcast/hazelcast-docker
+          path: 'hazelcast-docker'
+
       - name: Set release version and RHEL image as environment variables
         run: |
           RELEASE_VERSION=${GITHUB_REF:11}
@@ -68,12 +74,14 @@ jobs:
           --submit
 
       - name: Wait for scan to complete
+        working-directory: hazelcast-docker
         run: |
           source .github/scripts/publish-rhel.sh
           
           wait_for_container_scan "${{ secrets.RHEL_PROJECT_ID }}" "${{ env.RELEASE_VERSION }}" "${{ secrets.RHEL_API_KEY }}" "${{ env.TIMEOUT_IN_MINS }}"
 
       - name: Publish the Management Center image
+        working-directory: hazelcast-docker
         run: |
           source .github/scripts/publish-rhel.sh
 
