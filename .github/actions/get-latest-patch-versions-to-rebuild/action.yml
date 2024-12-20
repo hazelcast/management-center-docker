@@ -63,6 +63,7 @@ runs:
             LATEST_PATCH_VERSIONS_TO_REBUILD=$(echo "$LATEST_PATCH_VERSIONS_TO_REBUILD" | jq -c --arg v "$version" '. + [$v]')
           fi
 
+          echo '' >> $GITHUB_STEP_SUMMARY
           echo "### $version" >> $GITHUB_STEP_SUMMARY
           echo '| Image| Layer[0] Digest |' >> $GITHUB_STEP_SUMMARY
           echo '| --- | --- |' >> $GITHUB_STEP_SUMMARY
