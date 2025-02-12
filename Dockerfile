@@ -54,6 +54,7 @@ LABEL name="hazelcast/management-center-openshift-rhel" \
       url="http://www.hazelcast.com" \
       summary="Hazelcast Management Center Openshift Image, certified to RHEL 8" \
       description="Starts Management Center web application dedicated to monitor and manage Hazelcast nodes" \
+      maintainer="info@hazelcast.com" \
       io.k8s.description="Starts Management Center web application dedicated to monitor and manage Hazelcast nodes" \
       io.k8s.display-name="Hazelcast Management Center" \
       io.openshift.expose-services="8080:http,8081:health_check,8443:https" \
