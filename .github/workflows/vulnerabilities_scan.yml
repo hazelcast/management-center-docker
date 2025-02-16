@@ -97,7 +97,6 @@ jobs:
           template: "@$HOME/.local/bin/trivy-bin/contrib/html.tpl"
           exit-code: '1'
           output: 'trivy-results.html'
-          severity: 'CRITICAL,HIGH'
           list-all-pkgs: 'true'
 
       - name: Upload Trivy report
