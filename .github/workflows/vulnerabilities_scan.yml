@@ -94,7 +94,7 @@ jobs:
         with:
           image-ref: ${{ env.IMAGE_NAME }}
           format: 'template'
-          template: "@/contrib/html.tpl"
+          template: "@$HOME/.local/bin/trivy-bin/contrib/html.tpl"
           exit-code: '1'
           output: 'trivy-results.html'
           severity: 'CRITICAL,HIGH'
