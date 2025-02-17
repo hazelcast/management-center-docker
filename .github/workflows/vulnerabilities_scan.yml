@@ -16,12 +16,12 @@ concurrency:
   group: scan-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
   cancel-in-progress: true
 
+env:
+  IMAGE_NAME: hazelcast/management-center:${{ github.sha }}
+
 jobs:
-  scan:
+  snyk:
     timeout-minutes: 10
-    name: Scan docker image
-    env:
-      IMAGE_NAME: hazelcast/management-center:${{ github.sha }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -39,6 +39,7 @@ jobs:
 
       - name: Scan image by Snyk
         uses: snyk/actions/docker@master
+        id: scan
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -51,8 +52,58 @@ jobs:
             --policy-path=.snyk
             --fail-on=upgradable
 
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        if: ${{ failure() }}
+      - name: Install snyk-to-html
+        if: ${{ !cancelled() && steps.scan.outcome == 'failure' }}
+        run: npm install snyk-to-html -g
+
+      - name: Generate Snyk HTML report
+        if: ${{ !cancelled() && steps.scan.outcome == 'failure' }}
+        run: >-
+          snyk-to-html
+          --input ${{github.workspace}}/snyk.json
+          --actionable-remediation
+          --output ${{github.workspace}}/snyk-report.html
+
+      - name: Upload Snyk report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.scan.outcome == 'failure' }}
         with:
-          sarif_file: snyk.sarif
+          name: Snyk report
+          path: ${{github.workspace}}/snyk-report.html
+
+  trivy:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          tags: ${{ env.IMAGE_NAME }}
+          load: true
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.29.0
+        id: scan
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}
+          format: 'template'
+          template: "@$HOME/.local/bin/trivy-bin/contrib/html.tpl"
+          exit-code: '1'
+          ignore-unfixed: 'true'
+          severity: 'CRITICAL,HIGH'
+          output: 'trivy-results.html'
+          list-all-pkgs: 'true'
+
+      - name: Upload Trivy report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.scan.outcome == 'failure' }}
+        with:
+          name: Trivy report
+          path: ${{github.workspace}}/trivy-results.html
