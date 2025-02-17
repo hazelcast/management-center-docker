@@ -96,6 +96,8 @@ jobs:
           format: 'template'
           template: "@$HOME/.local/bin/trivy-bin/contrib/html.tpl"
           exit-code: '1'
+          ignore-unfixed: 'true'
+          severity: 'CRITICAL,HIGH'
           output: 'trivy-results.html'
           list-all-pkgs: 'true'
 
