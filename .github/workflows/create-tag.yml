@@ -28,7 +28,7 @@ jobs:
           git commit --all -m ${{ inputs.new_version }}
           git push
 
-      - name: Create a tag that prefixes the new version with a v (for e.g. v5.1.4 for the 5.1.4 version)
+      - name: Create tag
         run: |
           git tag v${{ inputs.new_version }}
           git push origin v${{ inputs.new_version }}
