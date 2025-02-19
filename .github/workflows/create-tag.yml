@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update the first line of the Dockerfile with the new version
+      - name: Update the Dockerfile with the new version
         run: |
           sed --in-place 's/^ARG MC_VERSION=.*/ARG MC_VERSION=${{ inputs.new_version }}/' Dockerfile
 
