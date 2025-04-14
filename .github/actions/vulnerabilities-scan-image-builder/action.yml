@@ -12,9 +12,11 @@ env:
 runs:
   using: composite
   steps:
-    - name: Generate a dummy MC ZIP to avoid scanning Java dependencies, as managed upstream
+    - name: Generate a dummy MC ZIP
       shell: ${{ env.shell }}
-      run: zip -r files/hazelcast-management-center.zip $(mktemp -d)
+      run: |
+        #  Avoid scanning Java dependencies, as managed upstream
+        zip -r files/hazelcast-management-center.zip $(mktemp -d)
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
