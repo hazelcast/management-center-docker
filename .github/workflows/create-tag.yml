@@ -11,6 +11,10 @@ on:
 jobs:
   create_tag:
     runs-on: ubuntu-latest
+    env:
+      # Workaround to ensure downstrem actions are triggeered by new tags
+      # https://github.com/orgs/community/discussions/27028
+      GITHUB_TOKEN: ${{ secrets.GH_PAT }}
     steps:
       - uses: actions/checkout@v4
 
