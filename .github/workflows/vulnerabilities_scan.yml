@@ -93,7 +93,7 @@ jobs:
 
       - name: Upload Trivy report
         uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() && steps.scan.outcome == 'failure' }}
+        if: ${{ !cancelled() }}
         with:
           name: Trivy report
           path: ${{github.workspace}}/trivy-results.html
