@@ -79,7 +79,7 @@ jobs:
           image-name: ${{ env.IMAGE_NAME }}
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@0.31.0
         id: scan
         with:
           image-ref: ${{ env.IMAGE_NAME }}
