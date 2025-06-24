@@ -4,16 +4,11 @@ inputs:
   image-name:
     required: true
 
-env:
-  # Not possible to set this as a default
-  # https://github.com/orgs/community/discussions/46670
-  shell: bash
-
 runs:
   using: composite
   steps:
     - name: Generate a dummy MC ZIP
-      shell: ${{ env.shell }}
+      shell: bash
       run: |
         #  Avoid scanning Java dependencies, as managed upstream
         zip -r files/hazelcast-management-center.zip $(mktemp -d)
