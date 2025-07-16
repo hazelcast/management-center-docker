@@ -2,7 +2,7 @@
 ARG MC_VERSION=5.8.0
 ARG MC_DOWNLOAD_BASE_PATH=https://repository.hazelcast.com/download/management-center
 
-FROM alpine:3.21.3 AS builder
+FROM alpine:3.22.1 AS builder
 ARG MC_VERSION
 ARG MC_DOWNLOAD_BASE_PATH
 
