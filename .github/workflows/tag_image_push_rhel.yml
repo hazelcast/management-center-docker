@@ -19,12 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Checkout hazelcast-docker repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: hazelcast/hazelcast-docker
           path: 'hazelcast-docker'
