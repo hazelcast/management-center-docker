@@ -82,20 +82,21 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_DEV_INFRA_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DEV_INFRA_SECRET_ACCESS_KEY }}
           aws-region: 'us-east-1'
 
       - name: Get Secrets
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
           secret-ids: |
-            RHEL_API_KEY,CN/PREFLIGHT_RHEL_API_KEY
+            REDHAT_ROBOT,REDHAT/REDHAT_ISV_CONTAINERS_ROBOT
+          parse-json-secrets: true
 
       - name: Run preflight scan
         run: >-
           ./preflight-linux-amd64 check container ${{ env.RHEL_IMAGE_TAG }}
-          --pyxis-api-token=${RHEL_API_KEY}
+          --pyxis-api-token=${REDHAT_ROBOT_RHEL_API_KEY}
           --certification-project-id=${{ env.RHEL_PROJECT_ID }}
           --docker-config=$HOME/.docker/config.json
           --submit
@@ -105,12 +106,12 @@ jobs:
         run: |
           source .github/scripts/publish-rhel.sh
           
-          wait_for_container_scan "${{ env.RHEL_PROJECT_ID }}" "${{ env.RELEASE_VERSION }}" "${RHEL_API_KEY}" "${{ env.TIMEOUT_IN_MINS }}"
+          wait_for_container_scan "${{ env.RHEL_PROJECT_ID }}" "${{ env.RELEASE_VERSION }}" "${REDHAT_ROBOT_RHEL_API_KEY}" "${{ env.TIMEOUT_IN_MINS }}"
 
       - name: Publish the Management Center image
         working-directory: hazelcast-docker
         run: |
           source .github/scripts/publish-rhel.sh
 
-          publish_the_image "${{ env.RHEL_PROJECT_ID }}" "${{ env.RELEASE_VERSION }}" "${RHEL_API_KEY}"
-          wait_for_container_publish "${{ env.RHEL_PROJECT_ID }}" "${{ env.RELEASE_VERSION }}" "${RHEL_API_KEY}" "${{ env.TIMEOUT_IN_MINS }}"
+          publish_the_image "${{ env.RHEL_PROJECT_ID }}" "${{ env.RELEASE_VERSION }}" "${REDHAT_ROBOT_RHEL_API_KEY}"
+          wait_for_container_publish "${{ env.RHEL_PROJECT_ID }}" "${{ env.RELEASE_VERSION }}" "${REDHAT_ROBOT_RHEL_API_KEY}" "${{ env.TIMEOUT_IN_MINS }}"
