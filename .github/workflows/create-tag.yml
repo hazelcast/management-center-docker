@@ -33,7 +33,7 @@ jobs:
           git tag v${{ inputs.new_version }}
           git push origin v${{ inputs.new_version }}
 
-  rebuild:
+  build:
     needs: create_tag
     uses: ./.github/workflows/tag_image_push.yml
     with:
