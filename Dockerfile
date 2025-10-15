@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-ARG MC_VERSION=5.8.0
+ARG MC_VERSION=5.9.0
 ARG MC_DOWNLOAD_BASE_PATH=https://repository.hazelcast.com/download/management-center
 
 FROM alpine:3.21.3 AS builder
@@ -22,7 +22,7 @@ RUN if [[ ! -f hazelcast-management-center.zip ]]; then \
  && unzip hazelcast-management-center.zip\
  && rm -f hazelcast-management-center.zip
 
-FROM redhat/ubi9-minimal:9.5
+FROM redhat/ubi9-minimal:9.6
 
 ARG MC_VERSION
 

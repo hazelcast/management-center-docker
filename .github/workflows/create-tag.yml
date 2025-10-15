@@ -16,7 +16,7 @@ jobs:
       # https://github.com/orgs/community/discussions/27028
       GITHUB_TOKEN: ${{ secrets.GH_PAT }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Update the Dockerfile with the new version
         run: |
