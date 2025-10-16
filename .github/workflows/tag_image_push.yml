@@ -28,9 +28,6 @@ on:
         required: true
       DOCKERHUB_PASSWORD:
         required: true
-  push:
-    tags:
-      - "v*"
 
 jobs:
   build:
