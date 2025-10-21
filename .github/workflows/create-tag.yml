@@ -11,10 +11,6 @@ on:
 jobs:
   create_tag:
     runs-on: ubuntu-latest
-    env:
-      # Workaround to ensure downstrem actions are triggeered by new tags
-      # https://github.com/orgs/community/discussions/27028
-      GITHUB_TOKEN: ${{ secrets.GH_PAT }}
     steps:
       - uses: actions/checkout@v5
 
@@ -36,3 +32,11 @@ jobs:
         run: |
           git tag v${{ inputs.new_version }}
           git push origin v${{ inputs.new_version }}
+
+  build:
+    needs: create_tag
+    uses: ./.github/workflows/tag_image_push.yml
+    with:
+      dry-run: false
+      tag: 'v${{ inputs.new_version }}'
+    secrets: inherit
