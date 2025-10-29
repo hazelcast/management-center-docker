@@ -70,7 +70,7 @@ COPY --link files/help.1 /help.1
 
 RUN echo "Installing new packages"\
  && microdnf -y --nodocs upgrade\
- && microdnf -y --nodocs install java-21-openjdk\
+ && microdnf -y --nodocs install java-21-openjdk-headless\
  && rm -rf /var/cache/microdnf\
  && microdnf -y clean all\
  && mkdir -p ${MC_HOME} ${MC_DATA}\
