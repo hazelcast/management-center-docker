@@ -11,6 +11,7 @@ on:
         description: 'Add additional `latest-snapshot` tag?'
         type: boolean
         required: true
+        default: false
   workflow_call:
     inputs:
       mc-full-version:
@@ -21,6 +22,7 @@ on:
         description: 'Add additional `latest-snapshot` tag?'
         type: boolean
         required: true
+        default: false
     secrets:
       DOCKERHUB_USERNAME:
         required: true
