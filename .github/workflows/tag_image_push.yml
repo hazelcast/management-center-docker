@@ -28,21 +28,22 @@ on:
         required: true
       DOCKERHUB_PASSWORD:
         required: true
-  push:
-    tags:
-      - "v*"
 
 jobs:
   build:
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.prepare.outputs.RELEASE_VERSION }}
+      dry_run: ${{ steps.prepare.outputs.DRY_RUN }}
     steps:
       - name: Set tag to rebuild
+        id: prepare
         run: |
           REF=${{ inputs.tag || github.ref_name }}
           echo "REF=$REF" >> $GITHUB_ENV
-          echo "RELEASE_VERSION=${REF:1}" >> $GITHUB_ENV
-          echo "DRY_RUN=${{ inputs.dry-run || false }}" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=${REF:1}" >> ${GITHUB_OUTPUT}
+          echo "DRY_RUN=${{ inputs.dry-run || false }}" >> ${GITHUB_OUTPUT}
 
       - name: Checkout Code
         uses: actions/checkout@v5
@@ -64,7 +65,7 @@ jobs:
 
       - name: Compute tags
         run: |
-          TAGS="hazelcast/management-center:${{ env.RELEASE_VERSION }}"
+          TAGS="hazelcast/management-center:${{ steps.prepare.outputs.RELEASE_VERSION }}"
 
           LATEST_TAG=$(git tag --list --sort=refname "v*" | grep -E -v 'v*BETA*' | tail -n 1)
           if [[ "$LATEST_TAG" = "${REF}" ]]; then
@@ -93,10 +94,10 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/s390x
           tags: ${{ env.TAGS }}
           provenance: false
-          push: ${{ env.DRY_RUN == 'false' }}
+          push: ${{ steps.prepare.outputs.DRY_RUN == 'false' }}
 
       - name: Update Docker Hub Description of Management Center image
-        if: ${{ env.PUSH_LATEST == 'yes' && env.DRY_RUN == 'false' }}
+        if: ${{ env.PUSH_LATEST == 'yes' && steps.prepare.outputs.DRY_RUN == 'false' }}
         uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -104,3 +105,11 @@ jobs:
           repository: hazelcast/management-center
           short-description: Hazelcast Management Center Docker Image
           readme-filepath: ./README.md
+
+  push-rhel:
+    needs: build
+    if: needs.build.outputs.dry_run == 'false'
+    uses: ./.github/workflows/tag_image_push_rhel.yml
+    with:
+      RELEASE_VERSION: ${{ needs.build.outputs.release_version }}
+    secrets: inherit
