@@ -14,24 +14,30 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Update the Dockerfile with the new version
+      - name: Get current project version
         run: |
-          sed --in-place 's/^ARG MC_VERSION=.*/ARG MC_VERSION=${{ inputs.new_version }}/' Dockerfile
+          echo "MC_VERSION=$(awk -F= '/^ARG MC_VERSION=/{print $2}' "Dockerfile" | tr -d '"')" >> ${GITHUB_ENV}
 
       - name: Configure git
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
+      - name: Create tag
+        run: |
+          git tag "${TAG_NAME}"
+          git push origin "${TAG_NAME}"
+        env:
+          TAG_NAME: v${{ env.MC_VERSION }}
+
+      - name: Update the Dockerfile with the new version
+        run: |
+          sed --in-place 's/^ARG MC_VERSION=.*/ARG MC_VERSION=${{ inputs.new_version }}/' Dockerfile
+
       - name: Commit and push changes
         run: |
           git commit --all -m ${{ inputs.new_version }}
           git push
-
-      - name: Create tag
-        run: |
-          git tag v${{ inputs.new_version }}
-          git push origin v${{ inputs.new_version }}
 
   build:
     needs: create_tag
