@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Docker repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: 'hazelcast/management-center-docker'
 
