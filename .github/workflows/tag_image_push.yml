@@ -46,7 +46,7 @@ jobs:
           echo "DRY_RUN=${{ inputs.dry-run || false }}" >> ${GITHUB_OUTPUT}
 
       - name: Checkout Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ env.REF }}

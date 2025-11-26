@@ -22,7 +22,7 @@ jobs:
     outputs:
       versions: ${{ steps.get-latest-patch-versions-to-rebuild.outputs.versions }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
