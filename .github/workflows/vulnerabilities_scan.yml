@@ -60,7 +60,7 @@ jobs:
           --output ${{github.workspace}}/snyk-report.html
 
       - name: Upload Snyk report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: ${{ !cancelled() && steps.scan.outcome == 'failure' }}
         with:
           name: Snyk report
@@ -92,7 +92,7 @@ jobs:
           list-all-pkgs: 'true'
 
       - name: Upload Trivy report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: Trivy report
