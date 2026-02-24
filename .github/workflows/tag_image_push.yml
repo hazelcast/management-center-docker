@@ -67,7 +67,7 @@ jobs:
         run: |
           TAGS="hazelcast/management-center:${{ steps.prepare.outputs.RELEASE_VERSION }}"
 
-          LATEST_TAG=$(git tag --list --sort=refname "v*" | grep -E -v 'v*BETA*' | tail -n 1)
+          LATEST_TAG=$(git tag --list --sort=refname "v*" | sort --version-sort | grep -E -v 'v*BETA*' | tail -n 1)
           if [[ "$LATEST_TAG" = "${REF}" ]]; then
             TAGS="${TAGS},hazelcast/management-center:latest"
             echo "Latest tag added: ${TAGS}"
@@ -76,7 +76,7 @@ jobs:
 
           MINOR_TAG=$(echo "${REF}" | cut -d'.' -f1,2)
           if [[ "$MINOR_TAG" != "${REF}" ]]; then
-            LATEST_TAG_IN_MINOR_LINE=$(git tag --list --sort=refname "${MINOR_TAG}*" | grep -E -v 'v*BETA*' | tail -n 1)
+            LATEST_TAG_IN_MINOR_LINE=$(git tag --list --sort=refname "${MINOR_TAG}*" | sort --version-sort | grep -E -v 'v*BETA*' | tail -n 1)
             if [[ "$LATEST_TAG_IN_MINOR_LINE" = "${REF}" ]]; then
               TAGS="${TAGS},hazelcast/management-center:${MINOR_TAG:1}"
               echo "Latest tag in minor line added: ${TAGS}"
