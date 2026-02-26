@@ -25,7 +25,7 @@ runs:
           tail -n 1 \
         )
 
-        if [[ "$LATEST_TAG" = "${REF}" ]]; then
+        if [[ "$LATEST_TAG" == "${REF}" ]]; then
           TAGS="${TAGS},latest"
           echo "Latest tag added: ${TAGS}"
           echo "PUSH_LATEST=yes" >> $GITHUB_ENV
