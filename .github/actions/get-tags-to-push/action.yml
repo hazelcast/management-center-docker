@@ -2,8 +2,10 @@ name: Get tags to push
 
 inputs:
   ref:
+    description: "Branch reference"
     required: true
   release-version:
+    description: "Version to be released"
     required: true
 outputs:
   tags:
