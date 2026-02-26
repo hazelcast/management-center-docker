@@ -18,7 +18,13 @@ runs:
         TAGS="${RELEASE_VERSION}"
 
         # e.g. v5.10.0
-        LATEST_TAG=$(git tag --list --sort=refname "v*" | sort --version-sort | grep -E -v 'v*BETA*' | tail -n 1)
+        LATEST_TAG=$( \
+          git tag --list --sort=refname "v*" | \
+          sort --version-sort | \
+          grep -E -v 'v*BETA*' | \
+          tail -n 1 \
+        )
+
         if [[ "$LATEST_TAG" = "${REF}" ]]; then
           TAGS="${TAGS},latest"
           echo "Latest tag added: ${TAGS}"
@@ -29,7 +35,13 @@ runs:
         MAJOR_MINOR_TAG=$(echo "${REF}" | cut -d'.' -f1,2)
         if [[ "${MAJOR_MINOR_TAG}" != "${REF}" ]]; then
           # e.g. v5.10.0
-          LATEST_TAG_IN_MINOR_LINE=$(git tag --list --sort=refname "${MAJOR_MINOR_TAG}*" | sort --version-sort | grep -E -v 'v*BETA*' | tail -n 1)
+          LATEST_TAG_IN_MINOR_LINE=$( \
+            git tag --list --sort=refname "${MAJOR_MINOR_TAG}*" | \
+            sort --version-sort | \
+            grep -E -v 'v*BETA*' | \
+            tail -n 1 \
+          )
+
           if [[ "$LATEST_TAG_IN_MINOR_LINE" = "${REF}" ]]; then
             # e.g. v5.10
             TAGS="${TAGS},${MAJOR_MINOR_TAG:1}"
