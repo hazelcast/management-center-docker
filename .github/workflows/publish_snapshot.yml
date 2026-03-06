@@ -59,7 +59,7 @@ jobs:
           echo "TAGS=${{ env.TAGS }},hazelcast/management-center:latest-snapshot" >> $GITHUB_ENV
 
       - name: Build and push docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/s390x
