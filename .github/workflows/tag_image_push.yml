@@ -36,6 +36,8 @@ jobs:
     outputs:
       release_version: ${{ steps.prepare.outputs.RELEASE_VERSION }}
       dry_run: ${{ steps.prepare.outputs.DRY_RUN }}
+    env:
+      DOCKER_IMAGE_NAME: hazelcast/management-center
     steps:
       - name: Set tag to rebuild
         id: prepare
@@ -63,30 +65,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - id: get-tags-to-push
+        uses: hazelcast/management-center-docker/.github/actions/get-tags-to-push@master
+        with:
+          ref: ${{ env.REF }}
+          release-version: ${{ steps.prepare.outputs.RELEASE_VERSION }}
+
       - name: Compute tags
         run: |
-          TAGS="hazelcast/management-center:${{ steps.prepare.outputs.RELEASE_VERSION }}"
-
-          LATEST_TAG=$(git tag --list --sort=refname "v*" | sort --version-sort | grep -E -v 'v*BETA*' | tail -n 1)
-          if [[ "$LATEST_TAG" = "${REF}" ]]; then
-            TAGS="${TAGS},hazelcast/management-center:latest"
-            echo "Latest tag added: ${TAGS}"
-            echo "PUSH_LATEST=yes" >> $GITHUB_ENV
-          fi
-
-          MINOR_TAG=$(echo "${REF}" | cut -d'.' -f1,2)
-          if [[ "$MINOR_TAG" != "${REF}" ]]; then
-            LATEST_TAG_IN_MINOR_LINE=$(git tag --list --sort=refname "${MINOR_TAG}*" | sort --version-sort | grep -E -v 'v*BETA*' | tail -n 1)
-            if [[ "$LATEST_TAG_IN_MINOR_LINE" = "${REF}" ]]; then
-              TAGS="${TAGS},hazelcast/management-center:${MINOR_TAG:1}"
-              echo "Latest tag in minor line added: ${TAGS}"
-            fi
-          fi
-          echo "TAGS=${TAGS}" >> $GITHUB_ENV
-
-      - name: Print docker image tags
-        run: echo ${{ env.TAGS }}
-
+          echo TAGS="${DOCKER_IMAGE_NAME}:${TAGS_TO_PUSH//,/,${DOCKER_IMAGE_NAME}:}" >> ${GITHUB_ENV}
+        env:
+          TAGS_TO_PUSH: ${{ steps.get-tags-to-push.outputs.tags }}
+         
       - name: Build and push docker image
         uses: docker/build-push-action@v6
         with:
@@ -102,7 +92,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: hazelcast/management-center
+          repository: ${{ env.DOCKER_IMAGE_NAME }}
           short-description: Hazelcast Management Center Docker Image
           readme-filepath: ./README.md
 

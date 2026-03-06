@@ -43,7 +43,7 @@ jobs:
 
       - name: Set RHEL image as environment variable
         run: |
-          echo "RHEL_IMAGE_TAG=${SCAN_REGISTRY}/redhat-isv-containers/${{ steps.scan_registry_secrets.outputs.PROJECT_ID }}:${{ inputs.RELEASE_VERSION }}" >> $GITHUB_ENV
+          echo "RHEL_IMAGE_NAME=${SCAN_REGISTRY}/redhat-isv-containers/${{ steps.scan_registry_secrets.outputs.PROJECT_ID }}" >> ${GITHUB_ENV}
 
       - name: Log in to Red Hat Scan Registry
         uses: docker/login-action@v3
@@ -52,12 +52,24 @@ jobs:
           username: ${{ steps.scan_registry_secrets.outputs.USERNAME }}
           password: ${{ steps.scan_registry_secrets.outputs.PASSWORD }}
 
+      - id: get-tags-to-push
+        uses: hazelcast/management-center-docker/.github/actions/get-tags-to-push@master
+        with:
+          ref: ${{ env.REF }}
+          release-version: ${{ env.RELEASE_VERSION }}
+
       - name: Copy image to RedHat Container Registry
         run: |
-          skopeo copy \
-            --multi-arch all \
-            docker://hazelcast/management-center:${{ inputs.RELEASE_VERSION }} \
-            docker://${RHEL_IMAGE_TAG}
+          for tag in ${TAGS_TO_PUSH}
+          do
+            skopeo copy \
+              --multi-arch all \
+              docker://hazelcast/management-center:${RELEASE_VERSION} \
+              docker://${RHEL_IMAGE_NAME}:${tag}
+          done
+        env:
+          RELEASE_VERSION: ${{ inputs.RELEASE_VERSION }}
+          TAGS_TO_PUSH: ${{ steps.get-tags-to-push.outputs.all-destination-tags }}
 
       - name: Install `preflight` OpenShift tool from GitHub
         uses: redhat-actions/openshift-tools-installer@v1
@@ -81,10 +93,12 @@ jobs:
 
       - name: Run preflight scan
         run: |
-          preflight check container ${RHEL_IMAGE_TAG} \
+          preflight check container ${RHEL_IMAGE_NAME}:${RELEASE_VERSION} \
             --submit --pyxis-api-token=${REDHAT_ROBOT_RHEL_API_KEY} \
             --certification-component-id=${{ steps.scan_registry_secrets.outputs.PROJECT_ID }} \
             --docker-config ~/.docker/config.json
+        env:
+          RELEASE_VERSION: ${{ inputs.RELEASE_VERSION }}
 
       - name: Check RedHat service status
         if: failure()
