@@ -56,7 +56,7 @@ jobs:
       - name: Concat latest-snapshot to TAGS env var
         if: ${{ inputs.latest-snapshot }}
         run: |
-          echo "TAGS=${{ env.TAGS }},hazelcast/management-center:latest-snapshot" >> $GITHUB_ENV
+          echo "TAGS=${TAGS},hazelcast/management-center:latest-snapshot" >> $GITHUB_ENV
 
       - name: Build and push docker image
         uses: docker/build-push-action@v7

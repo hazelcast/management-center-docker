@@ -57,4 +57,4 @@ runs:
 
     - name: Print docker image tags
       shell: bash
-      run: echo ${{ env.TAGS }}
+      run: echo ${TAGS}
