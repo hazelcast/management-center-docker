@@ -100,6 +100,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
           output: 'trivy-results.html'
           list-all-pkgs: 'true'
+          trivyignores: '.trivyignore'
 
       - name: Upload Trivy report
         uses: actions/upload-artifact@v6
