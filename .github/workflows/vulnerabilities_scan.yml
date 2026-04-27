@@ -39,6 +39,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ env.IMAGE_NAME }}
+          json: 'true'
           args: >-
             --file=Dockerfile
             --print-deps
@@ -65,6 +66,7 @@ jobs:
         with:
           name: Snyk report
           path: ${{github.workspace}}/snyk-report.html
+          if-no-files-found: warn
 
   trivy:
     timeout-minutes: 10
@@ -78,18 +80,27 @@ jobs:
         with:
           image-name: ${{ env.IMAGE_NAME }}
 
+      - name: Download Trivy HTML template
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/contrib
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl \
+            -o $GITHUB_WORKSPACE/contrib/html.tpl
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         id: scan
+        env:
+          TRIVY_SKIP_VERSION_CHECK: "true"
         with:
           image-ref: ${{ env.IMAGE_NAME }}
           format: 'template'
-          template: "@$HOME/.local/bin/trivy-bin/contrib/html.tpl"
+          template: "@${{ github.workspace }}/contrib/html.tpl"
           exit-code: '1'
           ignore-unfixed: 'true'
           severity: 'CRITICAL,HIGH'
           output: 'trivy-results.html'
           list-all-pkgs: 'true'
+          trivyignores: '.trivyignore'
 
       - name: Upload Trivy report
         uses: actions/upload-artifact@v7
