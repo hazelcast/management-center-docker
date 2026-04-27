@@ -39,6 +39,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ env.IMAGE_NAME }}
+          json: 'true'
           args: >-
             --file=Dockerfile
             --print-deps
@@ -46,7 +47,6 @@ jobs:
             --exclude-app-vulns
             --policy-path=.snyk
             --fail-on=upgradable
-            --json-file-output=${{github.workspace}}/snyk.json
 
       - name: Install snyk-to-html
         if: ${{ !cancelled() && steps.scan.outcome == 'failure' }}
