@@ -87,7 +87,7 @@ jobs:
             -o $HOME/.local/bin/trivy-bin/contrib/html.tpl
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@0.35.0
         id: scan
         env:
           TRIVY_SKIP_VERSION_CHECK: "true"
