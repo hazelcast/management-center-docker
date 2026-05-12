@@ -62,7 +62,7 @@ jobs:
 
       - name: Copy image to RedHat Container Registry
         run: |
-          for tag in ${TAGS_TO_PUSH}
+          for tag in ${TAGS_TO_PUSH//,/ }
           do
             skopeo copy \
               --multi-arch all \
@@ -71,7 +71,7 @@ jobs:
           done
         env:
           RELEASE_VERSION: ${{ inputs.RELEASE_VERSION }}
-          TAGS_TO_PUSH: ${{ steps.get-tags-to-push.outputs.all-destination-tags }}
+          TAGS_TO_PUSH: ${{ steps.get-tags-to-push.outputs.tags }}
 
       - name: Install `preflight` OpenShift tool from GitHub
         uses: redhat-actions/openshift-tools-installer@v1
