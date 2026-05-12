@@ -56,7 +56,7 @@ jobs:
         uses: hazelcast/management-center-docker/.github/actions/get-tags-to-push@master
         with:
           ref: ${{ env.REF }}
-          release-version: ${{ env.RELEASE_VERSION }}
+          release-version: ${{ inputs.RELEASE_VERSION }}
 
       - name: Copy image to RedHat Container Registry
         run: |
