@@ -33,7 +33,7 @@ jobs:
     name: "Release docker image"
     env:
       TAGS: hazelcast/management-center:${{ inputs.mc-full-version }}
-    timeout-minutes: 10
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Docker repo
