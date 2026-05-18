@@ -114,7 +114,7 @@ docker run --rm -e MC_HTTPS_PORT=8444 \
 ```
 
 Please refer to 
-[Management Center Reference Manual](https://docs.hazelcast.com/management-center/5.11/deploy-manage/serving-https) 
+[Management Center Reference Manual](https://docs.hazelcast.com/management-center/latest/deploy-manage/serving-https) 
 for more information on available options.
 
 
