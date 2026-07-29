@@ -74,7 +74,7 @@ jobs:
           TAGS_TO_PUSH: ${{ steps.get-tags-to-push.outputs.tags }}
 
       - name: Install `preflight` OpenShift tool from GitHub
-        uses: redhat-actions/openshift-tools-installer@v1
+        uses: redhat-actions/openshift-tools-installer@v2
         with:
           preflight: "latest"
           source: github
