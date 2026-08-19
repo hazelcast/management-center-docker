@@ -3,7 +3,7 @@
 
 Hazelcast Management Center enables you to monitor and manage your cluster members running Hazelcast. In addition to monitoring the overall state of your clusters, you can also analyze and browse your data structures in detail, update map configurations and take thread dumps from members. You can run scripts (JavaScript, Groovy, etc.) and commands on your members with its scripting and console modules.
 
-You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/latest/manual/html-single/) and [Management Center Documentation](http://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html) for more information.
+You can check [Hazelcast Documentation](https://docs.hazelcast.com/hazelcast/latest/) and [Management Center Documentation](https://docs.hazelcast.com/management-center/latest) for more information.
 
 ## Table of Content
  - [Quick Start]
@@ -114,7 +114,7 @@ docker run --rm -e MC_HTTPS_PORT=8444 \
 ```
 
 Please refer to 
-[Management Center Reference Manual](https://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html#enabling-tslssl-when-starting-with-jar-file) 
+[Management Center Reference Manual](https://docs.hazelcast.com/management-center/latest/deploy-manage/serving-https) 
 for more information on available options.
 
 
@@ -169,7 +169,7 @@ docker run -p 8080:8080 -p 8081:8081 \
 ```
 
 You can use this endpoint with container orchestraction systems, like Kubernetes. Refer to 
-[Management Center Reference Manual](https://docs.hazelcast.org/docs/management-center/latest/manual/html/#enabling-health-check-endpoint) 
+[Management Center Reference Manual](https://docs.hazelcast.com/management-center/latest/deploy-manage/system-properties#enabling-health-check-endpoint) 
 for more information.
 
 ### Customizing Container Setup
