@@ -23,11 +23,6 @@ on:
         type: boolean
         required: true
         default: false
-    secrets:
-      DOCKERHUB_USERNAME:
-        required: true
-      DOCKERHUB_PASSWORD:
-        required: true
 jobs:
   publish_snapshot:
     name: "Release docker image"
