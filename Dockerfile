@@ -34,7 +34,7 @@ ENV JAVA_OPTS_DEFAULT="-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack
     USER_UID=10001 \
     MC_HTTP_PORT="8080" \
     MC_HTTPS_PORT="8443" \
-    MC_HEALTH_CHECK_PORT="8081" \
+    MANAGEMENT_SERVER_PORT="8081" \
     LOGGING_LEVEL="" \
     MC_CONTEXT_PATH="/" \
     CONTAINER_SUPPORT="true" \
@@ -89,7 +89,7 @@ COPY --link --from=builder --chmod=775 --chown=$USER_UID:0 /tmp/build/hazelcast-
 COPY --link --chmod=775 --chown=$USER_UID:0 files/mc-start.sh ./bin/mc-start.sh
 
 VOLUME ["${MC_DATA}"]
-EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
+EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MANAGEMENT_SERVER_PORT}
 
 # Switch to hazelcast user
 USER ${USER_UID}
