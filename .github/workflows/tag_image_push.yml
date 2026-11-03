@@ -104,7 +104,7 @@ jobs:
   push-rhel:
     needs: build
     if: needs.build.outputs.dry_run == 'false'
-    uses: ./.github/workflows/tag_image_push_rhel.yml
+    uses: $/.github/workflows/tag_image_push_rhel.yml
     with:
       RELEASE_VERSION: ${{ needs.build.outputs.release_version }}
     secrets: inherit
