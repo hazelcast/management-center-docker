@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Build
-        uses: ./.github/actions/vulnerabilities-scan-image-builder
+        uses: $/.github/actions/vulnerabilities-scan-image-builder
         with:
           image-name: ${{ env.IMAGE_NAME }}
 
@@ -76,7 +76,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Build
-        uses: ./.github/actions/vulnerabilities-scan-image-builder
+        uses: $/.github/actions/vulnerabilities-scan-image-builder
         with:
           image-name: ${{ env.IMAGE_NAME }}
 
