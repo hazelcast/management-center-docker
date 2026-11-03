@@ -1,0 +1,17 @@
+name: Determine if SBOM applicable
+inputs:
+  version:
+    required: true
+outputs:
+  applicable:
+    value: ${{ steps.version-compare.outputs.comparison-result == '=' || steps.version-compare.outputs.comparison-result == '>' }}
+runs:
+  using: "composite"
+  steps:
+    - uses: madhead/semver-utils@aef172024379a2a15a6a09b097406ca7fec306e8 # v5.1.2
+      id: version-compare
+      with:
+        version: ${{ inputs.version }}
+        # The first version that SBOMs were introduced
+        # Needs to be a SNAPSHOT as the action is smart enough to tell the difference
+        compare-to: 5.13.0-SNAPSHOT
