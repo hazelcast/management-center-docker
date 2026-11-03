@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
 
       - name: Get changed image versions
-        uses: ./.github/actions/get-latest-patch-versions-to-rebuild
+        uses: $/.github/actions/get-latest-patch-versions-to-rebuild
         id: get-latest-patch-versions-to-rebuild
         with:
           since-version: ${{ inputs.minimal-supported-version || '5.3'  }}
@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         version: ${{ fromJSON(needs.get-latest-patch-versions-to-rebuild.outputs.versions) }}
-    uses: ./.github/workflows/tag_image_push.yml
+    uses: $/.github/workflows/tag_image_push.yml
     with:
       dry-run: ${{ inputs.dry-run || false }}
       tag: 'v${{ matrix.version }}'
