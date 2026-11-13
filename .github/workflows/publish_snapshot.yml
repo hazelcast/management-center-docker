@@ -58,6 +58,11 @@ jobs:
         run: |
           echo "TAGS=${TAGS},${{ vars.DOCKERHUB_ORGANIZATION }}/management-center:latest-snapshot" >> $GITHUB_ENV
 
+      - uses: $/.github/actions/sbom-applicable
+        id: sbom-applicable
+        with:
+          version: ${{ inputs.mc-full-version }}
+
       - name: Build and push docker image
         uses: docker/build-push-action@v7
         with:
@@ -65,6 +70,7 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/s390x
           build-args: |
             MC_VERSION=${{ inputs.mc-full-version }}
+          sbom: ${{ steps.sbom-applicable.outputs.applicable }}
           tags: ${{ env.TAGS }}
           provenance: false
           push: true

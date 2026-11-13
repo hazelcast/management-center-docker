@@ -82,11 +82,17 @@ jobs:
         env:
           TAGS_TO_PUSH: ${{ steps.get-tags-to-push.outputs.tags }}
          
+      - uses: $/.github/actions/sbom-applicable
+        id: sbom-applicable
+        with:
+          version: ${{ steps.prepare.outputs.RELEASE_VERSION }}
+
       - name: Build and push docker image
         uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/s390x
+          sbom: ${{ steps.sbom-applicable.outputs.applicable }}
           tags: ${{ env.TAGS }}
           provenance: false
           push: ${{ steps.prepare.outputs.DRY_RUN == 'false' }}
