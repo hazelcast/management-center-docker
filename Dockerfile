@@ -22,7 +22,7 @@ RUN if [[ ! -f hazelcast-management-center.zip ]]; then \
  && unzip hazelcast-management-center.zip\
  && rm -f hazelcast-management-center.zip
 
-FROM redhat/ubi9-minimal:9.8
+FROM redhat/ubi9-minimal:9.9
 
 ARG MC_VERSION
 
